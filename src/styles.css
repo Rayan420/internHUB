@@ -13,6 +13,7 @@
  .container {
   display: flex;
   flex-direction: row;
+  flex-wrap: wrap;
   height: 100vh;
 }
 
@@ -35,6 +36,12 @@
   
 }
 
+img{
+  display: block;
+  left: auto;
+  right: auto;
+  object-fit: contain;
+}
 #logo{
   position: relative;
   width: 100%;
