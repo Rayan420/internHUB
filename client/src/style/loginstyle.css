@@ -132,6 +132,16 @@ img{
   color: white;
 }
 
+.info{
+  margin-top: 25px;
+  font-size: 20px;
+  font-weight: bold;
+}
+.note{
+  margin-top: none;
+  font-size: 16px;
+  font-weight: normal;
+}
 
 
 
