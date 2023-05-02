@@ -13,7 +13,7 @@
   "name": "adopt-me",
   "version": "1.0.0",
   "description": "A pet adoption app",
-  "main": "App.jsx",
+  "main": "index.jsx",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
@@ -30,6 +30,7 @@
     "@fortawesome/fontawesome-svg-core": "^6.4.0",
     "@fortawesome/free-solid-svg-icons": "^6.4.0",
     "@fortawesome/react-fontawesome": "^0.2.0",
+    "axios": "^1.4.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0"
   }

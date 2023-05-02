@@ -1,0 +1,69 @@
+2023-04-30	09:35:11	e72f6d53-d9ba-4389-b97f-d9c76112c1f8	Error	Not allowed by CORS 
+2023-04-30	11:57:24	6b8aa9d2-8cf7-43ca-91b8-888587a7ecd5	SyntaxError	Expected ',' or '}' after property value in JSON at position 35 
+2023-05-02	03:18:35	9d9f5f51-8626-437c-bb12-f34d42bb22e9	Error	Not allowed by CORS 
+2023-05-02	03:18:36	b25602db-05a6-4800-9c1a-087086d966ac	Error	Not allowed by CORS 
+2023-05-02	03:18:36	5ff2b62f-be03-4872-92e7-b756ae034618	Error	Not allowed by CORS 
+2023-05-02	03:18:36	da681a73-b604-4ed4-812d-aaede30cddbc	Error	Not allowed by CORS 
+2023-05-02	03:18:40	aefcfd8d-70b9-4f78-84ce-92e30fd0be1b	Error	Not allowed by CORS 
+2023-05-02	03:19:11	aa8d615b-ef3d-40a9-b2cf-cb9f6215bd70	Error	Not allowed by CORS 
+2023-05-02	03:21:03	370a0a01-54d1-4801-a785-d5f8e1db07f1	Error	Not allowed by CORS 
+2023-05-02	03:21:04	a4bd0609-735c-4a6e-b0c8-8dd8c7ec246b	Error	Not allowed by CORS 
+2023-05-02	03:21:07	4dc0427c-f3a6-428d-b4c1-36329504373f	Error	Not allowed by CORS 
+2023-05-02	03:23:07	8b9c6993-191a-4796-afc5-77573abfd477	Error	Not allowed by CORS 
+2023-05-02	03:24:01	a95cc9b8-d53e-4b81-9b73-f1d9c8939789	Error	Not allowed by CORS 
+2023-05-02	03:24:01	19e2655d-1394-40d3-a847-e8b73fbbcfe3	Error	Not allowed by CORS 
+2023-05-02	03:24:06	e9bf519b-39a0-4843-8572-d5774cbba354	Error	Not allowed by CORS 
+2023-05-02	03:24:06	d2c25b68-2f8e-4221-9ae8-a996a2c24322	Error	Not allowed by CORS 
+2023-05-02	03:24:14	3b1565dd-29e4-43b7-a67e-cd06f9690206	Error	Not allowed by CORS 
+2023-05-02	03:24:14	c7f82aa4-ad23-4aa5-9828-c806262bffcf	Error	Not allowed by CORS 
+2023-05-02	03:24:15	dd680726-d263-4e77-b477-522b6300a753	Error	Not allowed by CORS 
+2023-05-02	03:24:15	58b95a44-27ed-4973-8aa3-bcfb35331ffd	Error	Not allowed by CORS 
+2023-05-02	03:24:15	29a32ea6-96ea-4b86-ba37-d5967343bb4f	Error	Not allowed by CORS 
+2023-05-02	03:24:15	1fe2f208-1c62-406b-8c9b-562dab71ed70	Error	Not allowed by CORS 
+2023-05-02	03:24:16	a399c24e-6a71-4628-aa14-5726f49a33c1	Error	Not allowed by CORS 
+2023-05-02	03:25:17	08251173-4589-463a-a010-df4e73d5d3ef	Error	Not allowed by CORS 
+2023-05-02	03:31:30	9c2d040b-90a7-428c-aaef-bd06b9e9bb8e	Error	Not allowed by CORS 
+2023-05-02	03:32:10	da89d4e2-b432-477a-be80-a2c4419e29ea	Error	Not allowed by CORS 
+2023-05-02	03:32:15	2825da72-f05a-42b7-986b-81160d1c847e	Error	Not allowed by CORS 
+2023-05-02	03:32:25	0af25812-47df-42cb-bf85-c69708a213d9	Error	Not allowed by CORS 
+2023-05-02	03:36:56	048c79e5-c05b-4a65-b010-4e8ad6d65b8f	Error	Not allowed by CORS 
+2023-05-02	03:36:56	f3a5b86f-ca3d-428f-91e0-a338bd3c0c87	Error	Not allowed by CORS 
+2023-05-02	03:38:19	ff543852-7e33-4f40-a1be-4625a08d442c	Error	Not allowed by CORS 
+2023-05-02	03:38:24	a980ebc1-5a1e-466a-958d-3ae9db14cacb	Error	Not allowed by CORS 
+2023-05-02	03:38:42	f0de047c-77f8-4d17-8bd5-ae53dd3935b0	Error	Not allowed by CORS 
+2023-05-02	03:39:15	fcc4d21c-abdf-4dd4-97d9-37c8e50a6d9d	Error	Not allowed by CORS 
+2023-05-02	03:39:41	3c57efc2-7756-4d6d-b8e5-b72f9f6df54a	Error	Not allowed by CORS 
+2023-05-02	03:40:27	f6ed17c2-bac5-474a-83b5-a35763508050	Error	Not allowed by CORS 
+2023-05-02	03:41:25	6234be32-35e0-4ca4-ba9a-1d88eb35e0da	Error	Not allowed by CORS 
+2023-05-02	03:41:36	2ca7b8ce-2265-4468-bbaa-5cec56d700e0	Error	Not allowed by CORS 
+2023-05-02	03:41:36	0ad3e197-01c9-4e7f-9a30-5f2bf96931b9	Error	Not allowed by CORS 
+2023-05-02	03:42:18	47442db7-5b99-4903-9eb1-c8e24f04ddf9	Error	Not allowed by CORS 
+2023-05-02	03:43:37	cf16d68b-c19e-4421-a179-af381d1d2d29	Error	Not allowed by CORS 
+2023-05-02	03:56:28	e315af70-8ebd-4162-be69-47fbfd5aa905	Error	Not allowed by CORS 
+2023-05-02	04:06:55	f3224300-211d-4b6d-997f-e15c45fd2d5c	Error	Not allowed by CORS 
+2023-05-02	04:07:27	6316344b-01f2-4cbc-a1f7-f5a585c53bc8	Error	Not allowed by CORS 
+2023-05-02	04:07:27	ebdcd807-7aac-43a8-8d5e-12746715736d	Error	Not allowed by CORS 
+2023-05-02	04:07:31	a9ce4db0-8af4-48ca-a29a-00a53e9258fc	Error	Not allowed by CORS 
+2023-05-02	04:08:24	6cfddcab-262b-4a77-999b-983f25523669	Error	Not allowed by CORS 
+2023-05-02	04:08:46	1964f3c2-d94d-4cea-ae8b-e4f33530962c	Error	Not allowed by CORS 
+2023-05-02	04:09:51	98f8a432-c2ac-46dd-83b9-5642f1699bc2	TypeError	res.headers is not a function 
+2023-05-02	04:09:52	f3cd360d-d41b-43cb-9164-89b2aff00a54	TypeError	res.headers is not a function 
+2023-05-02	04:12:52	50b235be-d256-45b2-b0b2-f4a2700f3351	TypeError	res.headers is not a function 
+2023-05-02	05:36:41	0d764b7f-4c35-456e-9693-a147692b7e97	TypeError	Converting circular structure to JSON
+    --> starting at object with constructor 'Socket'
+    |     property '_writableState' -> object with constructor 'WritableState'
+    |     property 'afterWriteTickInfo' -> object with constructor 'Object'
+    --- property 'stream' closes the circle 
+2023-05-02	05:38:00	a5348ac4-d1bb-4406-8ec7-3f0785a6d77c	TypeError	Cannot read properties of undefined (reading 'stringfy') 
+2023-05-02	05:38:13	222beb54-e4bf-4ded-9108-7a6ebf295677	TypeError	res.JSON is not a function 
+2023-05-02	05:38:54	e8b4e15e-a204-48fd-a407-34125db3167d	TypeError	Cannot read properties of undefined (reading 'stringfy') 
+2023-05-02	05:40:17	77a0c8c5-3713-4d4f-ac6d-ec86f8ef0280	TypeError	Converting circular structure to JSON
+    --> starting at object with constructor 'Socket'
+    |     property '_writableState' -> object with constructor 'WritableState'
+    |     property 'afterWriteTickInfo' -> object with constructor 'Object'
+    --- property 'stream' closes the circle 
+2023-05-02	05:40:18	ea5cbf76-1586-4d7c-807c-e0818fce3622	TypeError	Converting circular structure to JSON
+    --> starting at object with constructor 'Socket'
+    |     property '_writableState' -> object with constructor 'WritableState'
+    |     property 'afterWriteTickInfo' -> object with constructor 'Object'
+    --- property 'stream' closes the circle 

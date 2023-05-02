@@ -1,28 +1,29 @@
 {
+  "dependencies": {
+    "bcrypt": "^5.1.0",
+    "cookie-parse": "^0.4.0",
+    "cookie-parser": "^1.4.6",
+    "cors": "^2.8.5",
+    "date-fns": "^2.29.3",
+    "dotenv": "^16.0.3",
+    "express": "^4.18.2",
+    "jsonwebtoken": "^9.0.0",
+    "mysql": "^2.18.1",
+    "mysql2": "^3.2.4",
+    "uuid": "^9.0.0"
+  },
   "name": "server",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "main": "server.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "ts-node src/index.ts"
+    "start": "node server.js",
+    "dev": "nodemon server.js"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "dependencies": {
-    "@prisma/client": "^4.13.0",
-    "bcrypt": "^5.1.0",
-    "dotenv": "^16.0.3",
-    "express": "^4.18.2",
-    "jsonwebtoken": "^9.0.0",
-    "morgan": "^1.10.0",
-    "nodemon": "^2.0.22"
-  },
+  "description": "",
   "devDependencies": {
-    "@types/node": "^18.16.1",
-    "prisma": "^4.13.0",
-    "ts-node": "^10.9.1",
-    "typescript": "^5.0.4"
+    "nodemon": "^2.0.22"
   }
 }

@@ -1,14 +1,11 @@
-import { createRoot } from "react-dom/client";
 import LoginPage from './pages/LoginPage';
 
-const App = () => {
+function App() {
   return (
-    <div className="app">
+    <main className="app">
       <LoginPage></LoginPage>
-    </div>
+    </main>
   );
-};
+}
 
-const container = document.getElementById("root");
-const root = createRoot(container);
-root.render(<App />);
+export default App;
