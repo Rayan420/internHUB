@@ -1,20 +1,16 @@
-const connection = require('../Database/db.js');
+const prisma = require('../prisma');
 
-const getAllUsers = (req, res) => {
-  // make sure connection is defined before using it
-  if (connection) {
-    connection.query('SELECT * FROM users', (error, results, fields) => {
-      if (error) throw error;
-      console.log(results);
-      // return userlist as json 
-      res.send(results);
-    });
-  } else {
-    // handle the case where connection is undefined
+const getAllUsers = async (req, res) => {
+  try {
+    const users = await prisma.user.findMany();
+    console.log(users);
+    res.json(users);
+  } catch (error) {
+    console.error(error);
     res.status(500).send("Internal server error");
   }
-}
+};
 
 module.exports = {
   getAllUsers,
-}
+};

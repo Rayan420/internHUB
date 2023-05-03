@@ -1,7 +1,5 @@
-const connection = require('../Database/db');
-
+const prisma  = require('../prisma');
 const bycrypt = require('bcrypt');
-
 const jwt = require('jsonwebtoken');
 require('dotenv').config();
 const fsPromises = require('fs').promises;
@@ -18,8 +16,10 @@ const handleLogin = async (req, res) => {
         
     }
     // CHECK IF USER EXISTS
-    const User = await connection.promise().query(`SELECT * FROM users WHERE email = '${email}'`);
-    const foundUser = JSON.parse(JSON.stringify(User[0]))[0];
+    const User =  await prisma.users.findUnique({
+        where: {email: email},
+      });
+    const foundUser = User;
     if(!foundUser){
         // return error
         return res.status(401).json({error: 'User not found'});
@@ -47,8 +47,11 @@ const handleLogin = async (req, res) => {
                 );
 
         // save refresh with user
-        await connection.execute(`UPDATE users SET refresh_token = '${refreshToken}' WHERE email = '${email}'`);
-        // send refresh token as cookie
+        await prisma.users.update({
+            where: { email: email },
+            data: { refresh_token: refreshToken }
+          });
+                  // send refresh token as cookie
          res.cookie('refresToken', refreshToken, {httpOnly:true, sameSite: 'None', secure:true,
           maxAge: 24 * 60 * 60 * 1000});
           // send access token as response with user info
