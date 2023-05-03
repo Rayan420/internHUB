@@ -1,22 +1,24 @@
-import { useState, useRef, useEffect, useContext} from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
-import AuthContext from '../context/AuthProvider';
 import axios from '../services/axios';  // import axios from '../services/axios';
-
 const LOGIN_URL = '/auth';
+import { useSignIn } from 'react-auth-kit';
+import { useNavigate } from 'react-router-dom';
+
 
 
 /* LOGIN FORM COMPONENET */
 
 const LoginForm = () => {
-  const {setAuth} = useContext(AuthContext);
+  const signIn = useSignIn();
   const emailRef = useRef();
   const errRef = useRef();
   const [email, setEmail] = useState('');
   const [pwd , setPwd] = useState('');
   const [errMsg, setErrMsg] = useState('');
   const [success, setSuccess] = useState(false);
+  const navigate = useNavigate();
 
   useEffect(() => {
     emailRef.current.focus();
@@ -25,9 +27,12 @@ const LoginForm = () => {
   useEffect(() => {
     setErrMsg('');
   },[email, pwd]);
-
-  /* handle login function */
-
+  
+  useEffect(() => {
+  }, []);
+  
+   /* handle login function */
+  
   const handleSubmit = async (e) => {
     e.preventDefault();
     try
@@ -39,15 +44,25 @@ const LoginForm = () => {
           withCredentials: true,
         }
         );
-        console.log(JSON.stringify(response?.data));
-        //conolog.log(JSON.stringify(response.data));
-        const accessToken = response?.data?.accessToken;
-        //const role = response?.data?.roles;
-        setAuth({email, password, accessToken});
-        setEmail('');
-        setPwd('');
+        
+       signIn({
+        token: response.data.accessToken,
+        expiresIn: 3600,
+        tokenType: 'Bearer',
+        authState: {
+          role: response?.data?.role,
+          email: email,
+        },
+       }) 
+
         setSuccess(true);
-    } 
+        setErrMsg('');
+        setPwd('');
+        setEmail('');
+        navigate('/dashboard');
+
+    }
+
     catch(err) {
       if(!err?.response) 
       {
@@ -68,8 +83,11 @@ const LoginForm = () => {
 
       errRef.current.focus();
     }
-    
+
+
   };
+  
+
 
 /*
     show or hide password icon function
@@ -85,7 +103,7 @@ const LoginForm = () => {
         <h2>Login</h2>
         <p ref={errRef} className={errMsg ? "errmsg" : "offscreen"} 
         aria-live="assertive">{errMsg} </p>
-        <form onSubmit={handleSubmit}>
+        <form onSubmit={handleSubmit }>
             <div className="user-box">
                 <label>Email</label>
                 <input
