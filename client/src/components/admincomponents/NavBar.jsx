@@ -1,12 +1,12 @@
 import React from 'react';
 import { useState } from 'react';
-import { NavLink } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import '../../style/style.css';
 import logo from '../../assets/logo.png';
 import {useSignOut} from 'react-auth-kit';
 import { useNavigate } from "react-router-dom";
 
-const SideNavbar = () => {
+const SideNavbar = ({history}) => {
   const signOut = useSignOut();
   const navigate = useNavigate();
   const handleLogout = () => {
@@ -38,35 +38,36 @@ const SideNavbar = () => {
        </div>
        <ul>
         <li>
-            <NavLink className='an' exact="true" to="/dashboard" activeclassname="active">
+            <Link className='an' exact="true" to="/dashboard" >
                 <i className="bx bxs-grid-alt"></i>
                 <span className="nav-item">Dasboard</span>
-            </NavLink>
+            </Link>
             <span className='tooltip'>Dashboard</span>
         </li>
         <li>
-            <NavLink className='an' exact="true" to="/dashboard/messages" activeclassname="active">
+            <Link className='an' exact="true" to="/dashboard/messages" >
                 <i className="bx bxs-envelope"></i>
                 <span className="nav-item">Messages</span>
-            </NavLink>
+            </Link>
             <span className='tooltip'>Messages</span>
         </li>
         <li>
-            <NavLink className='an' exact="true" to="/dashboard/users" activeclassname="active">
+            <Link className='an'  to="/users" >
                 <i className="bx bxs-user"></i>
                 <span className="nav-item">Users</span>
-            </NavLink>
+            </Link>
+            
             <span className='tooltip'>Users</span>
         </li>
         <li>
-            <NavLink className='an' exact="true" to="/dashboard/settings" activeclassname="active">
+            <Link className='an' exact="true" to="/dashboard/settings" >
                 <i className="bx bxs-cog"></i>
                 <span className="nav-item">Settings</span>
-            </NavLink>
+            </Link>
             <span className='tooltip'>Settings</span>
         </li>
         <li>
-            <div className='an logout' activeclassname="active" onClick={handleLogout}>
+            <div className='an logout' onClick={handleLogout}>
                 <i className="bx bxs-log-out" ></i>
                 <span className="nav-item">Logout</span>
             </div>

@@ -2,9 +2,6 @@ const prisma  = require('../prisma');
 const bycrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 require('dotenv').config();
-const fsPromises = require('fs').promises;
-const path = require('path');
-const { stringify } = require('querystring');
 
 const handleLogin = async (req, res) => {
     // GET USER INPUTS
@@ -34,7 +31,7 @@ const handleLogin = async (req, res) => {
                 role: foundUser.role, 
                 id: foundUser.id},
             process.env.ACCESS_TOKEN_SECRET,
-            { expiresIn: '1m' }
+            { expiresIn: '15m' }
             );
 
             // create refresh token

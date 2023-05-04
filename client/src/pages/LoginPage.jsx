@@ -2,6 +2,8 @@ import logo from '../assets/logo.png';
 import '/style/style.css';
 import LoginForm from '../components/LoginForm';
 
+
+
 const LoginPage = () => {
   return (
     <div className="container">
@@ -19,7 +21,6 @@ const LoginPage = () => {
         <p className="note">Centers: can login to the system with <b>approved</b> business emails and passwords.</p>
 
       </div>
-      
     </div>
   );
 };

@@ -10,7 +10,7 @@ const SideNavbar = () => {
   <div>
        {/* header componenet incase we implement the header based on design */} 
 
-    <h1>Dashboard</h1>
+    <h1 className='header-title'>Dashboard</h1>
 
   </div>    
   );

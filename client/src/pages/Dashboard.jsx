@@ -1,4 +1,4 @@
-import AdminDashboard from './adminpages/AdminDashboard';
+import AdminDashboard from './AdminDashboard';
 import StudentDashboard from './StudentDashboard';
 import CareeCenterDashboard from './CareerCenterDashboard';
 import CoordinatorDashboard from './CoordinatorDashboard';
