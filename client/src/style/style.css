@@ -1,10 +1,12 @@
 * {
     box-sizing: border-box;
     color: #333;
+    margin: 0;
+    padding: 0;
   }
   
   body {
-    background-color: #ffffff;
+    background-color: #E3E3E3;
     margin: 0;
     font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
   }
@@ -18,6 +20,7 @@
 }
 
 .colored-strip {
+  width: 100%;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -50,6 +53,7 @@ img{
 }
 
 .login-section{
+  padding-top: 20px;
   flex: 2;
   display: flex;
   flex-direction: column;
@@ -156,10 +160,173 @@ img{
 /* admin styles go after this comment */
 
 /* admin navbar styles go after this comment */
+.sidebar
+{
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100vh;
+  width:80px;
+  background-color:white ;
+  padding: .4rem .8rem;
+  transition: all 0.5s ease;
+}
+.sidebar.active ~ .main-content
+{
+  left: 250px;
+  width: calc(100% - 250px);
+}
+
+.sidebar.active
+{
+  width: 250px;
+}
+
+.sidebar #btn
+{
+  position: absolute;
+  top: .4rem;
+  left: 50%;
+  font-size: 1.2rem;
+  line-height: 50px;
+  transform: translateX(-50%);
+  cursor: pointer;
+}
+.sidebar.active #btn
+{
+  left: 90%;
+}
+
+.sidebar .top .logo-sidebar{
+  
+  display: flex;
+  height: 50px;
+  width: 100%;
+  align-items: center;
+  pointer-events: none;
+  opacity: 0;
+}
+
+.sidebar.active .top .logo-sidebar{
+  opacity: 1;
+  pointer-events: none;
+}
 
 
+.top .logo-sidebar .nav-logo{
+  height: 200px;
+  width: 200px;
+}
 
+.user{
+  display: flex;
+  margin: 1rem;
+}
+.user p{
+  color: black;
+  margin-left: 1rem;
+  opacity: 1;
+  font-size: 1.1rem;
+}
+.user .bold em{
+ font-style: normal;
+}
+.bold{
+  font-weight: 600;
+}
 
+.sidebar p 
+{
+  opacity: 0;
+}
+
+.sidebar.active p 
+{
+  opacity: 1;
+}
+.sidebar .user .initials{
+  opacity: 1;
+  margin: auto;
+  font-size: 1.3rem;
+}
+.sidebar.active .user .initials  
+{
+  opacity: 0;
+}
+
+.sidebar ul li{
+  position: relative;
+  list-style-type: none;
+  height: 50px;
+  width: 90%;
+  margin: 0.8rem auto;
+  line-height: 50px;
+}
+
+.sidebar ul li .an{
+  display: flex;
+  align-items: center;
+  text-decoration: none;
+  border-radius: 0.8rem;
+}
+
+.sidebar ul li .an:hover{
+  background-color: #6F7DFB;
+  color: white;
+}
+
+.sidebar ul li .logout:hover{
+  background-color: #DA722C;
+  color: white;
+}
+
+.sidebar ul li .an i{
+  min-width: 50px;
+  border-radius: 10px;
+  text-align: center;
+  line-height: 50px;
+}
+
+.sidebar .nav-item
+{
+  opacity: 0;
+}
+.sidebar.active .nav-item
+{
+  opacity: 1;
+}
+.sidebar ul li .tooltip
+{
+  position: absolute;
+  left: 125px;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  box-shadow: 0 0.5rem 0.8rem rgba(0, 0, 0, 0.2);
+  border-radius: 0.6rem;
+  padding: 0.4rem 1.2rem;
+  line-height: 1.8rem;
+  z-index: 20;
+  opacity: 0  ;
+}
+.sidebar ul li:hover .tooltip
+{
+  opacity: 1;
+}
+.sidebar.active ul li .tooltip
+{
+ display: none;
+}
+
+.main-content{
+  position: relative;
+  background-color: #eff6fc ;
+  min-height: 100vh;
+  top: 0;
+  left: 80px;
+  transition: all 0.5s ease;
+  width: calc(100% - 80px); 
+  padding: 1rem;
+}
 /* student styles go after this comment */
 
 

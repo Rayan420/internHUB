@@ -1,7 +1,11 @@
-import logo from '../../assets/logo.png';
 import { useEffect } from 'react';
 import SideNavbar from '../../components/admincomponents/NavBar';
+import Header from '../../components/admincomponents/Header';
+
+
+
 const AdminDashboard = () => {
+
   function changeTitle() {
     document.title = "InternHUB - Admin";
   } 
@@ -9,14 +13,19 @@ const AdminDashboard = () => {
   useEffect(() => {
     changeTitle();
   }, []);
+
   return (
     <div className="container">
-      {/* header */}
-
       {/* NAVEBAR */}
-      <SideNavbar />
-      
-      
+        <SideNavbar  />
+      <div className='main-content'>
+        {/* this is the div containing the main content of the page */}
+         {/* header */}
+        <Header />
+
+
+      </div>
+  
     </div>
   );
 };

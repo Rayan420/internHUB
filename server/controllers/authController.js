@@ -34,7 +34,7 @@ const handleLogin = async (req, res) => {
                 role: foundUser.role, 
                 id: foundUser.id},
             process.env.ACCESS_TOKEN_SECRET,
-            { expiresIn: '30m' }
+            { expiresIn: '1m' }
             );
 
             // create refresh token
