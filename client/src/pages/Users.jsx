@@ -15,7 +15,7 @@ const Users = () => {
       <div className='main-content main-dashboard'>
         {/* this is the div containing the main content of the page */}
          {/* header */}
-        <Header />
+        <Header title="Users" />
         
       </div>
       <Outlet />
