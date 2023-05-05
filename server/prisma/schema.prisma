@@ -20,6 +20,7 @@ model User {
   lastName String
   phoneNum String?
   roleId Int
+  refresh_token String? @db.VarChar(255)
   student  Student?
   coordinator Coordinator?
   careerCenter CareerCenter?
