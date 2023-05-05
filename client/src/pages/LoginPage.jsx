@@ -18,7 +18,7 @@ const LoginPage = () => {
         <p className="info">BİLGİLENDİRME / INFORMATION</p>
         <p className="note">Students: can login to the system with uskudar student email and email password.</p>
         <p className="note">Coordinators: can login to the system with Üsküdar University corporate e-mail <br></br>address username (name.surname@uskudar.edu.tr) and password.</p>
-        <p className="note">Centers: can login to the system with <b>approved</b> business emails and passwords.</p>
+        <p className="note last">Centers: can login to the system with <b>approved</b> business emails and passwords.</p>
 
       </div>
     </div>

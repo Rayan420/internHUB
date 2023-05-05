@@ -1,24 +1,145 @@
-import logo from '../assets/logo.png';
-import '/style/style.css';
+import SideNavbar from '../components/NavBar'; // import the side navbar component
+import Header from '../components/Header'; // import the header component
+import WelcomeCard from '../components/WelcomeCard'; // import the welcome card component
+import { useState, useEffect } from 'react'; // import useState and useEffect hooks from React
+import { Outlet } from 'react-router-dom'; // import Outlet from react-router-dom
+import RequestCards from '../components/studentcomponents/RequestCards'; // import the RequestCards component
+import CustomTable from '../components/Table'; // import the CustomTable component
 
 const StudentDashboard = () => {
+  // initialize the state variables using the useState hook
+  const [active, setActive] = useState('dashboard');
+  const [coordinator, setCoordinator] = useState('Dr. Ahmed Elsayed');
+
+  // sample data for the CustomTable component
+  const data = [
+    {
+      applicationNumber: "A001",
+      dateOfSubmission: "2022-01-01",
+      status: "Approved",
+    },
+    {
+      applicationNumber: "A002",
+      dateOfSubmission: "2022-01-02",
+      status: "Pending",
+    },
+    {
+      applicationNumber: "A003",
+      dateOfSubmission: "2022-01-03",
+      status: "Rejected",
+    },
+    {
+      applicationNumber: "A004",
+      dateOfSubmission: "2022-01-04",
+      status: "Approved",
+    },
+    {
+      applicationNumber: "A005",
+      dateOfSubmission: "2022-01-05",
+      status: "Rejected",
+    },
+    {
+      applicationNumber: "A006",
+      dateOfSubmission: "2022-01-06",
+      status: "Pending",
+    },
+    {
+      applicationNumber: "A007",
+      dateOfSubmission: "2022-01-07",
+      status: "Approved",
+    },
+  ];
+  const columns = [
+    { id: 'applicationNumber', label: 'Application Number' },
+    { id: 'dateOfSubmission', label: 'Date of Submission' },
+    { id: 'status', label: 'Status' },
+  ];
+
+
+
+    useEffect(() => {
+    document.title = "InternHUB - Dashboard";
+
+    }, []);
+  
   return (
     <div className="container">
-      <div className="colored-strip">
-        <div className="content">
-          <img id="logo" src={logo} alt="site logo" />
-          <h2 id="strip-text">applying for internships has never been easier!</h2>
-        </div> 
-      </div>
-      <p>STUDENT DASHBOARD</p>
-      <div className="login-section">
-        <p className="info">BİLGİLENDİRME / INFORMATION</p>
-        <p className="note">Students: can login to the system with uskudar student email and email password.</p>
-        <p className="note">Coordinators: can login to the system with Üsküdar University corporate e-mail <br></br>address username (name.surname@uskudar.edu.tr) and password.</p>
-        <p className="note">Centers: can login to the system with <b>approved</b> business emails and passwords.</p>
 
-      </div>
-      
+
+          {/* NAVEBAR */}
+          <SideNavbar
+            links={[
+              { label: 'Dashboard', to: '/dashboard', icon: 'bxs-grid-alt' },
+              { label: 'Messages', to: '/messages', icon: 'bxs-envelope' },
+              { label: 'Internships', to: '/internships', icon: 'bxs-user' }, 
+              { label: 'Settings', to: '/settings', icon: 'bxs-cog' }  
+              ]} name={"Ahmed Rayan"} role={"Student"} id={"200209393"}/>
+
+
+          <div className='main-content main-dashboard'>
+            {/* this is the div containing the main content of the page */}
+            {/* header */}
+            <Header title="Dashboard"/>
+            {/* welcome card */}
+            <WelcomeCard recipient='Ahmed Rayan' message="You're now logged in to your account and ready to get started.  From your dashboard, you can Submit your application, Receive your approvals, submit requests, and access all of our features and resources." />
+            
+            <div className='request-cards-row'>
+            
+                  <RequestCards numButtons={2} 
+                      buttonLabels={["Application", "Report"]}
+                      content={
+                      <>
+                      <p>Uskuadar University <br />Internship forms</p>
+                        </>
+                      }/>
+                        <RequestCards numButtons={1} 
+                        buttonLabels={["Send"]}
+                        content={
+                          <>
+                            <p>Submit Internship Application Documents </p>
+                          </>
+                      }/>
+                        <RequestCards numButtons={1} 
+                        buttonLabels={["Request"]}
+                        content={
+                          <>
+                            <p>Request official Letter from Coordinator: <span id='userID'>{coordinator}</span> </p>
+                          </>
+                      }/>
+                      
+            </div>
+            
+            <div className='table-container'>
+                  <h2 className='aaps-title'>Letter Requests</h2>
+                        <CustomTable
+                        columns={["Request Number", "Date of Submission", "Status"]}
+                        data={[]}
+                        numButtons={1}
+                        buttonLabels={["Download"]}
+                        noDataMessage="You have not requested any letters yet."
+                        isDisabled={false}
+                        disableButtonCondition={true}
+                      />
+          </div>
+          
+          <div className='table-container-2'>
+                <h2 className='aaps-title'>Applications</h2>
+                      <CustomTable
+                      columns={["Application Number", "Date of Submission", "Status"]}
+                      data={data}
+                      numButtons={1}
+                      buttonLabels={["Download"]}
+                      noDataMessage="You do not have any applications yet."
+                      isDisabled={false}
+                      disableButtonCondition={true}
+                    />
+          </div>
+          
+
+          </div>
+          <Outlet />
+
+
     </div>
   );
 };
