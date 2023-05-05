@@ -11,7 +11,7 @@ const InfoCard = ({ title, value, icon, backgroundColor, backgroundColorSecond }
 
   useEffect(() => {
     if (navv) {
-      navigate('/dashboard/users');
+      navigate('/users');
     }
   }, [navv, navigate]);
 

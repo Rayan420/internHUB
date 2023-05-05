@@ -7,16 +7,16 @@ import prof from '../assets/reshot-icon-female-professor.svg'
 import center from '../assets/building-dome-svgrepo-com.svg'
 import form from '../assets/advanced-study-application-svgrepo-com.svg'
 import ApplicationSummary from '../components/admincomponents/ApplicationSummary';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Outlet } from 'react-router-dom';
 
 const AdminDashboard = () => {
   const [active, setActive] = useState('dashboard');
 
-  function changeTitle() {
-    document.title = "InternHUB - Admin";
-  } 
+  useEffect(() => {
+    document.title = "InternHUB - Dashboard";
 
+    }, []);
   
   return (
     <div className="container">
@@ -26,9 +26,10 @@ const AdminDashboard = () => {
       <div className='main-content main-dashboard'>
         {/* this is the div containing the main content of the page */}
          {/* header */}
-        <Header />
+        <Header title="Dashboard"/>
         {/* welcome card */}
         <WelcomeCard />
+        
         {/* info cards */}
         <div className='info-cards'>
           <InfoCard title='Total Students' value='100' icon={student} backgroundColor={'#023047'} backgroundColorSecond={'#26308C'}/>
