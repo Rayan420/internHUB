@@ -68,3 +68,4 @@
     |     property 'afterWriteTickInfo' -> object with constructor 'Object'
     --- property 'stream' closes the circle 
 2023-05-04	01:02:29	731411af-3ae2-4aaf-9e88-4212340578ee	Error	ENOENT: no such file or directory, stat 'C:\Users\USER\Desktop\internHUB\server\views\index.html' 
+2023-05-07	08:38:58	aac400c3-1d0b-4e20-8017-ff9d24868afa	SyntaxError	Expected ':' after property name in JSON at position 213 

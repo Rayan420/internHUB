@@ -14,7 +14,6 @@ function App() {
         path="/dashboard"
         element={
           <RequireAuth loginPath="/">
-            {" "}
             <Dashboard />
           </RequireAuth>
         }
@@ -24,7 +23,6 @@ function App() {
         path="/messages"
         element={
           <RequireAuth loginPath="/">
-            {" "}
             <Messages />
           </RequireAuth>
         }
@@ -44,7 +42,6 @@ function App() {
         path="/internships"
         element={
           <RequireAuth loginPath="/">
-            {" "}
             <Users />
           </RequireAuth>
         }

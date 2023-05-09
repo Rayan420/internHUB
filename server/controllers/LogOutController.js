@@ -12,7 +12,7 @@ const handleLogout =  async (req, res) => {
     
     // CHECK IF refresh token EXISTS in DB
     
-    const foundUser = await prisma.users.findUnique({
+    const foundUser = await prisma.User.findUnique({
         where: {refresh_token: refreshToken},
       });
     if(!foundUser){
@@ -22,7 +22,7 @@ const handleLogout =  async (req, res) => {
     }
  
     // if user exists, remove refresh token from DB
-    await prisma.users.update({
+    await prisma.User.update({
         where: {refresh_token: refreshToken},
         data: { refresh_token: null }
         });
