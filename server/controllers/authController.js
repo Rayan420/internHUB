@@ -13,7 +13,7 @@ const handleLogin = async (req, res) => {
         
     }
     // CHECK IF USER EXISTS
-    const User =  await prisma.users.findUnique({
+    const User =  await prisma.User.findUnique({
         where: {email: email},
       });
     const foundUser = User;
@@ -22,8 +22,8 @@ const handleLogin = async (req, res) => {
         return res.status(401).json({error: 'User not found'});
     }
     //console.log(foundUser.password, password);
-    // EVALUATE PASSWORD
-    const isMatch = password === foundUser.password;
+    // decrypt and compare password
+    const isMatch = await bycrypt.compare(password, foundUser.password);
     if(isMatch){
         // create JWT token
         const accessToken = jwt.sign(
@@ -31,7 +31,7 @@ const handleLogin = async (req, res) => {
                 role: foundUser.role, 
                 id: foundUser.id},
             process.env.ACCESS_TOKEN_SECRET,
-            { expiresIn: '15m' }
+            { expiresIn: '1m' }
             );
 
             // create refresh token
@@ -44,17 +44,27 @@ const handleLogin = async (req, res) => {
                 );
 
         // save refresh with user
-        await prisma.users.update({
+        await prisma.User.update({
             where: { email: email },
             data: { refresh_token: refreshToken }
           });
-                  // send refresh token as cookie
-         res.cookie('refresToken', refreshToken, {httpOnly:true, sameSite: 'None', secure:true,
-          maxAge: 24 * 60 * 60 * 1000});
-          // send access token as response with user info
-         res.json({accessToken, role: foundUser.role, email: foundUser.email, id: foundUser.user_id});
-         foundUser.refresh_token=refreshToken;
+        
+          // send  tokesn as response with user info
+        // send tokens as response with user info
+        const expireIn = 40; // set the expiration time in minutes
+        res.json({
+            accessToken,
+            expireIn,
+            refreshToken,
+            role: foundUser.role,
+            email: foundUser.email,
+            id: foundUser.user_id,
+            refreshTokenExpireIn: expireIn * 60 // send the expiration time in seconds
+        });         
+        foundUser.refresh_token=refreshToken;
          console.log("access token from server side: ",accessToken);
+         console.log("refreh token from server side: ",refreshToken);
+
          
     }
     else{

@@ -10,90 +10,84 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-
-
 model User {
-  id Int @unique @id    @default(autoincrement())
-  email String @unique
-  password String
-  firstName String
-  lastName String
-  phoneNum String?
-  roleId Int
-  refresh_token String? @db.VarChar(255)
-  student  Student?
-  coordinator Coordinator?
-  careerCenter CareerCenter?
-  chats    Chat[]
-  messages Message[]
-  }
-
+  id            Int           @id @unique @default(autoincrement())
+  email         String        @unique
+  password      String
+  firstName     String
+  lastName      String
+  phoneNum      String?
+  role          String
+  refresh_token String?       @db.VarChar(255)
+  student       Student?
+  coordinator   Coordinator?
+  careerCenter  CareerCenter?
+  chats         Chat[]
+  messages      Message[]
+}
 
 model Student {
-  id    Int  @unique @id    @default(autoincrement())
-  user          User    @relation(fields: [userId], references: [id])
-  userId Int @unique
-  department Department @relation(fields: [departmentId], references: [id])
-  departmentId Int
-  studentNumber String
+  id                     Int              @id @unique @default(autoincrement())
+  user                   User             @relation(fields: [userId], references: [id])
+  userId                 Int              @unique
+  department             Department       @relation(fields: [departmentId], references: [id])
+  departmentId           Int
+  studentNumber          String
   studentInternshipForms InternshipForm[]
 }
 
 model Coordinator {
-  id    Int  @unique @id    @default(autoincrement())
-  user          User    @relation(fields: [userId], references: [id])
-  userId Int @unique
-  department Department?
+  id                         Int              @id @unique @default(autoincrement())
+  user                       User             @relation(fields: [userId], references: [id])
+  userId                     Int              @unique
+  department                 Department?
   coordinatedInternshipForms InternshipForm[]
-
 }
 
 model CareerCenter {
-  id    Int  @unique @id    @default(autoincrement())
-  user          User    @relation(fields: [userId], references: [id])
-  userId Int @unique
+  id                          Int              @id @unique @default(autoincrement())
+  user                        User             @relation(fields: [userId], references: [id])
+  userId                      Int              @unique
   careerCenterInternshipForms InternshipForm[]
 }
 
 // Department model
 model Department {
-  id          Int           @id @default(autoincrement())
-  name        String
-  coordinator Coordinator  @relation(fields: [coordinatorId], references: [id])
-  coordinatorId Int @unique
-  students    Student[]
-
+  id            Int         @id @default(autoincrement())
+  name          String
+  coordinator   Coordinator @relation(fields: [coordinatorId], references: [id])
+  coordinatorId Int         @unique
+  students      Student[]
 }
 
-
 model InternshipForm {
-  id Int @unique @id    @default(autoincrement())
-  coordinator   Coordinator   @relation(fields: [coordinatorId], references: [id])
-  coordinatorId Int
-  student   Student   @relation(fields: [studentId], references: [id])
-  studentId Int
-  careerCenter   CareerCenter   @relation(fields: [careerCenterId], references: [id])
-  careerCenterId Int
-  applicationDate DateTime @default(now())
-  status String
-  transcriptFile Bytes? @db.Binary(500)
-  responseDate DateTime
+  id              Int          @id @unique @default(autoincrement())
+  coordinator     Coordinator  @relation(fields: [coordinatorId], references: [id])
+  coordinatorId   Int
+  student         Student      @relation(fields: [studentId], references: [id])
+  studentId       Int
+  careerCenter    CareerCenter @relation(fields: [careerCenterId], references: [id])
+  careerCenterId  Int
+  applicationDate DateTime     @default(now())
+  status          String
+  transcriptFile  Bytes?       @db.Blob
+  responseDate    DateTime
 }
 
 model Chat {
-  id Int @unique @id    @default(autoincrement())
-  createdAt  DateTime @default(now())
-  updatedAt  DateTime @updatedAt
+  id        Int       @id @unique @default(autoincrement())
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
   users     User[]
-  messages Message[]
+  messages  Message[]
 }
 
 model Message {
-  id         Int      @id @default(autoincrement())
-  createdAt  DateTime @default(now())
-  text       String
-  chat       Chat     @relation(fields: [chatId], references: [id])
-  chatId     Int
-  sender     User     @relation( fields: [senderId], references: [id])
-  senderId   Int
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  text      String
+  chat      Chat     @relation(fields: [chatId], references: [id])
+  chatId    Int
+  sender    User     @relation(fields: [senderId], references: [id])
+  senderId  Int
 }

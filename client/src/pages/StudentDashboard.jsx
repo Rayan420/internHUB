@@ -8,52 +8,8 @@ import CustomTable from "../components/Table"; // import the CustomTable compone
 
 const StudentDashboard = () => {
   // initialize the state variables using the useState hook
-  const [active, setActive] = useState("dashboard");
-  const [coordinator, setCoordinator] = useState("Dr. Ahmed Elsayed");
-
+  const coordinator = "Dr. Ahmed Elsayed";
   // sample data for the CustomTable component
-  const data = [
-    {
-      applicationNumber: "A001",
-      dateOfSubmission: "2022-01-01",
-      status: "Approved",
-    },
-    {
-      applicationNumber: "A002",
-      dateOfSubmission: "2022-01-02",
-      status: "Pending",
-    },
-    {
-      applicationNumber: "A003",
-      dateOfSubmission: "2022-01-03",
-      status: "Rejected",
-    },
-    {
-      applicationNumber: "A004",
-      dateOfSubmission: "2022-01-04",
-      status: "Approved",
-    },
-    {
-      applicationNumber: "A005",
-      dateOfSubmission: "2022-01-05",
-      status: "Rejected",
-    },
-    {
-      applicationNumber: "A006",
-      dateOfSubmission: "2022-01-06",
-      status: "Pending",
-    },
-    {
-      applicationNumber: "A007",
-      dateOfSubmission: "2022-01-07",
-      status: "Approved",
-    },
-  ];
-  const columns = [
-    { id: "applicationNumber", label: "Application Number" },
-    { id: "dateOfSubmission", label: "Date of Submission" },
-    { id: "status", label: "Status" },
-  ];
 
   useEffect(() => {
     document.title = "InternHUB - Dashboard";
@@ -137,7 +93,7 @@ const StudentDashboard = () => {
           <h2 className="aaps-title">Applications</h2>
           <CustomTable
             columns={["Application Number", "Date of Submission", "Status"]}
-            data={data}
+            data={[]}
             numButtons={1}
             buttonLabels={["Download"]}
             noDataMessage="You do not have any applications yet."
