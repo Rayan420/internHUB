@@ -27,8 +27,8 @@ const CreateDepartment = () => {
         <input className="create-department-input" type="text" id="name" value={name} onChange={handleNameChange} />
       </div>
       <div className="create-department-field">
-        <label className="create-department-label" htmlFor="description">Description:</label>
-        <textarea className="create-department-input" id="description" value={description} onChange={handleDescriptionChange} />
+        <label className="create-department-label" htmlFor="description">Code:</label>
+        <input className="create-department-input" type="text" id="name" value={description} onChange={handleDescriptionChange} />
       </div>
       
       <button className="create-department-button" type="submit">Create Department</button>

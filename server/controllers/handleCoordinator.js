@@ -6,6 +6,9 @@ const handleNewCoordinator = async (req, res) => {
   const { email, password, firstName, lastName, department, phoneNum } = req.body;
 
   try {
+    if(!email || !password || !firstName || !lastName || !department) {
+      return res.status(400).json({ message: 'Please fill in all required fields.' });
+    }
     // Check if coordinator with the email already exists
     const duplicate = await prisma.User.findUnique({
       where: {
@@ -53,7 +56,6 @@ const handleNewCoordinator = async (req, res) => {
         coordinator: true,
         chats: true,
         messages: true,
-        coordinatedinternships: true
 
        },
     });

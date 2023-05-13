@@ -15,15 +15,17 @@ const AddNewUser = () => {
   const [companyName, setCompanyName] = useState("");
   const [careerCenterEmail, setCareerCenterEmail] = useState("");
   const [Msg, setMsg] = useState("");
+  const [successMsg, setSuccessMsg] = useState("");
+  const [error, setError] = useState(false);
 
 
 useEffect(() => {
   let domain;
   switch (userType) {
-    case "student":
+    case "Student":
       domain = "st.uskudar.edu";
       break;
-    case "coordinator":
+    case "Coordinator":
       domain = "uskudar.edu.tr";
       break;
     
@@ -31,7 +33,6 @@ useEffect(() => {
       domain = "";
   }
   setEmail(`${firstName.toLowerCase()}.${lastName.toLowerCase()}@${domain}`);
-  setPassword( Math.random().toString(36).substring(7));
 }, [firstName, lastName, userType]);
 
   const handleUserTypeChange = (event) => {
@@ -42,7 +43,7 @@ useEffect(() => {
     event.preventDefault();
     // Perform form submission logic here
     switch (userType) {
-        case "coordinator":
+        case "Coordinator":
             axios.post("/coordinator", 
             {
                 email: email,
@@ -56,9 +57,38 @@ useEffect(() => {
                   authorization: authHeader(),
                 },
               }).then((res) => {
-                setMsg(res.data.message);
+                setSuccessMsg(res.data.message);
+                setError(false);
+                setMsg("");
             }).catch((err) => {
                 setMsg(err.response.data.message);
+                setError(true);
+                setSuccessMsg("");
+            },)
+            break;
+        case "Student":
+            axios.post("/student",
+            {
+              email: email,
+              password: password,
+              firstName: firstName,
+              lastName: lastName,
+              phoneNum: phoneNum,
+              department: department,
+              studentNumber: studentNumber,
+          }, 
+          {headers: {
+            authorization: authHeader(),  
+          },
+        },
+            ).then((res) => {
+                setSuccessMsg(res.data.message);
+                setError(false);
+                setMsg("");
+            }).catch((err) => {
+                setMsg(err.response.data.message);
+                setError(true);
+                setSuccessMsg("");
             },)
             break;
     
@@ -70,7 +100,7 @@ useEffect(() => {
 
   const renderInputFields = () => {
     switch (userType) {
-      case "Coordinator":
+      case "Student":
         return (
           <>
             <label htmlFor="department">Department</label>
@@ -89,7 +119,7 @@ useEffect(() => {
             />
           </>
         );
-      case "coordinator":
+      case "Coordinator":
         return (
           <>
             <label htmlFor="department">Department</label>
@@ -101,7 +131,7 @@ useEffect(() => {
             />
           </>
         );
-      case "careerCenter":
+      case "Careercenter":
         return (
           <>
             <label htmlFor="companyName">Company Name</label>
@@ -122,14 +152,15 @@ useEffect(() => {
     <div className="create-user">
     <h2>Create User</h2>
     <h3 className='errmsg'>{Msg}</h3>
+    <h3 className=' successmsg'>{successMsg}</h3>
     <form onSubmit={handleSubmit}>
       <div className="form-group">
         <label htmlFor="userType">User Type</label>
         <select id="userType" value={userType} onChange={handleUserTypeChange}>
           <option value=""></option>
-          <option value="student">Student</option>
-          <option value="coordinator">Coordinator</option>
-          <option value="careerCenter">Career Center</option>
+          <option value="Student">Student</option>
+          <option value="Coordinator">Coordinator</option>
+          <option value="Careercenter">Career Center</option>
         </select>
       </div>
       <div className="form-group">
@@ -175,7 +206,7 @@ useEffect(() => {
             type="text"
             id="password"
             value={password}
-            readOnly
+            onChange={(e) => setPassword(e.target.value)}
           />
         </div>
         <div className="form-group">

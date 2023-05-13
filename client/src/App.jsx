@@ -4,7 +4,7 @@ import Dashboard from "./pages/Dashboard";
 import { RequireAuth } from "react-auth-kit";
 import Users from "./pages/Users";
 import Messages from "./pages/Messages";
-
+import Internships from "./pages/Internships";
 function App() {
   return (
     <Routes>
@@ -42,7 +42,7 @@ function App() {
         path="/internships"
         element={
           <RequireAuth loginPath="/">
-            <Users />
+            <Internships />
           </RequireAuth>
         }
       />

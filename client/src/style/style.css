@@ -179,6 +179,12 @@ img{
   align-self: center;
   margin-bottom: 15px;
 }
+.successmsg{
+  color: #2ecc71;
+  font-weight: 500;
+  align-self: center;
+  margin-bottom: 15px;
+}
 
 .btn.login-button:hover{
   background-color: #0d1129;
@@ -275,11 +281,12 @@ img{
   opacity: 1;
   font-size: 1.1rem;
 }
-.user .bold em{
- font-style: normal;
-}
 
-#userID{
+.bold{
+  color:#023047;
+  font-weight: bold;
+}
+.user .bold{
   color:#023047;
   font-weight: bold;
 }
