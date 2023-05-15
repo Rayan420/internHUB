@@ -4,7 +4,12 @@
     margin: 0;
     padding: 0;
   }
-
+  ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+  
   body {
   background-color: #eff6fc ;
     margin: 0;
@@ -174,6 +179,12 @@ img{
   align-self: center;
   margin-bottom: 15px;
 }
+.successmsg{
+  color: #2ecc71;
+  font-weight: 500;
+  align-self: center;
+  margin-bottom: 15px;
+}
 
 .btn.login-button:hover{
   background-color: #0d1129;
@@ -193,6 +204,8 @@ img{
 .last{
   margin-bottom: 50px;
 }
+
+
 
 /* admin styles go after this comment */
 
@@ -268,11 +281,12 @@ img{
   opacity: 1;
   font-size: 1.1rem;
 }
-.user .bold em{
- font-style: normal;
-}
 
-#userID{
+.bold{
+  color:#023047;
+  font-weight: bold;
+}
+.user .bold{
   color:#023047;
   font-weight: bold;
 }
@@ -546,6 +560,163 @@ img{
   margin-top : 10px;
   margin-bottom: 20px;
 }
+
+.create-user {
+  margin-top: 35px;
+  padding: 20px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-family: Arial, sans-serif;
+}
+
+.create-user h2 {
+  margin-top: 0;
+  margin-bottom: 20px;
+  font-weight: normal;
+  font-size: 24px;
+}
+
+.create-user form {
+  display: flex;
+  flex-direction: column;
+}
+
+.create-user .form-group {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 20px;
+}
+
+.create-user label {
+  margin-bottom: 5px;
+  font-size: 16px;
+  font-weight: bold;
+}
+
+.create-user input,
+.create-user select {
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-size: 16px;
+}
+
+.create-user button[type="submit"] {
+  padding: 10px;
+  background-color: #2ecc71;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.create-user button[type="submit"]:hover {
+  background-color: #2edd71;
+}
+
+.user-page-tabslist{
+  display: flex;
+  justify-content: start;
+  margin-bottom: 20px;
+  flex-direction: row;
+  
+}
+.tab{
+  padding: 5px;
+  display: block;
+  border: 1px solid #10185E;
+  margin-right: 10px;
+  margin-top: 30px;
+  background-color:#0077cc;
+  color: white;
+  cursor: pointer;
+  border-radius: 5px;
+}
+
+.tab:hover{
+  background-color:#10185E;
+  color: white;
+  transform: translateY(-2px);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
+}
+
+.tab--selected {
+  background-color: #10185E;
+  transform: translateY(-2px);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
+}
+.create-department-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 2rem;
+}
+
+.create-department-container h1 {
+  margin-bottom: 1rem;
+}
+
+.create-department-form {
+  display: flex;
+  flex-direction: column;
+  width: 50%;
+  padding: 1rem;
+  border-radius: 0.5rem;
+  background-color: #f9f9f9;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.create-department-form label {
+  margin-bottom: 0.5rem;
+}
+
+.create-department-form input[type="text"],
+.create-department-form textarea {
+  width: 100%;
+  padding: 0.5rem;
+  margin-bottom: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 0.25rem;
+  font-size: 1rem;
+  font-family: inherit;
+}
+
+.create-department-form button[type="submit"] {
+  padding: 0.5rem 1rem;
+  border: none;
+  border-radius: 0.25rem;
+  background-color: #2ecc71;
+  color: #fff;
+  font-size: 1rem;
+  font-family: inherit;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.create-department-form button[type="submit"]:hover {
+  background-color: #2edd71;
+}
+.delete-department-button{
+  margin-top: 10px;
+  padding: 0.5rem 1rem;
+  border: none;
+  border-radius: 0.25rem;
+  background-color: #ff0000 !important;
+  color: #fff;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.delete-department-button:hover {
+  background-color: #ff5252 !important;
+}
+
+
+
+/* admin styles end after this comment */
+
 
 
 /* student styles go after this comment */

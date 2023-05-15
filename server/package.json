@@ -11,6 +11,7 @@
     "jsonwebtoken": "^9.0.0",
     "mysql": "^2.18.1",
     "mysql2": "^3.2.4",
+    "nodemailer": "^6.9.1",
     "uuid": "^9.0.0"
   },
   "name": "server",

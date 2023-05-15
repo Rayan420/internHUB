@@ -51,7 +51,6 @@ const SideNavbar = ({ name, role, id, links }) => {
         <div>
           <p className="initials bold">{initials}</p>
           <p className="bold">{name}</p>
-          <p id="userID">{id ? `${id}` : ""}</p>
           <p>{role}</p>
         </div>
       </div>

@@ -69,7 +69,7 @@ const StudentDashboard = () => {
               <>
                 <p>
                   Request official Letter from Coordinator:{" "}
-                  <span id="userID">{coordinator}</span>{" "}
+                  <span className="bold">{coordinator}</span>{" "}
                 </p>
               </>
             }

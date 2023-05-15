@@ -1,3 +1,4 @@
+import {useState, useEffect} from 'react';
 import SideNavbar from "../components/NavBar";
 import Header from "../components/Header";
 import WelcomeCard from "../components/WelcomeCard";
@@ -7,7 +8,6 @@ import prof from "../assets/reshot-icon-female-professor.svg";
 import center from "../assets/building-dome-svgrepo-com.svg";
 import form from "../assets/advanced-study-application-svgrepo-com.svg";
 import ApplicationSummary from "../components/admincomponents/ApplicationSummary";
-import { useState, useEffect } from "react";
 import axios from "../services/axios";
 import { useAuthUser } from "react-auth-kit";
 import { useAuthHeader } from "react-auth-kit";
@@ -45,6 +45,10 @@ const AdminDashboard = () => {
     };
     fetchUserData();
   }, []);
+  useEffect(() => {
+    document.title = "InternHUB - Dashboard";
+
+    }, []);
 
   return isLoading ? (
     <div>Loading...</div>

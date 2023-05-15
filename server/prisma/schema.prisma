@@ -1,6 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -22,7 +19,7 @@ model User {
   student       Student?
   coordinator   Coordinator?
   careerCenter  CareerCenter?
-  chats         Chat[]
+  chats         Chat[]        @relation("chat_users")
   messages      Message[]
 }
 
@@ -31,7 +28,7 @@ model Student {
   user                   User             @relation(fields: [userId], references: [id])
   userId                 Int              @unique
   department             Department       @relation(fields: [departmentId], references: [id])
-  departmentId           Int
+  departmentId           String
   studentNumber          String
   studentInternshipForms InternshipForm[]
 }
@@ -48,17 +45,19 @@ model CareerCenter {
   id                          Int              @id @unique @default(autoincrement())
   user                        User             @relation(fields: [userId], references: [id])
   userId                      Int              @unique
+  comantName                  String 
   careerCenterInternshipForms InternshipForm[]
 }
 
 // Department model
 model Department {
-  id            Int         @id @default(autoincrement())
-  name          String
-  coordinator   Coordinator @relation(fields: [coordinatorId], references: [id])
-  coordinatorId Int         @unique
+  id            String      @id @unique
+  name          String      @unique
+  coordinator   Coordinator? @relation(fields: [coordinatorId], references: [id])
+  coordinatorId Int?         @unique
   students      Student[]
 }
+
 
 model InternshipForm {
   id              Int          @id @unique @default(autoincrement())
@@ -78,13 +77,15 @@ model Chat {
   id        Int       @id @unique @default(autoincrement())
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
-  users     User[]
+  users     User[]    @relation("chat_users")
   messages  Message[]
 }
 
 model Message {
   id        Int      @id @default(autoincrement())
   createdAt DateTime @default(now())
+  title     String?
+  subject   String?
   text      String
   chat      Chat     @relation(fields: [chatId], references: [id])
   chatId    Int

@@ -28,7 +28,10 @@ const getUserByEmail = async (req, res) => {
 };
 
 
+
+
+
 module.exports = {
   getAllUsers,
-  getUserByEmail
+  getUserByEmail,
 };

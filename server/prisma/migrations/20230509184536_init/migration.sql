@@ -1,12 +1,3 @@
-/*
-  Warnings:
-
-  - You are about to drop the `users` table. If the table is not empty, all the data it contains will be lost.
-
-*/
--- DropTable
-DROP TABLE `users`;
-
 -- CreateTable
 CREATE TABLE `User` (
     `id` INTEGER NOT NULL AUTO_INCREMENT,
@@ -27,7 +18,7 @@ CREATE TABLE `User` (
 CREATE TABLE `Student` (
     `id` INTEGER NOT NULL AUTO_INCREMENT,
     `userId` INTEGER NOT NULL,
-    `departmentId` INTEGER NOT NULL,
+    `departmentId` VARCHAR(191) NOT NULL,
     `studentNumber` VARCHAR(191) NOT NULL,
 
     UNIQUE INDEX `Student_id_key`(`id`),
@@ -57,10 +48,11 @@ CREATE TABLE `CareerCenter` (
 
 -- CreateTable
 CREATE TABLE `Department` (
-    `id` INTEGER NOT NULL AUTO_INCREMENT,
+    `id` VARCHAR(191) NOT NULL,
     `name` VARCHAR(191) NOT NULL,
     `coordinatorId` INTEGER NOT NULL,
 
+    UNIQUE INDEX `Department_id_key`(`id`),
     UNIQUE INDEX `Department_coordinatorId_key`(`coordinatorId`),
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
@@ -94,6 +86,8 @@ CREATE TABLE `Chat` (
 CREATE TABLE `Message` (
     `id` INTEGER NOT NULL AUTO_INCREMENT,
     `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+    `title` VARCHAR(191) NULL,
+    `subject` VARCHAR(191) NULL,
     `text` VARCHAR(191) NOT NULL,
     `chatId` INTEGER NOT NULL,
     `senderId` INTEGER NOT NULL,
@@ -102,12 +96,12 @@ CREATE TABLE `Message` (
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 -- CreateTable
-CREATE TABLE `_ChatToUser` (
+CREATE TABLE `_chat_users` (
     `A` INTEGER NOT NULL,
     `B` INTEGER NOT NULL,
 
-    UNIQUE INDEX `_ChatToUser_AB_unique`(`A`, `B`),
-    INDEX `_ChatToUser_B_index`(`B`)
+    UNIQUE INDEX `_chat_users_AB_unique`(`A`, `B`),
+    INDEX `_chat_users_B_index`(`B`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 -- AddForeignKey
@@ -141,7 +135,7 @@ ALTER TABLE `Message` ADD CONSTRAINT `Message_chatId_fkey` FOREIGN KEY (`chatId`
 ALTER TABLE `Message` ADD CONSTRAINT `Message_senderId_fkey` FOREIGN KEY (`senderId`) REFERENCES `User`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE `_ChatToUser` ADD CONSTRAINT `_ChatToUser_A_fkey` FOREIGN KEY (`A`) REFERENCES `Chat`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE `_chat_users` ADD CONSTRAINT `_chat_users_A_fkey` FOREIGN KEY (`A`) REFERENCES `Chat`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE `_ChatToUser` ADD CONSTRAINT `_ChatToUser_B_fkey` FOREIGN KEY (`B`) REFERENCES `User`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE `_chat_users` ADD CONSTRAINT `_chat_users_B_fkey` FOREIGN KEY (`B`) REFERENCES `User`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;

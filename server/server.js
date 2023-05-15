@@ -41,7 +41,9 @@ app.use('/logout', require('./routes/logout'));
 // verify JWT middleware
 app.use(verifyJWT);
 app.use('/users', require('./routes/apis/users'));
-
+app.use('/coordinator', require('./routes/apis/coordinator'));
+app.use('/student', require('./routes/apis/student'));
+app.use('/careercenter', require('./routes/apis/careercenter'));
 
 
 app.get('*', (req, res) => {

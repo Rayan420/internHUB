@@ -9,7 +9,7 @@ const handleNewUser = async (req, res) => {
     if (!email || !password || !firstName || !lastName || !role) return res.status(400).json({ 'message': 'Username and password are required.' });
 
     // check for duplicate email in the db
-    const duplicate = await prisma.user.findUnique({
+    const duplicate = await prisma.User.findUnique({
         where: {
             email: email
         }
@@ -24,7 +24,7 @@ const handleNewUser = async (req, res) => {
         console.log("hashed password");
         //create and store the new user
         console.log("creating new user");
-        const result = await prisma.user.create({
+        const result = await prisma.User.create({
             data: {
                 email: email,
                 password: hashedPwd,
