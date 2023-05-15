@@ -25607,3 +25607,16 @@
 2023-05-09	08:37:18	e7738733-e109-4025-88ad-7797b67726c5	OPTIONS	http://localhost:5173	/users/admin.admin@uskudar.edu.tr 
 2023-05-09	08:37:18	27233401-5997-41f7-8e9d-1f0a573de032	GET	http://localhost:5173	/users/admin.admin@uskudar.edu.tr 
 2023-05-09	08:37:18	91a40753-0760-4e81-9a71-11c11fa4c25e	GET	http://localhost:5173	/users/admin.admin@uskudar.edu.tr 
+2023-05-09	08:38:42	1ed816e5-f1a2-4102-9a0b-85c10c06b6a7	OPTIONS	http://localhost:5173	/auth 
+2023-05-09	08:38:42	b0873315-ee27-4bd6-add6-3027ec7eb68a	POST	http://localhost:5173	/auth 
+2023-05-09	08:38:42	5a9529f9-0534-43a4-84fb-c6f00a51bb88	OPTIONS	http://localhost:5173	/users/admin.admin@uskudar.edu.tr 
+2023-05-09	08:38:42	f0e231ff-3385-40e4-8df3-5cb0468ebffb	OPTIONS	http://localhost:5173	/users/admin.admin@uskudar.edu.tr 
+2023-05-09	08:38:42	819bcace-3a38-4f5a-b76a-255889a2fc40	GET	http://localhost:5173	/users/admin.admin@uskudar.edu.tr 
+2023-05-09	08:38:42	59e431ac-91c2-47ca-9202-2ac04e50618f	GET	http://localhost:5173	/users/admin.admin@uskudar.edu.tr 
+2023-05-15	08:20:23	3328fae9-70d7-40e2-a1a3-d806da112f94	OPTIONS	http://localhost:5173	/auth 
+2023-05-15	08:20:23	50c0876a-6841-4061-9d45-0c79a2d1c86f	POST	http://localhost:5173	/auth 
+2023-05-15	08:21:20	b72bf8bf-c7d4-4ae7-8511-163fa465dbb3	OPTIONS	http://localhost:5173	/auth 
+2023-05-15	08:21:20	38c4d16e-69cb-479d-9c1e-056a9398e305	POST	http://localhost:5173	/auth 
+2023-05-15	08:21:20	6b928667-2ded-43ba-9f8b-f590b64e7dae	OPTIONS	http://localhost:5173	/users/admin.admin@uskudar.edu.tr 
+2023-05-15	08:21:20	f97dd4f2-f097-4fc8-a7b4-fa5e1f5d0527	GET	http://localhost:5173	/users/admin.admin@uskudar.edu.tr 
+2023-05-15	08:21:20	4b51212e-393d-4ad2-960a-f00b96710849	GET	http://localhost:5173	/users/admin.admin@uskudar.edu.tr 
