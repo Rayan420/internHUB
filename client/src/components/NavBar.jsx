@@ -7,7 +7,7 @@ import { useSignOut } from "react-auth-kit";
 import { useNavigate } from "react-router-dom";
 import axios from "../services/axios";
 // Define a functional component `SideNavbar` that takes `name`, `role`, `id`, and `links` as props.
-const SideNavbar = ({ name, role, id, links }) => {
+const SideNavbar = ({ name, role, links, }) => {
   // Import the `useSignOut` hook from `react-auth-kit` to handle user sign out.
   const signOut = useSignOut();
   // Import the `useNavigate` hook from `react-router-dom` to navigate to a specific route after user logout.

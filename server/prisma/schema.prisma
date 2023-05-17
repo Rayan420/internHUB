@@ -31,6 +31,8 @@ model Student {
   departmentId           String
   studentNumber          String
   studentInternshipForms InternshipForm[]
+  letterRequests       LetterRequest[]
+
 }
 
 model Coordinator {
@@ -39,6 +41,8 @@ model Coordinator {
   userId                     Int              @unique
   department                 Department?
   coordinatedInternshipForms InternshipForm[]
+  letterRequests      LetterRequest[]
+
 }
 
 model CareerCenter {
@@ -60,18 +64,36 @@ model Department {
 
 
 model InternshipForm {
-  id              Int          @id @unique @default(autoincrement())
+  id                  String        @id @default(uuid()) @unique
   coordinator     Coordinator  @relation(fields: [coordinatorId], references: [id])
   coordinatorId   Int
   student         Student      @relation(fields: [studentId], references: [id])
   studentId       Int
-  careerCenter    CareerCenter @relation(fields: [careerCenterId], references: [id])
-  careerCenterId  Int
+  careerCenter    CareerCenter? @relation(fields: [careerCenterId], references: [id])
+  careerCenterId  Int?
   applicationDate DateTime     @default(now())
   status          String
-  transcriptFile  Bytes?       @db.Blob
-  responseDate    DateTime
+  transcriptFileURL  String?       @db.VarChar(255)   // Store the URL of the transcript file
+  applicationFileURL  String?       @db.VarChar(255)   // Store the URL of the application file
+  rejectionReason    String?
+  responseDate    DateTime?
 }
+model LetterRequest {
+  id                  String        @id @default(uuid()) @unique
+  student             Student       @relation(fields: [studentId], references: [id])
+  studentId           Int
+  coordinator         Coordinator   @relation(fields: [coordinatorId], references: [id])
+  coordinatorId       Int
+  requestDate         DateTime      @default(now())
+  approvalDate        DateTime?
+  transcriptFileURL   String?       @db.VarChar(255)   // Store the URL of the transcript file
+  status              String        @default("pending")
+  Letter              String?       @db.VarChar(255)   // Store the URL of the letter
+  rejectionReason     String?
+
+}
+
+
 
 model Chat {
   id        Int       @id @unique @default(autoincrement())

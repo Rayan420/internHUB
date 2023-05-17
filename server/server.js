@@ -8,6 +8,7 @@ const errorHandler = require('./middleware/errorHandle');
 const cookieParser = require('cookie-parser');
 const verifyJWT = require('./middleware/verifyJWT');
 const credentials = require('./middleware/credentials');
+const multer = require('multer');
 
 const PORT = process.env.PORT || 3500;
 
@@ -23,13 +24,24 @@ app.use(cors(corsOptions));
 // built-in middleware
 app.use(express.urlencoded({extended: false}));
 // built-in middleware
-app.use(express.json());
+app.use(express.json({ limit: '50mb' }));
 
 // cookie parser middleware
 app.use(cookieParser());
 
 // serve static files
 app.use('/', express.static(path.join(__dirname, 'public')));
+
+
+ // setting up multer as middleware for transcriptFile
+ const upload = multer({
+    storage: multer.memoryStorage(),
+    limits: {
+      fileSize: 5 * 1024 * 1024, // limiting files to 5MB
+    },
+  });
+
+// routes
 //routes
 app.use('/', require('./routes/root'));
 app.use('/register', require('./routes/register'));
@@ -44,7 +56,13 @@ app.use('/users', require('./routes/apis/users'));
 app.use('/coordinator', require('./routes/apis/coordinator'));
 app.use('/student', require('./routes/apis/student'));
 app.use('/careercenter', require('./routes/apis/careercenter'));
-
+app.use('/department', require('./routes/apis/department'));
+app.use('/letterrequest', upload.single('transcriptFile'), require('./routes/apis/letterReq'));
+app.use('/application', upload.fields([
+    { name: 'transcriptFile', maxCount: 1 },
+    { name: 'applicationFile', maxCount: 1 },
+  ]), require('./routes/apis/application'));
+  
 
 app.get('*', (req, res) => {
     res.status(404);

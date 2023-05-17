@@ -205,6 +205,66 @@ img{
   margin-bottom: 50px;
 }
 
+.loading-spinner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  text-align: center;
+}
+
+.loading-spinner h3 {
+  margin-bottom: 20px;
+}
+
+.progress-bar {
+  width: 200px;
+  height: 10px;
+  background-color: #f0f0f0;
+  border-radius: 5px;
+  overflow: hidden;
+}
+
+.progress {
+  height: 100%;
+  background-color: #3f51b5;
+  animation: progressAnimation 2s ease-in-out infinite;
+}
+
+@keyframes progressAnimation {
+  0% {
+    width: 0;
+  }
+  50% {
+    width: 50%;
+  }
+  100% {
+    width: 100%;
+  }
+}
+
+@keyframes ellipsis {
+  0% {
+    content: "";
+  }
+  33% {
+    content: ".";
+  }
+  66% {
+    content: "..";
+  }
+  100% {
+    content: "...";
+  }
+}
+
+.loading-spinner h3::after {
+  content: "";
+  animation: ellipsis 1s infinite;
+}
+
+
 
 
 /* admin styles go after this comment */
@@ -666,6 +726,19 @@ img{
   background-color: #f9f9f9;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
+.button-cell.rejected {
+  color: white;
+  background-color: red;
+  border: none;
+  padding: 8px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.button-cell.rejected:hover {
+  background-color: darkred;
+}
+
 
 .create-department-form label {
   margin-bottom: 0.5rem;
@@ -720,6 +793,7 @@ img{
 
 
 /* student styles go after this comment */
+
 
 .request-cards-row
 {
@@ -851,7 +925,135 @@ td button[disabled] {
 .table-container-2 {
   margin-top: 50px;
 }
+.text-container {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: pre-wrap;
+  margin-bottom: 20px;
+ 
+}
 
+ /* settings page styling properties */
+
+/* Add your existing styles for main-content here */
+
+.settings-container {
+  display: flex;
+  min-height: 100vh;
+}
+
+.settings-form-container {
+  max-width: 400px;
+  margin: 0 auto;
+}
+
+.settings-form-group {
+  margin-bottom: 20px;
+}
+
+.settings-form-group label {
+  display: block;
+  margin-bottom: 5px;
+  font-weight: bold;
+}
+
+.settings-form-group input[type="text"],
+.settings-form-group input[type="password"],
+.settings-form-group p {
+  width: 100%;
+  padding: 10px;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+}
+
+.settings-password-input-container {
+  position: relative;
+}
+
+.settings-password-icon {
+  position: absolute;
+  top: 50%;
+  right: 10px;
+  transform: translateY(-50%);
+  cursor: pointer;
+}
+
+.settings-password-icon.active {
+  color: #007bff;
+}
+
+.settings-button-group {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 20px;
+}
+
+.settings-edit-button,
+.settings-cancel-button,
+.settings-save-button {
+  padding: 10px 20px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.settings-edit-button {
+  background-color: rgb(209, 138, 7);
+  color: #fff;
+  border: none;
+}
+
+.settings-cancel-button {
+  background-color: #dc3545;
+  color: #fff;
+  border: none;
+}
+
+.settings-save-button {
+  background-color: #28a745;
+  color: #fff;
+  border: none;
+}
+.settings-loading-spinner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh; /* Adjust the height as needed */
+}
+
+
+.settings-loading-spinner h3 {
+  margin-bottom: 10px;
+}
+
+
+
+.settings-progress {
+  height: 100%;
+  background-color: orange;
+  width: 0;
+  transition: width 1s ease;
+}
+
+.settings-loading-spinner::after {
+  content: '';
+  display: inline-block;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: 4px solid orange;
+  border-top-color: transparent;
+  animation: settings-spinner-animation 1s infinite linear;
+}
+
+@keyframes settings-spinner-animation {
+  0% {
+    transform: rotate(0);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
 
 
 
@@ -1194,12 +1396,20 @@ td button[disabled] {
   margin-bottom: 1rem;
 }
 
+.modal-content{
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  margin-top: 20px;
+  margin-bottom: 5px;
+}
 .modal-close {
   background-color: transparent;
   border: none;
   font-size: 1.5rem;
   cursor: pointer;
 }
+
 
 .form-group {
   margin-bottom: 1rem;

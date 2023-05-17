@@ -69,3 +69,9 @@
     --- property 'stream' closes the circle 
 2023-05-04	01:02:29	731411af-3ae2-4aaf-9e88-4212340578ee	Error	ENOENT: no such file or directory, stat 'C:\Users\USER\Desktop\internHUB\server\views\index.html' 
 2023-05-07	08:38:58	aac400c3-1d0b-4e20-8017-ff9d24868afa	SyntaxError	Expected ':' after property name in JSON at position 213 
+2023-05-16	08:01:15	50e5158c-e39c-41f2-996a-892f1c5122ca	PayloadTooLargeError	request entity too large 
+2023-05-16	08:01:52	01089b8b-7120-4aa9-9a17-d0c6af927945	PayloadTooLargeError	request entity too large 
+2023-05-16	08:03:56	9293a6e2-3b4a-4009-921a-673cabcd29f9	PayloadTooLargeError	request entity too large 
+2023-05-16	08:04:11	928641ee-d220-4c38-950e-5fe87c17b770	PayloadTooLargeError	request entity too large 
+2023-05-16	08:04:21	930c6843-19e7-4ab7-b013-0d4d05fb8f74	PayloadTooLargeError	request entity too large 
+2023-05-17	11:11:21	76a577de-8537-4630-9760-9017e31abecf	MulterError	Unexpected field 

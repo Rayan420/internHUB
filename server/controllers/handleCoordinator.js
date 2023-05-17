@@ -67,25 +67,6 @@ const handleNewCoordinator = async (req, res) => {
 };
 
   
-  const handleCoordinatorCareerCenterUpdate = async (req, res) => {
-    const { userId, careerCenterId } = req.params;
-  
-    try {
-      const user = await prisma.User.update({
-        where: { id: parseInt(userId) },
-        data: {
-          CareerCenter: {
-            connect: { id: parseInt(careerCenterId) },
-          },
-        },
-        include: { CareerCenter: true },
-      });
-  
-      return res.status(200).json({ success: 'Coordinator updated with career center!', data: User });
-    } catch (err) {
-      return res.status(500).json({ message: err.message });
-    }
-  };
-  
 
-  module.exports = { handleNewCoordinator, handleCoordinatorCareerCenterUpdate };
+
+  module.exports = { handleNewCoordinator };

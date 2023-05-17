@@ -27,6 +27,7 @@ const Users = () => {
     const fetchUserData = async () => {
       try {
         const { email } = auth() || {};
+        await new Promise(resolve => setTimeout(resolve, 2000));
         const { data } = await axios.get("/users/" + email, {
           headers: {
             authorization: authHeader(),
@@ -46,11 +47,21 @@ const Users = () => {
     };
     fetchUserData();
   }, []);
-    useEffect(() => {
+    useEffect(() => async () =>{
         document.title = "InternHUB - Users";
-        console.log("Users page loaded" + authHeader());
+        
 
         }, []);
+        if (isLoading) {
+          return (
+            <div className="loading-spinner">
+            <h3>Getting users <span className="ellipsis"></span></h3>
+              <div className="progress-bar">
+                <div className="progress"></div>
+              </div>
+            </div>
+          );
+        }
     return (
         <div className="container">
       {/* NAVEBAR */}

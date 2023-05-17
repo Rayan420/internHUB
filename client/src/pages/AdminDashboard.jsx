@@ -26,6 +26,8 @@ const AdminDashboard = () => {
     const fetchUserData = async () => {
       try {
         const { email } = auth() || {};
+        // Simulate loading by adding a delay
+        await new Promise(resolve => setTimeout(resolve, 2000));
         const { data } = await axios.get("/users/" + email, {
           headers: {
             authorization: authHeader(),
@@ -50,9 +52,18 @@ const AdminDashboard = () => {
 
     }, []);
 
-  return isLoading ? (
-    <div>Loading...</div>
-  ) : (
+    if (isLoading) {
+      return (
+        <div className="loading-spinner">
+        <h3>Loading Admin Dashboard <span className="ellipsis"></span></h3>
+          <div className="progress-bar">
+            <div className="progress"></div>
+          </div>
+        </div>
+      );
+    }
+
+  return(  
     <div className="container">
       {/* NAVEBAR */}
       <SideNavbar
@@ -111,8 +122,7 @@ const AdminDashboard = () => {
         {/* paginated list of student applications summary */}
         <ApplicationSummary data={[]} />
       </div>
-    </div>
-  );
+    </div>);
 };
 
 export default AdminDashboard;

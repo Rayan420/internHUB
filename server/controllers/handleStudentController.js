@@ -76,4 +76,77 @@ const handleNewStudent = async (req, res) => {
 
 }
 
-module.exports = {handleNewStudent};
+const getStudentInfo = async (req, res) => {
+    try {
+      const { email } = req.params;
+  
+      const userData = await prisma.user.findUnique({
+        where: { email: email },
+        include: {
+          student: {
+            include: {
+              department: true
+            }
+          }
+        },
+      });
+  
+      if (!userData) {
+        return res.status(404).json({ error: 'User not found' });
+      }
+  
+      const user = {
+        id: userData.id,
+        firstName: userData.firstName,
+        lastName: userData.lastName,
+        phoneNum: userData.phoneNum,
+        role: userData.role,
+      };
+  
+      const student = {
+        id: userData.student.id,
+        studentNumber: userData.student.studentNumber,
+        department: {
+          id: userData.student.department.id,
+          name: userData.student.department.name,
+        },
+      };
+  
+      const coordinatorID = await prisma.Department.findUnique({
+        where:{
+            id: userData.student.department.id,
+        }
+        });
+
+        const coordinatorInfo = await prisma.Coordinator.findUnique({
+            where:{
+                id: coordinatorID.coordinatorId,
+            }
+            });
+
+        const coordinatorUser = await prisma.User.findUnique({
+                where:{
+                    id: coordinatorInfo.userId,
+                },
+                });
+        const coordinator = {
+            firstName: coordinatorUser.firstName,
+            lastName: coordinatorUser.lastName,
+            email: coordinatorUser.email,
+            role: coordinatorUser.role,
+            id: coordinatorID.coordinatorId,
+        };
+
+
+      return res.status(200).json({ user, student, coordinator });
+    } catch (error) {
+      console.error('Error:', error);
+      return res.status(500).json({ error: 'Internal Server Error' });
+    } finally {
+      await prisma.$disconnect();
+    }
+  };
+  
+    
+
+module.exports = {handleNewStudent, getStudentInfo};
