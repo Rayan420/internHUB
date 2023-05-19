@@ -179,6 +179,12 @@ img{
   align-self: center;
   margin-bottom: 15px;
 }
+.required-field{
+  color: red;
+  font-weight: 500;
+  align-self: center;
+  margin-bottom: 15px;
+}
 .successmsg{
   color: #2ecc71;
   font-weight: 500;
@@ -269,49 +275,44 @@ img{
 
 /* admin styles go after this comment */
 
-/* admin navbar styles go after this comment */
-.sidebar
-{
+/*  navbar styles go after this comment */
+.sidebar {
   position: fixed;
   top: 0;
   left: 0;
   height: 100%;
-  width:80px;
-  background-color:white ;
-  padding: .4rem .8rem;
+  width: 80px;
+  background-color: white;
+  padding: 0.4rem 0.8rem;
   transition: all 0.5s ease;
 }
-.sidebar.active ~ .main-content
-{
-  height: 100%;
 
+.sidebar.active ~ .main-content {
+  height: 100%;
   left: 250px;
   width: calc(100% - 250px);
 }
 
-.sidebar.active
-{
+.sidebar.active {
   height: 100%;
   width: 250px;
 }
 
-.sidebar #btn
-{
+.sidebar #btn {
   position: absolute;
-  top: .4rem;
+  top: 0.4rem;
   left: 50%;
   font-size: 1.2rem;
   line-height: 50px;
   transform: translateX(-50%);
   cursor: pointer;
 }
-.sidebar.active #btn
-{
+
+.sidebar.active #btn {
   left: 90%;
 }
 
-.sidebar .top .logo-sidebar{
-  
+.sidebar .top .logo-sidebar {
   display: flex;
   height: 50px;
   width: 100%;
@@ -319,60 +320,63 @@ img{
   pointer-events: none;
   opacity: 0;
 }
+.logout{
+  cursor: pointer;
+}
 
-.sidebar.active .top .logo-sidebar{
+.sidebar.active .top .logo-sidebar {
   opacity: 1;
   pointer-events: none;
 }
 
-
-.top .logo-sidebar .nav-logo{
+.top .logo-sidebar .nav-logo {
   height: 200px;
   width: 200px;
 }
 
-.user{
+.user {
   display: flex;
   margin: 1rem;
 }
-.user p{
+
+.user p {
   color: black;
   margin-left: 1rem;
   opacity: 1;
   font-size: 1.1rem;
 }
 
-.bold{
-  color:#023047;
-  font-weight: bold;
-}
-.user .bold{
-  color:#023047;
+.bold {
+  color: #023047;
   font-weight: bold;
 }
 
-.sidebar p 
-{
+.user .bold {
+  color: #023047;
+  font-weight: bold;
+}
+
+.sidebar p {
   opacity: 0;
 }
 
-.sidebar.active p 
-{
+.sidebar.active p {
   opacity: 1;
 }
-.sidebar .user .initials{
+
+.sidebar .user .initials {
   opacity: 1;
   margin: auto;
   font-size: 1.3rem;
   font-weight: bold;
   color: #023047;
 }
-.sidebar.active .user .initials  
-{
+
+.sidebar.active .user .initials {
   opacity: 0;
 }
 
-.sidebar ul li{
+.sidebar ul li {
   position: relative;
   list-style-type: none;
   height: 50px;
@@ -381,41 +385,44 @@ img{
   line-height: 50px;
 }
 
-.sidebar ul li .an{
+.sidebar ul li .an {
   display: flex;
   align-items: center;
   text-decoration: none;
   border-radius: 0.8rem;
 }
 
-.sidebar ul li .an:hover{
-  background-color: #6F7DFB;
+.sidebar ul li .an:hover {
+  background-color: #6f7dfb;
   color: white;
 }
-
-.sidebar ul li .logout:hover{
+.sidebar ul li .logout:hover {
   background-color: #DA722C;
   color: white;
 }
 
-.sidebar ul li .an i{
+.sidebar ul li .an.active {
+  background-color: #6f7dfb; /* Set the active background color */
+  color: white; /* Set the active text color */
+}
+
+
+.sidebar ul li .an i {
   min-width: 50px;
   border-radius: 10px;
   text-align: center;
   line-height: 50px;
 }
 
-.sidebar .nav-item
-{
+.sidebar .nav-item {
   opacity: 0;
 }
-.sidebar.active .nav-item
-{
+
+.sidebar.active .nav-item {
   opacity: 1;
 }
 
-.sidebar ul li .tooltip
-{
+.sidebar ul li .tooltip {
   position: absolute;
   left: 125px;
   top: 50%;
@@ -425,15 +432,15 @@ img{
   padding: 0.4rem 1.2rem;
   line-height: 1.8rem;
   z-index: 20;
-  opacity: 0  ;
+  opacity: 0;
 }
-.sidebar ul li:hover .tooltip
-{
+
+.sidebar ul li:hover .tooltip {
   opacity: 1;
 }
-.sidebar.active ul li .tooltip
-{
- display: none;
+
+.sidebar.active ul li .tooltip {
+  display: none;
 }
 
 .main-content{
@@ -685,18 +692,17 @@ img{
 .tab{
   padding: 5px;
   display: block;
-  border: 1px solid #10185E;
   margin-right: 10px;
   margin-top: 30px;
-  background-color:#0077cc;
-  color: white;
+  background-color:#6f7dfb;
+  color: black;
   cursor: pointer;
   border-radius: 5px;
 }
 
 .tab:hover{
-  background-color:#10185E;
-  color: white;
+  background-color:#6f7dfb;
+  color: black;
   transform: translateY(-2px);
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
 }
@@ -704,7 +710,7 @@ img{
 .tab--selected {
   background-color: #10185E;
   transform: translateY(-2px);
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
+  color: white;
 }
 .create-department-container {
   display: flex;
@@ -934,10 +940,46 @@ td button[disabled] {
 }
 
  /* settings page styling properties */
+ .settings-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5); /* Adjust the opacity as needed */
+  backdrop-filter: blur(5px); /* Adjust the blur amount as needed */
+  z-index: 1;
+  display: none;
+}
 
-/* Add your existing styles for main-content here */
+.settings-overlay.show {
+  display: block;
+}
+.settings-btn{
+  margin-top: 20px;
+}
 
+.success-message {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: white;
+  padding: 30px; /* Increase the padding as needed */
+  border-radius: 8px; /* Adjust the border radius as needed */
+  text-align: center;
+  z-index: 2;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); /* Add shadow effect */
+}
+
+.success-message button {
+  padding: 10px 20px; /* Increase the padding as needed */
+  font-size: 16px; /* Increase the font size as needed */
+  border-radius: 4px; /* Adjust the border radius as needed */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); /* Add shadow effect */
+}
 .settings-container {
+  position: relative;
   display: flex;
   min-height: 100vh;
 }
@@ -945,9 +987,14 @@ td button[disabled] {
 .settings-form-container {
   max-width: 400px;
   margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
 }
 
 .settings-form-group {
+  display: flex;
+  flex-direction: column;
   margin-bottom: 20px;
 }
 
@@ -956,6 +1003,19 @@ td button[disabled] {
   margin-bottom: 5px;
   font-weight: bold;
 }
+.settings-form-container-signature {
+  margin-top: 30px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.settings-signature-label {
+  text-align: center;
+  margin-bottom: 10px;
+}
+
+
 
 .settings-form-group input[type="text"],
 .settings-form-group input[type="password"],
@@ -994,10 +1054,16 @@ td button[disabled] {
   padding: 10px 20px;
   border-radius: 4px;
   cursor: pointer;
+  
 }
 
 .settings-edit-button {
-  background-color: rgb(209, 138, 7);
+  background-color: #DA722C; 
+  color: #fff;
+  border: none;
+}
+.settings-edit-button:hover {
+  background-color: #ce6b29; 
   color: #fff;
   border: none;
 }
@@ -1056,6 +1122,146 @@ td button[disabled] {
 }
 
 
+/* internship style.css */
+.internship-container {
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+}
+
+.internship-list-container {
+  flex: 1;
+  width: 40%;
+  margin-right: 20px;
+}
+
+.internship-details-container {
+  flex: 2;
+  width: 60%;
+}
+
+.container {
+  display: flex;
+  justify-content: space-between;
+}
+
+.filter-container {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  margin-bottom: 20px;
+  margin-top: 80px;
+}
+
+label[for="sort"] {
+  font-weight: bold;
+}
+
+.filter-location {
+  margin-right: 20px;
+}
+
+label[for="location"] {
+  font-weight: bold;
+}
+
+.internship-list {
+  flex-basis: 40%;
+}
+
+.internship-card {
+  border: 2px solid #ccc;
+  border-radius: 8px;
+  padding: 15px;
+  margin-bottom: 10px;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.company-name {
+  font-size: 20px;
+  font-weight: bolder;
+  margin-bottom: 10px;
+}
+
+.internship-card:hover {
+  background-color: #f4f4f4;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.internship-card.selected {
+  background-color: white;
+  border: 2px solid #007bff;
+}
+
+.internship-details {
+  background-color: #f5f5f5;
+  border-radius: 10px;
+  border: 1px solid #ccc;
+  padding: 20px;
+  font-family: Arial, sans-serif;
+  font-size: 16px;
+  line-height: 1.5;
+  color: #555;
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+  hyphens: auto;
+}
+
+.detail-title {
+  font-size: 24px;
+  font-weight: bold;
+  margin-bottom: 10px;
+  color: #333;
+  text-align: center;
+  text-transform: uppercase;
+}
+
+.detail-label {
+  font-weight: bold;
+  color: #222;
+}
+
+.detail-value {
+  margin-bottom: 10px;
+  color: #777;
+}
+
+.apply-button {
+  background-color: #007bff;
+  color: #fff;
+  padding: 12px 24px;
+  border-radius: 5px;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  display: block;
+  margin: 20px auto;
+  width: fit-content;
+  text-align: center;
+  font-size: 18px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.apply-button:hover {
+  background-color: #0056b3;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.internship-details-container {
+  border-radius: 8px;
+  padding: 15px;
+}
+
+
+
+
+
+
+/* Add more custom styles based on your design */
+
 
 
 /* career center styles go after this comment */
@@ -1067,6 +1273,200 @@ td button[disabled] {
 
 /* coordinator styles go after this comment */
 
+/* RequestViewer.css */
+
+.coordinator-container {
+  margin: 20px;
+  padding: 20px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.coordinator-container h2 {
+  font-size: 24px;
+  margin-bottom: 20px;
+}
+
+.coordinator-search-bar {
+  margin-bottom: 20px;
+}
+
+.coordinator-search-bar label {
+  font-weight: bold;
+}
+
+.coordinator-search-bar input[type="text"] {
+  margin-left: 10px;
+  padding: 5px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.coordinator-search-bar button {
+  margin-left: 10px;
+  padding: 5px 10px;
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.coordinator-tab-buttons {
+  margin-bottom: 20px;
+}
+
+.coordinator-tab-buttons button {
+  margin-right: 10px;
+  padding: 5px 10px;
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.coordinator-tab-buttons button.active {
+  background-color: #555;
+}
+
+.coordinator-request-list h3 {
+  font-size: 20px;
+  margin-bottom: 10px;
+}
+
+.coordinator-request-list table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.coordinator-request-list th,
+.coordinator-request-list td {
+  padding: 10px;
+  text-align: left;
+  border-bottom: 1px solid #ccc;
+}
+
+.coordinator-request-list th {
+  font-weight: bold;
+}
+
+.coordinator-request-list th:last-child,
+.coordinator-request-list td:last-child {
+  text-align: center;
+}
+
+.coordinator-message {
+  font-style: italic;
+  text-align: center;
+  margin-top: 20px;
+}
+.view-transcript-text
+{
+  display: flex;
+  justify-content: center;
+}
+/* Button Colors */
+.button-approve {
+  background-color: green;
+  color: white;
+}
+
+.button-delete {
+  background-color: red;
+  color: white;
+}
+
+/* Status Colors */
+.status-pending {
+  color: orange;
+}
+
+.status-approved {
+  color: green;
+}
+
+.status-rejected {
+  color: red;
+}
+.coordinator-request-list table thead th {
+  text-align: left;
+  vertical-align: top;
+}
+
+/* signature canvas styles*/
+.signature-editor {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.signature-canvas {
+  width: 500px;
+  height: 200px;
+  border: 1px solid #ccc;
+  margin-bottom: 20px;
+}
+
+.signature-buttons {
+  display: flex;
+  justify-content: center;
+}
+
+.signature-clear-button,
+.signature-save-button,
+.signature-cancel-button {
+  padding: 10px 20px;
+  margin-right: 10px;
+  font-size: 16px;
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.signature-clear-button:hover,
+.signature-save-button:hover,
+.signature-cancel-button:hover {
+  background-color: #0056b3;
+}
+
+
+
+.existing-signature {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 20px;
+  margin-top: 40px;
+}
+
+.existing-signature img {
+  max-width: 300px;
+  max-height: 150px;
+  border: 1px solid #ccc;
+  margin-bottom: 10px;
+}
+
+.settings-edit-signature-button {
+  padding: 10px 20px;
+  font-size: 16px;
+  background-color: #DA722C;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.settings-edit-signature-button:hover {
+  background-color: #ce6b29;
+}
+
+
+
+/* Add more styles for the RejectionModal component */
 
 
 
@@ -1461,7 +1861,7 @@ input[type="file"]:focus {
 }
 
 .btn-primary:hover {
-  background-color: #0069d9;
+  background-color: #062342;
 }
 
 

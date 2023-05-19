@@ -1,8 +1,7 @@
 const express = require('express');
 const router = express.Router();
-const handleCareerCenter = require('../../controllers/handleCareerCenter');
-
-router.route('/').post(handleCareerCenter.handleNewCareerCenter );
+const {handleNewCareerCenter} = require('../../controllers/careerCenterController');
+router.route('/').post(handleNewCareerCenter );
 
 
 module.exports = router;

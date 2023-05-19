@@ -18,22 +18,24 @@ const AddNewUser = () => {
   const [successMsg, setSuccessMsg] = useState("");
   const [error, setError] = useState(false);
 
+  const updateEmail = () => {
+    let domain = "";
+    switch (userType) {
+      case "Student":
+        domain = "st.uskudar.edu";
+        break;
+      case "Coordinator":
+        domain = "uskudar.edu.tr";
+        break;
+      default:
+        domain = "";
+    }
+    setEmail(`${firstName.toLowerCase()}.${lastName.toLowerCase()}@${domain}`);
+  };
 
-useEffect(() => {
-  let domain;
-  switch (userType) {
-    case "Student":
-      domain = "st.uskudar.edu";
-      break;
-    case "Coordinator":
-      domain = "uskudar.edu.tr";
-      break;
-    
-    default:
-      domain = "";
-  }
-  setEmail(`${firstName.toLowerCase()}.${lastName.toLowerCase()}@${domain}`);
-}, [firstName, lastName, userType]);
+  useEffect(() => {
+    updateEmail();
+  }, [firstName, lastName, userType]);
 
   const handleUserTypeChange = (event) => {
     setUserType(event.target.value);
@@ -43,31 +45,39 @@ useEffect(() => {
     event.preventDefault();
     // Perform form submission logic here
     switch (userType) {
-        case "Coordinator":
-            axios.post("/coordinator", 
+      case "Coordinator":
+        axios
+          .post(
+            "/coordinator",
             {
-                email: email,
-                password: password,
-                firstName: firstName,
-                lastName: lastName,
-                phoneNum: phoneNum,
-                department: department,
-            }, {
-                headers: {
-                  authorization: authHeader(),
-                },
-              }).then((res) => {
-                setSuccessMsg(res.data.message);
-                setError(false);
-                setMsg("");
-            }).catch((err) => {
-                setMsg(err.response.data.message);
-                setError(true);
-                setSuccessMsg("");
-            },)
-            break;
-        case "Student":
-            axios.post("/student",
+              email: email,
+              password: password,
+              firstName: firstName,
+              lastName: lastName,
+              phoneNum: phoneNum,
+              department: department,
+            },
+            {
+              headers: {
+                authorization: authHeader(),
+              },
+            }
+          )
+          .then((res) => {
+            setSuccessMsg(res.data.message);
+            setError(false);
+            setMsg("");
+          })
+          .catch((err) => {
+            setMsg(err.response.data.message);
+            setError(true);
+            setSuccessMsg("");
+          });
+        break;
+      case "Student":
+        axios
+          .post(
+            "/student",
             {
               email: email,
               password: password,
@@ -76,25 +86,56 @@ useEffect(() => {
               phoneNum: phoneNum,
               department: department,
               studentNumber: studentNumber,
-          }, 
-          {headers: {
-            authorization: authHeader(),  
-          },
-        },
-            ).then((res) => {
-                setSuccessMsg(res.data.message);
-                setError(false);
-                setMsg("");
-            }).catch((err) => {
-                setMsg(err.response.data.message);
-                setError(true);
-                setSuccessMsg("");
-            },)
-            break;
-    
-        default:
-            setMsg("Please fill out the form.");
-            break;
+            },
+            {
+              headers: {
+                authorization: authHeader(),
+              },
+            }
+          )
+          .then((res) => {
+            setSuccessMsg(res.data.message);
+            setError(false);
+            setMsg("");
+          })
+          .catch((err) => {
+            setMsg(err.response.data.message);
+            setError(true);
+            setSuccessMsg("");
+          });
+        break;
+      case "Careercenter":
+        axios
+          .post(
+            "/careercenter",
+            {
+              email: careerCenterEmail,
+              password: password,
+              firstName: firstName,
+              lastName: lastName,
+              phoneNum: phoneNum,
+              companyName: companyName,
+            },
+            {
+              headers: {
+                authorization: authHeader(),
+              },
+            }
+          )
+          .then((res) => {
+            setSuccessMsg(res.data.message);
+            setError(false);
+            setMsg("");
+          })
+          .catch((err) => {
+            setMsg(err.response.data.message);
+            setError(true);
+            setSuccessMsg("");
+          });
+        break;
+      default:
+        setMsg("Please fill out the form.");
+        break;
     }
   };
 
@@ -148,29 +189,33 @@ useEffect(() => {
     }
   };
 
+  const handleCareerCenterEmailChange = (event) => {
+    setCareerCenterEmail(event.target.value);
+  };
+
   return (
     <div className="create-user">
-    <h2>Create User</h2>
-    <h3 className='errmsg'>{Msg}</h3>
-    <h3 className=' successmsg'>{successMsg}</h3>
-    <form onSubmit={handleSubmit}>
-      <div className="form-group">
-        <label htmlFor="userType">User Type</label>
-        <select id="userType" value={userType} onChange={handleUserTypeChange}>
-          <option value=""></option>
-          <option value="Student">Student</option>
-          <option value="Coordinator">Coordinator</option>
-          <option value="Careercenter">Career Center</option>
-        </select>
-      </div>
-      <div className="form-group">
+      <h2>Create User</h2>
+      <h3 className="errmsg">{Msg}</h3>
+      <h3 className="successmsg">{successMsg}</h3>
+      <form onSubmit={handleSubmit}>
+        <div className="form-group">
+          <label htmlFor="userType">User Type</label>
+          <select id="userType" value={userType} onChange={handleUserTypeChange}>
+            <option value=""></option>
+            <option value="Student">Student</option>
+            <option value="Coordinator">Coordinator</option>
+            <option value="Careercenter">Career Center</option>
+          </select>
+        </div>
+        <div className="form-group">
           <label htmlFor="firstName">First Name</label>
           <input
             type="text"
             id="firstName"
             value={firstName}
             onChange={(e) => setFirstName(e.target.value)}
-            />
+          />
         </div>
         <div className="form-group">
           <label htmlFor="lastName">Last Name</label>
@@ -182,24 +227,23 @@ useEffect(() => {
           />
         </div>
         <div className="form-group">
-            <label htmlFor="email">Email</label>
-                {userType === "careerCenter" ? (
-                <input 
-                type="email" 
-                id="email" 
-                value={careerCenterEmail} 
-                onChange={(e) => setCareerCenterEmail(e.target.value)} 
-                />
-                ) : (
-                <input
-                type="email"
-                id="email"
-                value={email}
-                readOnly
-                />
-                )}
+          <label htmlFor="email">Email</label>
+          {userType === "Careercenter" ? (
+            <input
+              type="email"
+              id="email"
+              value={careerCenterEmail}
+              onChange={handleCareerCenterEmailChange}
+            />
+          ) : (
+            <input
+              type="email"
+              id="email"
+              value={email}
+              readOnly
+            />
+          )}
         </div>
-
         <div className="form-group">
           <label htmlFor="password">Password</label>
           <input
@@ -217,15 +261,12 @@ useEffect(() => {
             value={phoneNum}
             onChange={(e) => setPhoneNum(e.target.value)}
           />
-          </div>
-          {renderInputFields()}
-          <button type="submit">Create User</button>
-        </form>
-      </div>
-      
-    );
-  };
-
+        </div>
+        {renderInputFields()}
+        <button type="submit">Create User</button>
+      </form>
+    </div>
+  );
+};
 
 export default AddNewUser;
-

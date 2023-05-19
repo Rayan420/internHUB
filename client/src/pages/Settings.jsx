@@ -3,6 +3,7 @@ import axios from '../services/axios';
 import { useAuthHeader, useAuthUser } from 'react-auth-kit';
 import SideNavbar from '../components/NavBar';
 import Header from '../components/Header';
+import SignatureComponent from '../components/SignatureComponent';
 
 const SettingsPage = () => {
   const auth = useAuthUser();
@@ -13,29 +14,66 @@ const SettingsPage = () => {
     lastName: '',
     phoneNum: '',
   });
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoadingUser, setIsLoadingUser] = useState(true);
+  const [isLoadingCoordinator, setIsLoadingCoordinator] = useState(true);
+  const [isLoadingSignature, setIsLoadingSignature] = useState(true);
   const [editMode, setEditMode] = useState(false);
-  const [newFirstName, setNewFirstName] = useState('');
-  const [newLastName, setNewLastName] = useState('');
+  const [signatureEditMode, setSignatureEditMode] = useState(false);
+  const [newFirstName, setNewFirstName] = useState(user.firstName);
+  const [newLastName, setNewLastName] = useState(user.lastName);
   const [newPhoneNum, setNewPhoneNum] = useState(user.phoneNum || '');
   const [newPassword, setNewPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
+  const [coordinator, setCoordinator] = useState({});
+  const [signature, setSignature] = useState('');
+  const [showSuccessMessage, setShowSuccessMessage] = useState(false);
 
+
+  let navLinks = [];
+  
+  if (auth().role === "Student") {
+    navLinks = [
+      { label: "Dashboard", to: "/dashboard", icon: "bxs-grid-alt" },
+      { label: "Messages", to: "/messages", icon: "bxs-envelope" },
+      { label: "Internships", to: "/internships", icon: "bxs-user" },
+      { label: "Settings", to: "/settings", icon: "bxs-cog" },
+    ];
+  } else if (auth().role === "Admin") {
+    navLinks = [
+      { label: "Dashboard", to: "/dashboard", icon: "bxs-grid-alt" },
+      { label: "Messages", to: "/messages", icon: "bxs-envelope" },
+      { label: "Users", to: "/users", icon: "bxs-user" },
+      { label: "Settings", to: "/settings", icon: "bxs-cog" },
+    ];
+  } else if (auth().role === "Coordinator") {
+    navLinks = [
+      { label: "Dashboard", to: "/dashboard", icon: "bxs-grid-alt" },
+      { label: "Messages", to: "/messages", icon: "bxs-envelope" },
+      { label: "Applications", to: "/jobs", icon: "bxs-user" },
+      { label: "Settings", to: "/settings", icon: "bxs-cog" },
+    ];
+  }
+  else if (auth().role === "Careercenter") {
+    navLinks = [
+      { label: "Dashboard", to: "/dashboard", icon: "bxs-grid-alt" },
+      { label: "Messages", to: "/messages", icon: "bxs-envelope" },
+      { label: "Jobs", to: "/jobs", icon: "bxs-user" },
+      { label: "Settings", to: "/settings", icon: "bxs-cog" },
+    ];
+  }
   useEffect(() => {
     const fetchUser = async () => {
       try {
         const { email } = auth() || {};
-        // Make an API request to fetch the user details
-        await new Promise(resolve => setTimeout(resolve, 2000));
+        await new Promise((resolve) => setTimeout(resolve, 2000));
         const response = await axios.get('/users/' + email, {
           headers: {
             authorization: authHeader(),
           },
         });
-
-        // Set the user information in the state
         setUser(response.data);
-        setIsLoading(false);
+        setIsLoadingUser(false);
       } catch (error) {
         console.error('Error fetching user:', error);
       }
@@ -44,10 +82,75 @@ const SettingsPage = () => {
     fetchUser();
   }, []);
 
+  useEffect(() => {
+    console.log('Fetching coordinator data');
+    const fetchCoordinatorData = async () => {
+      try {
+        const { email } = auth() || {};
+        await new Promise((resolve) => setTimeout(resolve, 2000));
+        const { data } = await axios.get('/coordinator/' + email, {
+          headers: {
+            authorization: authHeader(),
+          },
+        });
+        setCoordinator(data);
+        console.log(data);
+      } catch (error) {
+        console.log(error);
+        if (error.response.status === 400 || error.response.status === 500) {
+          // Handle error
+        }
+      } finally {
+        setIsLoadingCoordinator(false);
+      }
+    };
+    fetchCoordinatorData();
+  }, []);
+
+  useEffect(() => {
+    console.log('Fetching coordinator signature');
+    const fetchCoordinatorSignature = async () => {
+      try {
+        const coordinatorId = coordinator.coordinator.id;
+        const response = await axios.get(`/coordinator/signature/${coordinatorId}`, {
+          headers: {
+            authorization: authHeader(),
+          },
+        });
+
+        setSignature(response.data.signatureURL);
+        console.log(response);
+      } catch (error) {
+        console.log(error);
+        if (error.response && (error.response.status === 400 || error.response.status === 500)) {
+          // Handle error
+        }
+      } finally {
+        setIsLoadingSignature(false);
+      }
+    };
+    fetchCoordinatorSignature();
+  }, [coordinator]);
+
+  useEffect(() => {
+    if (!isLoadingUser && !isLoadingCoordinator && !isLoadingSignature) {
+      setIsSaving(false);
+    }
+  }, [isLoadingUser, isLoadingCoordinator, isLoadingSignature]);
+
+
+
   const handleEditClick = () => {
     setEditMode(true);
   };
-
+  const handleEditSignatureClick = () => {
+    setSignatureEditMode(true);
+  };
+  const handleCancelSignatureClick = () => {
+    setSignatureEditMode(false);
+    // Additional logic if needed
+  };
+  
   const handleCancelClick = () => {
     setEditMode(false);
     // Reset the input fields to the original values
@@ -56,20 +159,25 @@ const SettingsPage = () => {
     setNewPhoneNum(user.phoneNum || '');
     setNewPassword('');
   };
+
   useEffect(() => {
     document.title = "InternHUB - Settings";
-    
   }, []);
- 
 
   const handleSaveClick = async () => {
+   
+
     try {
       const updatedUser = {
         ...user,
-        firstName: newFirstName,
-        lastName: newLastName,
-        phoneNum: newPhoneNum,
+        firstName: newFirstName !== '' ? newFirstName : user.firstName,
+        lastName: newLastName !== '' ? newLastName : user.lastName,
+        phoneNum: newPhoneNum !== '' ? newPhoneNum : user.phoneNum,
       };
+  
+      if (newPassword !== '') {
+        updatedUser.password = newPassword;
+      }
 
       // Make an API request to update the user details
       await axios.put(`/users/${user.id}`, updatedUser, {
@@ -81,6 +189,11 @@ const SettingsPage = () => {
       // Update the user information in the state
       setUser(updatedUser);
       setEditMode(false);
+      setIsSaving(true);
+      await new Promise(resolve => setTimeout(resolve, 2000));
+      setIsSaving(false);
+      setShowSuccessMessage(true); // Show the success message
+      console.log(updatedUser)
     } catch (error) {
       console.error('Error updating user:', error);
     }
@@ -89,9 +202,8 @@ const SettingsPage = () => {
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
   };
-
-  /*
-  if (isLoading) {
+   console.log("signature",signature)
+  if (isSaving) {
     return (
       <div className="settings-loading-spinner">
         <h3>Saving Your information<span className="ellipsis"></span></h3>
@@ -100,9 +212,9 @@ const SettingsPage = () => {
         </div>
       </div>
     );
-  } */
+  } 
 
-  if (isLoading) {
+  if (isLoadingUser || isLoadingCoordinator || isLoadingSignature) {
     return (
       <div className="loading-spinner">
       <h3>Loading Your Information <span className="ellipsis"></span></h3>
@@ -112,17 +224,13 @@ const SettingsPage = () => {
       </div>
     );
   }
+
   return (
     <div className="settings-container">
       {/* NAVBAR */}
       <SideNavbar
-        links={[
-          { label: 'Dashboard', to: '/dashboard', icon: 'bxs-grid-alt' },
-          { label: 'Messages', to: '/messages', icon: 'bxs-envelope' },
-          { label: 'Internships', to: '/internships', icon: 'bxs-user' },
-          { label: 'Settings', to: '/settings', icon: 'bxs-cog' },
-        ]}
-        name={user.firstName + ' ' + user.lastName}
+        links={navLinks}
+        name={user.firstName + " " + user.lastName}
         role={auth().role}
       />
       <div className="main-content main-dashboard">
@@ -139,7 +247,7 @@ const SettingsPage = () => {
               <label>First Name</label>
               <input
                 type="text"
-                value={user.firstName}
+                value={newFirstName}
                 onChange={(e) => setNewFirstName(e.target.value)}
               />
             </div>
@@ -154,7 +262,7 @@ const SettingsPage = () => {
               <label>Last Name</label>
               <input
                 type="text"
-                value={user.lastName}
+                value={newLastName}
                 onChange={(e) => setNewLastName(e.target.value)}
               />
             </div>
@@ -185,9 +293,12 @@ const SettingsPage = () => {
           )}
           {editMode && (
             <div className="settings-form-group">
-              <label>New Password</label>
+              <label>
+                New Password<span className="required-field">*</span>
+              </label>
               <div className="settings-password-input-container">
                 <input
+                  autoComplete="new-password"
                   type={showPassword ? 'text' : 'password'}
                   value={newPassword}
                   onChange={(e) => setNewPassword(e.target.value)}
@@ -222,7 +333,39 @@ const SettingsPage = () => {
             </button>
           )}
         </div>
+        {auth().role === 'Coordinator' && (
+            <div className="settings-form-container-signature">
+            <div className="settings-form-group">
+              <label className="settings-signature-label bold">Signature</label>
+              {signatureEditMode ? (
+                <SignatureComponent
+                  initialSignature={signature}
+                  edit={signatureEditMode}
+                  onCancel={handleCancelSignatureClick}
+                  coordinatorId={coordinator.coordinator.id}
+                />
+              ) : (
+                <div className="existing-signature">
+                  <img src={signature} alt="Existing Signature" />
+                  <button className="settings-edit-signature-button" onClick={handleEditSignatureClick}>
+                    Edit Signature
+                  </button>
+                </div>
+              )}
+            </div>
+          </div>
+          
+          )}
       </div>
+      <div className={`settings-overlay ${showSuccessMessage ? 'show' : ''}`} />
+      {showSuccessMessage && (
+        <div className="success-message">
+          <p className='bold' >Your account information has been successfully updated!</p>
+          <button className="settings-btn btn-primary" onClick={() => setShowSuccessMessage(false)}>
+            Close
+          </button>
+        </div>
+      )}
     </div>
   );
 };

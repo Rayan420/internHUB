@@ -48,12 +48,15 @@ app.use('/register', require('./routes/register'));
 app.use('/auth', require('./routes/auth'));
 app.use('refresh', require('./routes/refresh'));
 app.use('/logout', require('./routes/logout'));
+app.use('/internships', require('./routes/apis/internship'));
 
 
 // verify JWT middleware
 app.use(verifyJWT);
 app.use('/users', require('./routes/apis/users'));
 app.use('/coordinator', require('./routes/apis/coordinator'));
+app.use('/coordinator/signature', require('./routes/apis/signature'));
+app.use('/coordinator/requests', require('./routes/apis/coordinatorRequests'));
 app.use('/student', require('./routes/apis/student'));
 app.use('/careercenter', require('./routes/apis/careercenter'));
 app.use('/department', require('./routes/apis/department'));
@@ -62,6 +65,7 @@ app.use('/application', upload.fields([
     { name: 'transcriptFile', maxCount: 1 },
     { name: 'applicationFile', maxCount: 1 },
   ]), require('./routes/apis/application'));
+app.use('/careercenter', require('./routes/apis/careercenter')); 
   
 
 app.get('*', (req, res) => {

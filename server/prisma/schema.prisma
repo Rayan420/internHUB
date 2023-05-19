@@ -36,20 +36,28 @@ model Student {
 }
 
 model Coordinator {
-  id                         Int              @id @unique @default(autoincrement())
-  user                       User             @relation(fields: [userId], references: [id])
-  userId                     Int              @unique
+  id                         Int                @id @unique @default(autoincrement())
+  user                       User               @relation(fields: [userId], references: [id])
+  userId                     Int                @unique
   department                 Department?
   coordinatedInternshipForms InternshipForm[]
-  letterRequests      LetterRequest[]
+  letterRequests             LetterRequest[]
+  signature                  Signature?
+}
 
+model Signature {
+  id              Int       @id @unique @default(autoincrement())
+  createdAt       DateTime  @default(now())
+  imageURL        String    @db.LongText   // Store the URL of the signature image
+  coordinator     Coordinator @relation(fields: [coordinatorId], references: [id])
+  coordinatorId   Int       @unique
 }
 
 model CareerCenter {
   id                          Int              @id @unique @default(autoincrement())
   user                        User             @relation(fields: [userId], references: [id])
   userId                      Int              @unique
-  comantName                  String 
+  companyName                 String           @unique
   careerCenterInternshipForms InternshipForm[]
 }
 
@@ -92,6 +100,28 @@ model LetterRequest {
   rejectionReason     String?
 
 }
+model InternshipOpportunity {
+  id            Int      @id @default(autoincrement())
+  title         String
+  company       String
+  website       String?
+  location      String
+  startDate     DateTime?
+  endDate       DateTime?
+  description   String
+  requirements  String
+  isPaid        Boolean
+  amount        Int?
+  applicationLink String
+  contactEmail  String
+  contactPhone  String
+  department    String?
+
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime? @updatedAt
+}
+
+
 
 
 

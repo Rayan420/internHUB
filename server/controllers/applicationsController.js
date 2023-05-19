@@ -178,12 +178,69 @@ const getStudentApplicationRequests = async (req, res) => {
   }
 };
 
+const getCoordinatorLetterRequests = async (req, res) => {
+  const { coordinatorId } = req.params;
+  try {
+    const letterRequests = await prisma.letterRequest.findMany({
+      where: {
+        coordinatorId: coordinatorId
+      },
+      include: {
+        student: true,
+        coordinator: true
+      },
+      orderBy: {
+        requestDate: 'asc'
+      }
+    });
+
+    res.status(200).json({ letterRequests: letterRequests || [] });
+  } catch (error) {
+    console.error('Error retrieving letter requests:', error);
+    res.status(500).json({ message: 'An error occurred while retrieving the letter requests' });
+  }
+};
+
 
       
+const respondToLetterRequest = async (req, res) => {
+  const { letterRequestId } = req.params;
+  const { rejectionReason } = req.body;
+  const { filename } = req.file; // Assuming the response file is uploaded using multer and stored on the server
+
+  try {
+    const letterRequest = await prisma.letterRequest.findUnique({
+      where: { id: letterRequestId },
+    });
+
+    if (!letterRequest) {
+      return res.status(404).json({ message: 'Letter request not found' });
+    }
+
+    // Update the letter request with the response information
+    const updatedLetterRequest = await prisma.letterRequest.update({
+      where: { id: letterRequestId },
+      data: {
+        approvalDate: new Date(),
+        status: rejectionReason ? 'rejected' : 'approved',
+        rejectionReason: rejectionReason || null,
+        responseFileURL: `path/to/${filename}`, // Store the URL or file path of the response file
+      },
+    });
+
+    res.status(200).json({ message: 'Letter request responded successfully', letterRequest: updatedLetterRequest });
+  } catch (error) {
+    console.error('Error responding to letter request:', error);
+    res.status(500).json({ message: 'An error occurred while responding to the letter request' });
+  }
+};
+
 
 module.exports = {
   createLetterRequest,
   getStudentLetterRequests,
   createApplication,
-  getStudentApplicationRequests
+  getStudentApplicationRequests,
+  getCoordinatorLetterRequests,
+  respondToLetterRequest
 };

@@ -1,3 +1,4 @@
+const { parse } = require('date-fns');
 const prisma  = require('../prisma');
 const bcrypt = require('bcrypt');
 
@@ -66,7 +67,45 @@ const handleNewCoordinator = async (req, res) => {
   }
 };
 
+const getCoordinatorInfo = async (req, res) => {
+  try {
+    const { email } = req.params;
+
+    const userData = await prisma.user.findUnique({
+      where: { email: email },
+      include: {
+        coordinator: true
+      },
+    });
+
+    if (!userData) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+
+    const user = {
+      id: userData.id,
+      firstName: userData.firstName,
+      lastName: userData.lastName,
+      phoneNum: userData.phoneNum,
+      role: userData.role,
+    };
+
+    const coordinator = {
+      id: userData.coordinator.id,
+      // Include other coordinator fields you want to retrieve
+    };
+
+    return res.status(200).json({ user, coordinator });
+  } catch (error) {
+    console.error('Error:', error);
+    return res.status(500).json({ error: 'Internal Server Error' });
+  } finally {
+    await prisma.$disconnect();
+  }
+};
+
+
   
 
 
-  module.exports = { handleNewCoordinator };
+  module.exports = { handleNewCoordinator,getCoordinatorInfo };
