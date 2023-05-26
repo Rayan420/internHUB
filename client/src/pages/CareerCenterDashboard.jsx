@@ -7,13 +7,14 @@ import { Outlet } from "react-router-dom"; // import Outlet from react-router-do
 import { useAuthUser } from "react-auth-kit";
 import { useAuthHeader } from "react-auth-kit";
 import axios from "../services/axios";
-
+import SGKRequests from "../components/careercentercomponents/SGKRequests";
 const CareerCenterDashboard = () => {
   // initialize the state variables using the useState hook
   // sample data for the CustomTable component
   const auth = useAuthUser();
   const authHeader = useAuthHeader();
   const [user, setUser] = useState({});
+  const [careercenter, setCareerCenter] = useState({});
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
@@ -39,6 +40,13 @@ const CareerCenterDashboard = () => {
           signout();
         }
       } finally {
+        const { email } = auth() || {};
+        const { data } = await axios.get("/careercenter/" + email, {
+          headers: {
+            authorization: authHeader(),
+          },
+        });
+        setCareerCenter(data);
         setIsLoading(false);
         console.log(user)
       }
@@ -50,7 +58,8 @@ const CareerCenterDashboard = () => {
     
   }, []);
  
-
+  console.log("user",user);
+  console.log("careercenter",careercenter.id);
   if (isLoading) {
     return (
       <div className="loading-spinner">
@@ -85,8 +94,8 @@ const CareerCenterDashboard = () => {
           message="You're now logged in to your account and ready to get started.  From your dashboard, you can post Internship Listings, deliver SGK requests, and access all of our features and resources."
         />
 
-       
-
+        {/* SGK Requests */}
+        <SGKRequests careerCenterId={careercenter.careerCenter} />
       </div>
       <Outlet />
     </div>

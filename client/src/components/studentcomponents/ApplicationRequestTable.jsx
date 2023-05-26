@@ -69,6 +69,7 @@ const ApplicationRequestTable = ({ studentId }) => {
           // Perform download logic here
           window.open(url);
           console.log(`Downloading ${label}`);
+          console.log(`URL: ${url}`);
         }
       }}
       disabled={disabled}
@@ -77,6 +78,7 @@ const ApplicationRequestTable = ({ studentId }) => {
     </button>
   );
 
+  console.log('application rerquests', applicationRequests);
   return (
     <div>
       <h2 className="table-heading">Application Requests</h2>
@@ -129,7 +131,7 @@ const ApplicationRequestTable = ({ studentId }) => {
                     </button>
                   ) : (
                     <DownloadButton
-                      url={request.SGKFileURL}
+                      url={request.sgkFileURL}
                       disabled={request.status !== 'Completed'}
                       label="Download SGK"
                     />
@@ -156,6 +158,7 @@ const ApplicationRequestTable = ({ studentId }) => {
         onClose={handleCloseModal}
         rejectionReason={selectedApplication?.rejectionReason}
         url={selectedApplication?.applicationFileURL}
+        letterReq={false}
       />
     </div>
   );

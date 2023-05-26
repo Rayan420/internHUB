@@ -2,10 +2,13 @@ import React, { useState, useEffect } from "react";
 import axios from "../../services/axios";
 import { useAuthHeader } from "react-auth-kit";
 import Pagination from "@mui/material/Pagination";
+import Modal from './RejectionModal';
 
 const LetterRequestTable = ({ studentId }) => {
   const [letterRequests, setLetterRequests] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
+  const [selectedApplication, setSelectedApplication] = useState(null);
+  const [showModal, setShowModal] = useState(false);
   const itemsPerPage = 5;
   const authHeader = useAuthHeader();
 
@@ -26,6 +29,16 @@ const LetterRequestTable = ({ studentId }) => {
     fetchLetterRequests();
   }, [studentId]);
 
+
+  const handleOpenModal = (application) => {
+    setSelectedApplication(application);
+    setShowModal(true);
+  };
+
+  const handleCloseModal = () => {
+    setSelectedApplication(null);
+    setShowModal(false);
+  };
   const handleChangePage = (event, value) => {
     setCurrentPage(value);
   };
@@ -33,6 +46,24 @@ const LetterRequestTable = ({ studentId }) => {
   const startIndex = (currentPage - 1) * itemsPerPage;
   const endIndex = startIndex + itemsPerPage;
   const paginatedLetterRequests = letterRequests.slice(startIndex, endIndex);
+  console.log("letter rerquests",letterRequests);
+
+  const DownloadButton = ({ url, disabled, label }) => (
+    <button
+      className={`button-cell ${disabled ? 'disabled-button' : ''}`}
+      onClick={() => {
+        if (!disabled) {
+          // Perform download logic here
+          window.open(url);
+          console.log(`Downloading ${label}`);
+          console.log(`URL: ${url}`);
+        }
+      }}
+      disabled={disabled}
+    >
+      {label}
+    </button>
+  );
 
   const getStatusColor = (status) => {
     if (status === "Rejected") {
@@ -88,14 +119,20 @@ const LetterRequestTable = ({ studentId }) => {
                   </span>
                 </td>
                 <td className="table-data">
-                  <button
-                    className={`button-cell ${
-                      request.status === "Approved" ? "" : "disabled"
-                    }`}
-                    disabled={request.status !== "Approved"}
-                  >
-                    Download
-                  </button>
+                {request.status === 'Rejected' ? (
+                    <button
+                      className="button-cell rejected"
+                      onClick={() => handleOpenModal(request)}
+                    >
+                      Rejection Reason
+                    </button>
+                  ) : (
+                    <DownloadButton
+                      url={request.Letter}
+                      disabled={request.status !== 'Approved'}
+                      label="Download Letter"
+                    />
+                  )}
                 </td>
               </tr>
             ))}
@@ -113,6 +150,13 @@ const LetterRequestTable = ({ studentId }) => {
           onChange={handleChangePage}
         />
       )}
+       <Modal
+        open={showModal}
+        onClose={handleCloseModal}
+        rejectionReason={selectedApplication?.rejectionReason}
+        url={selectedApplication?.Letter}
+        letterReq={true}
+      />
     </div>
   );
 };

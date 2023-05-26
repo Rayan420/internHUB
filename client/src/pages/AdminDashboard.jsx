@@ -19,7 +19,12 @@ const AdminDashboard = () => {
   const authHeader = useAuthHeader();
   const [user, setUser] = useState({});
   const [isLoading, setIsLoading] = useState(true);
-
+  const [numberOfCareerCenters, setNumberOfCareerCenters] = useState([]);
+  const [numberOfStudents, setNumberOfStudents] = useState([]);
+  const [numberOfCoordinators, setNumberOfCoordinators] = useState([]);
+  const [numberOfApplications, setNumberOfApplications] = useState(0);
+  
+  
   useEffect(() => {
     console.log("Fetching user data");
     console.log(authHeader());
@@ -49,9 +54,58 @@ const AdminDashboard = () => {
   }, []);
   useEffect(() => {
     document.title = "InternHUB - Dashboard";
+    try {
+      const fetchNumberOfUsers = async () => {
+        const response = await axios.get("/users", {
+          headers: {
+            authorization: authHeader(),
+          },
+        });
+        const { users } = response.data;
+        const filteredCareerCenter = users.filter(
+          (user) => user.role === "Careercenter"
+        );
+
+        const filteredStudents = users.filter(
+          (user) => user.role === "Student"
+        );
+
+        const filteredCoordinators = users.filter(
+          (user) => user.role === "Coordinator"
+        );
+
+        
+
+        console.log("Number of users:", filteredCareerCenter);
+        setNumberOfCareerCenters(filteredCareerCenter);
+        setNumberOfStudents(filteredStudents);
+        setNumberOfCoordinators(filteredCoordinators);
+      }
+        fetchNumberOfUsers();
+    } catch (error) {
+      console.error("Error retrieving number of users:", error);
+    }
 
     }, []);
 
+    useEffect(() => {
+      const fetchNumberOfApplications = async () => {
+        try {
+          const response = await axios.get("/applications/count", {
+            headers: {
+              authorization: authHeader(),
+            },
+          });
+          
+          setNumberOfApplications(response.data.applicationCount);
+        } catch (error) {
+          console.error("Error retrieving number of applications:", error);
+        }
+      }
+      fetchNumberOfApplications();
+    }, []);
+
+    console.log("Number of CareerCenters:", numberOfCareerCenters.length);
     if (isLoading) {
       return (
         <div className="loading-spinner">
@@ -91,28 +145,28 @@ const AdminDashboard = () => {
         <div className="info-cards">
           <InfoCard
             title="Total Students"
-            value="100"
+            value={numberOfStudents.length}
             icon={student}
             backgroundColor={"#023047"}
             backgroundColorSecond={"#26308C"}
           />
           <InfoCard
             title="Total Coordinators"
-            value="100"
+            value={numberOfCoordinators.length}
             icon={prof}
             backgroundColor={"#DA722C"}
             backgroundColorSecond={"#A65119"}
           />
           <InfoCard
             title="Total Centers"
-            value="100"
+            value={numberOfCareerCenters.length}
             icon={center}
             backgroundColor={"#5B2B9A"}
             backgroundColorSecond={"#9747FF"}
           />
           <InfoCard
             title="Total Applications"
-            value="100"
+            value={numberOfApplications}
             icon={form}
             backgroundColor={"#21608A"}
             backgroundColorSecond={"#2AA4F4"}

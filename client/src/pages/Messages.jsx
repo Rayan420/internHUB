@@ -87,7 +87,7 @@ const Messages = () => {
     navLinks = [
       { label: "Dashboard", to: "/dashboard", icon: "bxs-grid-alt" },
       { label: "Messages", to: "/messages", icon: "bxs-envelope" },
-      { label: "Applications", to: "/jobs", icon: "bxs-user" },
+      { label: "Applications", to: "/applications", icon: "bxs-user" },
       { label: "Settings", to: "/settings", icon: "bxs-cog" },
     ];
   }

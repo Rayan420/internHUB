@@ -7,6 +7,8 @@ router.route('/').get(usersController.getAllUsers)
     
 router.route('/:email').get(usersController.getUserByEmail)    
 
-router.route('/:id').put(usersController.updateUserInformation);    
+router.route('/:id').put(usersController.updateUserInformation);   
+router.route('/number').delete(usersController.getNumberOfUsers);
+ 
 
 module.exports = router;

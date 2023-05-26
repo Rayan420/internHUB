@@ -75,3 +75,7 @@
 2023-05-16	08:04:11	928641ee-d220-4c38-950e-5fe87c17b770	PayloadTooLargeError	request entity too large 
 2023-05-16	08:04:21	930c6843-19e7-4ab7-b013-0d4d05fb8f74	PayloadTooLargeError	request entity too large 
 2023-05-17	11:11:21	76a577de-8537-4630-9760-9017e31abecf	MulterError	Unexpected field 
+2023-05-21	04:48:28	5e216218-5680-456e-8698-ff3612c0b7ec	Error	ENOENT: no such file or directory, stat 'C:\Users\user\Desktop\internHUB\server\views\index.html' 
+2023-05-21	04:48:47	88db258f-968b-4f0f-ad22-fee9cbdf3d09	Error	ENOENT: no such file or directory, stat 'C:\Users\user\Desktop\internHUB\server\views\index.html' 
+2023-05-21	04:48:47	1e6fb8df-eeb3-4dbf-9591-bc646b133e64	Error	ENOENT: no such file or directory, stat 'C:\Users\user\Desktop\internHUB\server\views\index.html' 
+2023-05-26	01:02:21	4fcb6d71-4cb4-43ef-9646-ddbe1b37153e	MulterError	Unexpected field 

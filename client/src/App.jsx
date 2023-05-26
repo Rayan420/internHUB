@@ -6,6 +6,7 @@ import Users from "./pages/Users";
 import Messages from "./pages/Messages";
 import Internships from "./pages/Internships";
 import SettingsPage from "./pages/Settings";
+import ApplicationsPage from "./pages/ApplicationPage";
 function App() {
   return (
     <Routes>
@@ -55,8 +56,21 @@ function App() {
             {" "}
             <SettingsPage />
           </RequireAuth>
+          
         }
       />
+         <Route
+        exact
+        path="/applications"
+        element={
+          <RequireAuth loginPath="/">
+            {" "}
+            <ApplicationsPage />
+          </RequireAuth>
+          
+        }
+      />
+      
     </Routes>
   );
 }

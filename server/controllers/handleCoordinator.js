@@ -4,12 +4,13 @@ const bcrypt = require('bcrypt');
 
 
 const handleNewCoordinator = async (req, res) => {
-  const { email, password, firstName, lastName, department, phoneNum } = req.body;
+  const { email, password, firstName, lastName, department, phoneNum, careerCenterId } = req.body;
 
   try {
-    if(!email || !password || !firstName || !lastName || !department) {
+    if (!email || !password || !firstName || !lastName || !department || !careerCenterId) {
       return res.status(400).json({ message: 'Please fill in all required fields.' });
     }
+
     // Check if coordinator with the email already exists
     const duplicate = await prisma.User.findUnique({
       where: {
@@ -21,7 +22,19 @@ const handleNewCoordinator = async (req, res) => {
       return res.status(409).json({ message: 'Coordinator with the provided email already exists.' });
     }
 
-    // Retrieve department ID using department name
+    // Retrieve career center and department IDs using their respective IDs
+    const careerCenter = await prisma.CareerCenter.findUnique({
+      where: {
+        userId: parseInt(careerCenterId),
+        
+      },
+    });
+
+    console.log("career center from server",careerCenter);
+    if (!careerCenter) {
+      return res.status(400).json({ message: 'Career center with the provided ID does not exist.' });
+    }
+
     const departmentID = await prisma.Department.findUnique({
       where: {
         name: department,
@@ -36,7 +49,7 @@ const handleNewCoordinator = async (req, res) => {
     const salt = await bcrypt.genSalt(10);
     const hashedPwd = await bcrypt.hash(password, salt);
 
-    // Create coordinator with department ID
+    // Create coordinator with department and career center relationships
     const user = await prisma.User.create({
       data: {
         email: email,
@@ -49,6 +62,9 @@ const handleNewCoordinator = async (req, res) => {
           create: {
             department: {
               connect: { id: departmentID.id },
+            },
+            careerCenter: {
+              connect: { id: parseInt(careerCenter.id) },
             },
           },
         },

@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-const Modal = ({ open, onClose, rejectionReason, url }) => {
+const Modal = ({ open, onClose, rejectionReason, url, letterReq }) => {
   const handleCloseModal = () => {
     onClose();
   };
@@ -32,7 +32,14 @@ const Modal = ({ open, onClose, rejectionReason, url }) => {
             <div className='text-container'>
               {rejectionReason}
             </div>
-            <DownloadButton label={"Download Aplication Form"} url={url}/>
+            {letterReq ? (
+              <button className='button-cell rejected' onClick={handleCloseModal}
+              >
+                close
+              </button>
+            ):(
+              <DownloadButton label={"Download Aplication Form"} url={url}/>
+            )}
           </div>
       </div>
       

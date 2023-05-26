@@ -50,7 +50,7 @@ const SettingsPage = () => {
     navLinks = [
       { label: "Dashboard", to: "/dashboard", icon: "bxs-grid-alt" },
       { label: "Messages", to: "/messages", icon: "bxs-envelope" },
-      { label: "Applications", to: "/jobs", icon: "bxs-user" },
+      { label: "Applications", to: "/applications", icon: "bxs-user" },
       { label: "Settings", to: "/settings", icon: "bxs-cog" },
     ];
   }
@@ -62,6 +62,7 @@ const SettingsPage = () => {
       { label: "Settings", to: "/settings", icon: "bxs-cog" },
     ];
   }
+ 
   useEffect(() => {
     const fetchUser = async () => {
       try {
@@ -82,55 +83,63 @@ const SettingsPage = () => {
     fetchUser();
   }, []);
 
-  useEffect(() => {
-    console.log('Fetching coordinator data');
-    const fetchCoordinatorData = async () => {
-      try {
-        const { email } = auth() || {};
-        await new Promise((resolve) => setTimeout(resolve, 2000));
-        const { data } = await axios.get('/coordinator/' + email, {
-          headers: {
-            authorization: authHeader(),
-          },
-        });
-        setCoordinator(data);
-        console.log(data);
-      } catch (error) {
-        console.log(error);
-        if (error.response.status === 400 || error.response.status === 500) {
-          // Handle error
+  if(auth().role == 'Coordinator')
+  {
+    useEffect(() => {
+      console.log('Fetching coordinator data');
+      const fetchCoordinatorData = async () => {
+        try {
+          const { email } = auth() || {};
+          await new Promise((resolve) => setTimeout(resolve, 2000));
+          const { data } = await axios.get('/coordinator/' + email, {
+            headers: {
+              authorization: authHeader(),
+            },
+          });
+          setCoordinator(data);
+          console.log(data);
+        } catch (error) {
+          console.log(error);
+          if (error.response.status === 400 || error.response.status === 500) {
+            // Handle error
+          }
+        } finally {
+          setIsLoadingCoordinator(false);
         }
-      } finally {
-        setIsLoadingCoordinator(false);
-      }
-    };
-    fetchCoordinatorData();
-  }, []);
+      };
+      fetchCoordinatorData();
+    }, []);
+  }
+  
 
-  useEffect(() => {
-    console.log('Fetching coordinator signature');
-    const fetchCoordinatorSignature = async () => {
-      try {
-        const coordinatorId = coordinator.coordinator.id;
-        const response = await axios.get(`/coordinator/signature/${coordinatorId}`, {
-          headers: {
-            authorization: authHeader(),
-          },
-        });
-
-        setSignature(response.data.signatureURL);
-        console.log(response);
-      } catch (error) {
-        console.log(error);
-        if (error.response && (error.response.status === 400 || error.response.status === 500)) {
-          // Handle error
+  if(auth().role == 'Coordinator')
+  {
+    useEffect(() => {
+      console.log('Fetching coordinator signature');
+      const fetchCoordinatorSignature = async () => {
+        try {
+          const coordinatorId = coordinator.coordinator.id;
+          const response = await axios.get(`/coordinator/signature/${coordinatorId}`, {
+            headers: {
+              authorization: authHeader(),
+            },
+          });
+  
+          setSignature(response.data.signatureURL);
+          console.log(response);
+        } catch (error) {
+          console.log(error);
+          if (error.response && (error.response.status === 400 || error.response.status === 500)) {
+            // Handle error
+          }
+        } finally {
+          setIsLoadingSignature(false);
         }
-      } finally {
-        setIsLoadingSignature(false);
-      }
-    };
-    fetchCoordinatorSignature();
-  }, [coordinator]);
+      };
+      fetchCoordinatorSignature();
+    }, [coordinator]);
+  }
+  
 
   useEffect(() => {
     if (!isLoadingUser && !isLoadingCoordinator && !isLoadingSignature) {
@@ -166,7 +175,7 @@ const SettingsPage = () => {
 
   const handleSaveClick = async () => {
    
-
+    
     try {
       const updatedUser = {
         ...user,
@@ -214,7 +223,7 @@ const SettingsPage = () => {
     );
   } 
 
-  if (isLoadingUser || isLoadingCoordinator || isLoadingSignature) {
+  if (isLoadingUser) {
     return (
       <div className="loading-spinner">
       <h3>Loading Your Information <span className="ellipsis"></span></h3>

@@ -38,7 +38,6 @@ const StudentDashboard = () => {
     email: "",
   });
   const [isLoading, setIsLoading] = useState(true);
-  const [letterReq , setLetterReq] = useState([{}]);
   useEffect(() => {
     const fetchUserInfo = async () => {
       try {

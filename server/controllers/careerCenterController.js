@@ -59,4 +59,45 @@ const handleNewCareerCenter = async (req, res) => {
   }
 };
 
-module.exports = { handleNewCareerCenter };
+const getCareerCenterInfo = async (req, res) => {
+  try {
+    const { email } = req.params;
+    console.log(email);
+
+    const userData = await prisma.user.findUnique({
+      where: { email: email },
+      include: {
+        careerCenter: true
+      },
+    });
+
+    if (!userData) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+
+    const user = {
+      id: userData.id,
+      firstName: userData.firstName,
+      lastName: userData.lastName,
+      phoneNum: userData.phoneNum,
+      role: userData.role,
+    };
+
+    const careerCenter = {
+      id: userData.careerCenter.id,
+    };
+
+    return res.status(200).json({ user, careerCenter });
+  } catch (error) {
+    console.error('Error:', error);
+    return res.status(500).json({ error: 'Internal Server Error' });
+  } finally {
+    await prisma.$disconnect();
+  }
+};
+
+module.exports = 
+{ 
+  handleNewCareerCenter,
+  getCareerCenterInfo 
+};

@@ -8,7 +8,7 @@ import axios from "../services/axios";
 import AddNewUser from "../components/usercomponents/AddNewUser";
 import CreateDepartment from "../components/usercomponents/CreateDepartment";
 import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
-
+import UsersTable from "../components/usercomponents/ViewUsers";
 
 const Users = () => {
 
@@ -52,6 +52,7 @@ const Users = () => {
         
 
         }, []);
+
         if (isLoading) {
           return (
             <div className="loading-spinner">
@@ -79,10 +80,13 @@ const Users = () => {
         <Header title="Users" />
         <Tabs selectedIndex={activeTabIndex} onSelect={handleTabChange}>
               <TabList className="tabslist user-page-tabslist">
+                <Tab className="tab" selectedClassName="tab--selected">View Users</Tab>
                 <Tab className="tab" selectedClassName="tab--selected">Create Users</Tab>
                 <Tab className="tab" selectedClassName="tab--selected">Create Department</Tab>
               </TabList>
-
+              <TabPanel>
+                <UsersTable />
+              </TabPanel>
               <TabPanel>
                 <AddNewUser />
               </TabPanel>

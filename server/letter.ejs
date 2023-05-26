@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Internship Letter</title>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    /* styles.css */
+
+    /* Reset default margins and paddings */
+    body, h1, h2, p {
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: Arial, sans-serif;
+      font-size: 14px;
+      position: relative;
+      height: 100%;
+    }
+
+    header {
+      display: flex;
+      align-items: center;
+    }
+
+    .logo-container {
+      flex: 0 0 auto;
+    }
+
+    .logo {
+      width: 150px;
+    }
+
+    .header-line {
+      flex: 1;
+      height: 3px;
+      background: linear-gradient(to right, black 50%, turquoise 50%);
+    }
+
+    .content {
+      padding: 20px;
+      margin-bottom: 80px; /* Add bottom margin to accommodate the footer */
+      min-height: calc(100% - 160px); /* Set min-height to fill remaining space on the page */
+      box-sizing: border-box; /* Ensure padding is included in the height calculation */
+    }
+
+    .subject h2 {
+      font-size: 16px;
+      font-weight: bold;
+    }
+
+    .subject p {
+      margin-bottom: 10px;
+    }
+
+    .title {
+      text-align: center;
+      font-size: 24px;
+      font-weight: bold;
+      margin: 20px 0;
+    }
+
+    .salutation {
+      margin-bottom: 10px;
+    }
+
+    .intro {
+      margin-bottom: 20px;
+    }
+
+    .request {
+      margin-bottom: 20px;
+    }
+
+    .contact {
+      margin-bottom: 20px;
+    }
+
+    .gratitude {
+      margin-bottom: 20px;
+    }
+
+    .coordinator-name {
+      font-weight: bold;
+      margin-bottom: 5px;
+    }
+
+    .student-name {
+      font-weight: bold;
+    }
+
+    footer {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      padding: 20px;
+      background-color: #f0f0f0;
+      text-align: right;
+      background-color: transparent;
+    }
+
+    .line {
+      width: 100%;
+      height: 3px;
+      background: linear-gradient(to right, black 50%, turquoise 50%);
+    }
+
+    .address {
+      margin-top: 5px;
+    }
+
+    .signature {
+      width: 150px;
+      margin-top: 20px;
+    }
+
+    /* Additional styles for responsive design */
+    @media screen and (max-width: 768px) {
+      header {
+        flex-direction: column;
+        align-items: center;
+      }
+
+      .header-line {
+        margin-top: 20px;
+        margin-bottom: 20px;
+      }
+
+      footer {
+        text-align: left;
+      }
+
+      .line {
+        width: 100%;
+      }
+
+      .signature {
+        margin: 20px auto;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="logo-container">
+      <img src="https://uskudar.edu.tr/assets/kurumsal/logo/jpg/uskudar-universitesi-logo.jpg" alt="University Logo" class="logo">
+    </div>
+    <div class="header-line"></div>
+  </header>
+
+  <div class="content">
+    <div class="subject">
+      <p>Student: <span class="student-name"><%= studentName %></span></p>
+      <p>Date: <%= date %></p>
+    </div>
+
+    <h1 class="title">Internship Affirmation Letter</h1>
+
+    <p class="salutation">Dear Sir/Madam,</p>
+
+    <p class="intro">We are writing to affirm that as part of the academic curriculum at Üsküdar University, the student enrolled in our program is required to participate in an internship program. This letter serves as formal notification that the student must fulfill this requirement during their study period.</p>
+
+    <p class="request">We kindly request your support and cooperation in providing a valuable internship opportunity for him/her. Your expertise and guidance will significantly contribute to his/her professional development and future career prospects.</p>
+
+    <p class="contact">Please feel free to contact us if you require any additional information or have specific requirements regarding the internship. We would be grateful for your positive response and assistance in this matter.</p>
+
+    <p class="gratitude">Thank you for considering our request.</p>
+
+    <div class="coordinator">
+      <p class="coordinator-name"><%= coordinatorName %></p>
+      <p class="university">Üsküdar University</p>
+      <img src="<%= coordinatorSignatureUrl %>" alt="Coordinator Signature" class="signature">
+    </div>
+  </div>
+
+  <footer>
+    <div class="line"></div>
+    <p class="address">Altunizade Mah. Haluk Türksoy Sk. No:14 PK:34662 Üsküdar/İstanbul/Turkey<br>P: +90 216 400 22 22 F: +90 216 474 12 56 e-mail:info@uskudar.edu.tr</p>
+  </footer>
+</body>
+</html>

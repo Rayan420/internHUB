@@ -7,6 +7,7 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+
 model User {
   id            Int           @id @unique @default(autoincrement())
   email         String        @unique
@@ -21,6 +22,16 @@ model User {
   careerCenter  CareerCenter?
   chats         Chat[]        @relation("chat_users")
   messages      Message[]
+  notifications Notification[]
+}
+model Notification {
+  id      Int     @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  read    Boolean @default(false)
+  message String
+
+  user    User    @relation(fields: [userId], references: [id])
+  userId  Int
 }
 
 model Student {
@@ -36,13 +47,15 @@ model Student {
 }
 
 model Coordinator {
-  id                         Int                @id @unique @default(autoincrement())
-  user                       User               @relation(fields: [userId], references: [id])
-  userId                     Int                @unique
+  id                         Int                       @id @unique @default(autoincrement())
+  user                       User                      @relation(fields: [userId], references: [id])
+  userId                     Int                       @unique
   department                 Department?
-  coordinatedInternshipForms InternshipForm[]
+  coordinatedInternshipForms  InternshipForm[]
   letterRequests             LetterRequest[]
   signature                  Signature?
+  careerCenter               CareerCenter?             @relation("CareerCenterCoordinator", fields: [careerCenterId], references: [id])
+  careerCenterId             Int?
 }
 
 model Signature {
@@ -54,11 +67,12 @@ model Signature {
 }
 
 model CareerCenter {
-  id                          Int              @id @unique @default(autoincrement())
-  user                        User             @relation(fields: [userId], references: [id])
-  userId                      Int              @unique
-  companyName                 String           @unique
-  careerCenterInternshipForms InternshipForm[]
+  id                          Int                     @id @unique @default(autoincrement())
+  user                        User                    @relation(fields: [userId], references: [id])
+  userId                      Int                     @unique
+  companyName                 String                  @unique
+  coordinators                Coordinator[]           @relation("CareerCenterCoordinator")
+  internshipForms             InternshipForm[]
 }
 
 // Department model
@@ -85,7 +99,10 @@ model InternshipForm {
   applicationFileURL  String?       @db.VarChar(255)   // Store the URL of the application file
   rejectionReason    String?
   responseDate    DateTime?
+  sgkFileURL          String?       @db.VarChar(255)   // Store the URL of the sgk file
+  sgkStatus           String?
 }
+
 model LetterRequest {
   id                  String        @id @default(uuid()) @unique
   student             Student       @relation(fields: [studentId], references: [id])

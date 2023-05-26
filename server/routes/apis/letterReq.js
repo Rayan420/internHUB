@@ -8,6 +8,7 @@ router.route('/').post(applicationsController.createLetterRequest);
 // Get letter requests for a student
 router.route('/:studentId').get(applicationsController.getStudentLetterRequests);
 
+router.route('/:id/letterAnswer').post(applicationsController.respondToLetterRequest);
 
 
 

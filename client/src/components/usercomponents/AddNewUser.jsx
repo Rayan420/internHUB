@@ -1,6 +1,8 @@
 import { useState, useEffect } from 'react';
 import axios from '../../services/axios';
 import { useAuthHeader } from "react-auth-kit";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const AddNewUser = () => {
   const authHeader = useAuthHeader();
@@ -17,6 +19,8 @@ const AddNewUser = () => {
   const [Msg, setMsg] = useState("");
   const [successMsg, setSuccessMsg] = useState("");
   const [error, setError] = useState(false);
+  const [selectedCareerCenter, setSelectedCareerCenter] = useState("");
+  const [careerCenters, setCareerCenters] = useState([]);
 
   const updateEmail = () => {
     let domain = "";
@@ -37,9 +41,38 @@ const AddNewUser = () => {
     updateEmail();
   }, [firstName, lastName, userType]);
 
+  useEffect(() => {
+    const fetchUsers = async () => {
+      try {
+        const response = await axios.get("/users", {
+          headers: {
+            authorization: authHeader(),
+          },
+        });
+        const { users } = response.data;
+        // Filter out only the career centers
+        const filteredCareerCenters = users
+        .filter((user) => user.role === "Careercenter")
+        .map((user) => ({
+          id: user.id,
+          companyName: user.careerCenter.companyName,
+        }));
+        console.log("filtered user: ",filteredCareerCenters);
+        setCareerCenters(filteredCareerCenters);
+      } catch (error) {
+        console.error("Failed to fetch users. Please try again.");
+      }
+    };
+
+    fetchUsers();
+  }, []);
+
+  console.log("career centers: ", careerCenters);
   const handleUserTypeChange = (event) => {
     setUserType(event.target.value);
+    setSelectedCareerCenter(null); // Reset selected career center
   };
+
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -56,6 +89,7 @@ const AddNewUser = () => {
               lastName: lastName,
               phoneNum: phoneNum,
               department: department,
+              careerCenterId: selectedCareerCenter === "" ? null : selectedCareerCenter,
             },
             {
               headers: {
@@ -64,14 +98,20 @@ const AddNewUser = () => {
             }
           )
           .then((res) => {
-            setSuccessMsg(res.data.message);
-            setError(false);
-            setMsg("");
+            toast.success(
+              <span> {res.data.message} </span>);
+              window.scrollTo(0, 0); // Scroll to top of the page
+  
+            
           })
           .catch((err) => {
-            setMsg(err.response.data.message);
-            setError(true);
-            setSuccessMsg("");
+            toast.error(
+              <span>
+                {err.response.data.message}!
+              </span>
+            );   
+            window.scrollTo(0, 0); // Scroll to top of the page
+  
           });
         break;
       case "Student":
@@ -94,14 +134,19 @@ const AddNewUser = () => {
             }
           )
           .then((res) => {
-            setSuccessMsg(res.data.message);
-            setError(false);
-            setMsg("");
+            toast.success(
+              <span> {res.data.message} </span>);
+              window.scrollTo(0, 0); // Scroll to top of the page
+
           })
           .catch((err) => {
-            setMsg(err.response.data.message);
-            setError(true);
-            setSuccessMsg("");
+            toast.error(
+              <span>
+                {err.response.data.message}!
+              </span>
+            ); 
+            window.scrollTo(0, 0); // Scroll to top of the page
+
           });
         break;
       case "Careercenter":
@@ -123,18 +168,25 @@ const AddNewUser = () => {
             }
           )
           .then((res) => {
-            setSuccessMsg(res.data.message);
-            setError(false);
-            setMsg("");
+            toast.success(
+              <span> {res.data.message} </span>);
+              window.scrollTo(0, 0); // Scroll to top of the page
+
           })
           .catch((err) => {
-            setMsg(err.response.data.message);
-            setError(true);
-            setSuccessMsg("");
+            toast.error(
+              <span>
+                {err.response.data.message}!
+              </span>
+            ); 
+            window.scrollTo(0, 0); // Scroll to top of the page
           });
         break;
       default:
-        setMsg("Please fill out the form.");
+        toast.error(
+          <span>
+            Please fill out the form.!
+          </span>);
         break;
     }
   };
@@ -170,6 +222,25 @@ const AddNewUser = () => {
               value={department}
               onChange={(e) => setDepartment(e.target.value)}
             />
+
+            {/* Add career center selection */}
+            <label htmlFor="careerCenter">Career Center</label>
+            {careerCenters.length > 0 && (
+                  <select
+                    id="careerCenter"
+                    value={selectedCareerCenter || ""}
+                    onChange={(e) => setSelectedCareerCenter(e.target.value)}
+                  >
+                    <option value="">Select a Career Center</option>
+                    {/* Render career center options */}
+                    {careerCenters.map((careerCenter) => (
+                      <option key={careerCenter.id} value={careerCenter.id}>
+                        {careerCenter.companyName}
+                      </option>
+                    ))}
+                  </select>
+                )}
+
           </>
         );
       case "Careercenter":
@@ -196,8 +267,6 @@ const AddNewUser = () => {
   return (
     <div className="create-user">
       <h2>Create User</h2>
-      <h3 className="errmsg">{Msg}</h3>
-      <h3 className="successmsg">{successMsg}</h3>
       <form onSubmit={handleSubmit}>
         <div className="form-group">
           <label htmlFor="userType">User Type</label>
@@ -221,7 +290,7 @@ const AddNewUser = () => {
           <label htmlFor="lastName">Last Name</label>
           <input
             type="text"
-            id="last Name"
+            id="lastName"
             value={lastName}
             onChange={(e) => setLastName(e.target.value)}
           />
@@ -265,6 +334,8 @@ const AddNewUser = () => {
         {renderInputFields()}
         <button type="submit">Create User</button>
       </form>
+      <ToastContainer />
+
     </div>
   );
 };

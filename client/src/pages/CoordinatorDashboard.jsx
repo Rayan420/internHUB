@@ -7,6 +7,7 @@ import { useAuthUser } from "react-auth-kit";
 import { useAuthHeader } from "react-auth-kit";
 import axios from "../services/axios";
 import RequestViewer from "../components/coordinatorcomponents/RequestViewer";
+import UploadInternFiles from "../components/coordinatorcomponents/UploadInternFiles";
 
 const CoordinatorDashboard = () => {
   const auth = useAuthUser();
@@ -55,6 +56,8 @@ const CoordinatorDashboard = () => {
     );
   }
 
+  console.log("the coordinator id: ", coordinator.coordinator.id)
+const coordinatorId = coordinator.coordinator.id
   return (
     <div className="container">
       {/* NAVBAR */}
@@ -75,12 +78,26 @@ const CoordinatorDashboard = () => {
         <Header title="Dashboard" />
         {/* welcome card */}
         <WelcomeCard
-          recipient={coordinator.firstName + " " + coordinator.lastName}
+          recipient={coordinator.user.firstName + " " +coordinator.user.lastName}
           message="You're now logged in to your account and ready to get started. From your dashboard, access your student's Internship requests, generate letters on request, and access all of our features and resources."
         />
+       
+       <div  className="request-cards-row coordinator-send-forms">
+          <UploadInternFiles 
+              coordinatorId={coordinator.coordinator.id}
+              numButtons={1}
+              buttonLabels={["Send"]}
+              content={
+                <p>
+                  Upload your student's internship application form files here. 
+                </p>
+              }
+            />
+       </div>
+       
         
         {/* Request Viewer */}
-        <RequestViewer coordinatorId={coordinator.id} />
+        <RequestViewer coordinatorId={coordinatorId} />
       </div>
       <Outlet />
     </div>
