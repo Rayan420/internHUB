@@ -16,6 +16,8 @@ const CareerCenterDashboard = () => {
   const [user, setUser] = useState({});
   const [careercenter, setCareerCenter] = useState({});
   const [isLoading, setIsLoading] = useState(true);
+  
+  // useeffect fetch data
 
   useEffect(() => {
     console.log("Fetching user data");
