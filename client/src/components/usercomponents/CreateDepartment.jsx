@@ -16,6 +16,19 @@ const CreateDepartment = () => {
     setCode(event.target.value);
   };
 
+  const handleDeleteDepartment = async (event) => {
+    event.preventDefault();
+    // Perform form submission logic here
+    const res = await axios.delete(`/department/${code}`, {
+      headers: {
+        authorization: authHeader(),
+      },
+    });
+    setSuccessMsg(res.data.message);
+    setMsg("");
+
+  };
+
   const handleSubmit = async (event) => {
     event.preventDefault();
     // Perform form submission logic here
@@ -76,10 +89,11 @@ const CreateDepartment = () => {
         <button className="create-department-button" type="submit">
           Create Department
         </button>
-        <button className="delete-department-button" type="submit">
+        <button className="delete-department-button" onClick={handleDeleteDepartment}>
           Delete Department
         </button>
       </form>
+      
     </div>
   );
 };

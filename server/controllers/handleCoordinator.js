@@ -7,7 +7,7 @@ const handleNewCoordinator = async (req, res) => {
   const { email, password, firstName, lastName, department, phoneNum, careerCenterId } = req.body;
 
   try {
-    if (!email || !password || !firstName || !lastName || !department || !careerCenterId) {
+    if (!email || !password || !firstName || !lastName || !department) {
       return res.status(400).json({ message: 'Please fill in all required fields.' });
     }
 
@@ -22,27 +22,35 @@ const handleNewCoordinator = async (req, res) => {
       return res.status(409).json({ message: 'Coordinator with the provided email already exists.' });
     }
 
-    // Retrieve career center and department IDs using their respective IDs
-    const careerCenter = await prisma.CareerCenter.findUnique({
-      where: {
-        userId: parseInt(careerCenterId),
-        
+    let coordinatorData = {
+      email: email,
+      password: password,
+      firstName: firstName,
+      lastName: lastName,
+      role: 'Coordinator',
+      phoneNum: phoneNum,
+      coordinator: {
+        create: {
+          department: {
+            connect: { name: department },
+          },
+        },
       },
-    });
+    };
 
-    console.log("career center from server",careerCenter);
-    if (!careerCenter) {
-      return res.status(400).json({ message: 'Career center with the provided ID does not exist.' });
-    }
+    if (careerCenterId) {
+      // Retrieve career center using the provided ID
+      const careerCenter = await prisma.CareerCenter.findUnique({
+        where: {
+          userId: parseInt(careerCenterId),
+        },
+      });
 
-    const departmentID = await prisma.Department.findUnique({
-      where: {
-        name: department,
-      },
-    });
-
-    if (!departmentID) {
-      return res.status(400).json({ message: 'Department with the provided name does not exist.' });
+      if (careerCenter) {
+        coordinatorData.coordinator.create.careerCenter = {
+          connect: { id: careerCenter.id },
+        };
+      }
     }
 
     // Hash the password using bcrypt
@@ -52,30 +60,15 @@ const handleNewCoordinator = async (req, res) => {
     // Create coordinator with department and career center relationships
     const user = await prisma.User.create({
       data: {
-        email: email,
+        ...coordinatorData,
         password: hashedPwd,
-        firstName: firstName,
-        lastName: lastName,
-        role: 'Coordinator',
-        phoneNum: phoneNum,
-        coordinator: {
-          create: {
-            department: {
-              connect: { id: departmentID.id },
-            },
-            careerCenter: {
-              connect: { id: parseInt(careerCenter.id) },
-            },
-          },
-        },
       },
-      include: { 
+      include: {
         coordinator: true,
         chats: true,
         messagesSent: true,
         messagesReceived: true,
-
-       },
+      },
     });
 
     return res.status(201).json({ message: `New coordinator with email ${email} created!`, data: user });
@@ -83,6 +76,7 @@ const handleNewCoordinator = async (req, res) => {
     return res.status(500).json({ message: err.message });
   }
 };
+
 
 const getCoordinatorInfo = async (req, res) => {
   try {

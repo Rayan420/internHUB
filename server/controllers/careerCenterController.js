@@ -231,7 +231,6 @@ const updateInternshipOpportunity = async (req, res) => {
 };
 
 const deleteInternshipOpportunity = async (req, res) => {
-
   const opportunityId = parseInt(req.params.opportunityId);
   const careerCenterId = parseInt(req.params.careerCenterId);
    // get the opportunity

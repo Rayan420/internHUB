@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from 'react';
 
 // Define the InfoCard component with props
-const InfoCard = ({ title, value, icon, backgroundColor, backgroundColorSecond }) => {
+const InfoCard = ({ title, value, icon, backgroundColor, backgroundColorSecond, applications }) => {
   
   // Declare some variables to be used within the component
   const backgroundColor1 = backgroundColor;
@@ -36,9 +36,12 @@ const InfoCard = ({ title, value, icon, backgroundColor, backgroundColorSecond }
           <h2>{value}</h2>
         </div>
       </div>
-      <div className="more-info" onClick={(e) => setNavv(true)} style={{ 'backgroundColor': backgroundColor1, 'cursor': 'pointer' }}>
+      {applications ? null: (<>
+        <div className="more-info" onClick={(e) => setNavv(true)} style={{ 'backgroundColor': backgroundColor1, 'cursor': 'pointer' }}>
         <p>More info</p>
       </div>
+      </>)}
+     
     </div>
   );
 };

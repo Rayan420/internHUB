@@ -45,4 +45,28 @@ const hadndleNewDepartment = async (req, res) => {
 
 }
 
-module.exports = {hadndleNewDepartment};
+
+const hadndleDeleteDepartment = async (req, res) => {
+ const {code} = req.params;
+    console.log(code);
+    try{
+        //delete department
+    const department = await prisma.Department.delete({
+              where: {
+                id:code,
+          },
+          
+     });
+     if (!department) {
+        return res.status(400).json({ message: 'Department with the provided code does not exist.' });
+    }
+
+    return res.status(201).json({ message: `Department has been deleted!`, data: department });
+    } catch (err) {
+        console.log(err);
+        return res.status(500).json({ message: 'Something went wrong.' });
+    }
+
+
+}
+module.exports = {hadndleNewDepartment, hadndleDeleteDepartment};

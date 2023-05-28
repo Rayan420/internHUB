@@ -149,6 +149,7 @@ const AdminDashboard = () => {
             icon={student}
             backgroundColor={"#023047"}
             backgroundColorSecond={"#26308C"}
+            applications={false}
           />
           <InfoCard
             title="Total Coordinators"
@@ -156,6 +157,7 @@ const AdminDashboard = () => {
             icon={prof}
             backgroundColor={"#DA722C"}
             backgroundColorSecond={"#A65119"}
+            applications={false}
           />
           <InfoCard
             title="Total Centers"
@@ -163,6 +165,7 @@ const AdminDashboard = () => {
             icon={center}
             backgroundColor={"#5B2B9A"}
             backgroundColorSecond={"#9747FF"}
+            applications={false}
           />
           <InfoCard
             title="Total Applications"
@@ -170,6 +173,7 @@ const AdminDashboard = () => {
             icon={form}
             backgroundColor={"#21608A"}
             backgroundColorSecond={"#2AA4F4"}
+            applications={true}
           />
         </div>
 
