@@ -21,7 +21,8 @@ model User {
   coordinator   Coordinator?
   careerCenter  CareerCenter?
   chats         Chat[]        @relation("chat_users")
-  messages      Message[]
+  messagesSent  Message[]     @relation("messages_sent")
+  messagesReceived Message[]  @relation("messages_received")
   notifications Notification[]
 }
 model Notification {
@@ -56,6 +57,8 @@ model Coordinator {
   signature                  Signature?
   careerCenter               CareerCenter?             @relation("CareerCenterCoordinator", fields: [careerCenterId], references: [id])
   careerCenterId             Int?
+  reportFormURL                String?                   @db.VarChar(255)   // Store the URL of the report file
+  applicationFormURL           String?                   @db.VarChar(255)   // Store the URL of the application file
 }
 
 model Signature {
@@ -73,6 +76,8 @@ model CareerCenter {
   companyName                 String                  @unique
   coordinators                Coordinator[]           @relation("CareerCenterCoordinator")
   internshipForms             InternshipForm[]
+  internshipOpportunities  InternshipOpportunity[]
+
 }
 
 // Department model
@@ -118,25 +123,31 @@ model LetterRequest {
 
 }
 model InternshipOpportunity {
-  id            Int      @id @default(autoincrement())
-  title         String
-  company       String
-  website       String?
-  location      String
-  startDate     DateTime?
-  endDate       DateTime?
-  description   String
-  requirements  String
-  isPaid        Boolean
-  amount        Int?
-  applicationLink String
-  contactEmail  String
-  contactPhone  String
-  department    String?
+  id                  Int      @id @unique @default(autoincrement())
+  title               String
+  company             String
+  website             String?
+  location            String
+  startDate           DateTime?
+  endDate             DateTime?
+  description         String
+  requirements        String
+  isPaid              Boolean
+  amount              Int?
+  applicationLink     String
+  contactEmail        String
+  contactPhone        String
+  department          String?
+  applicationDeadline DateTime
 
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime? @updatedAt
+  createdAt           DateTime @default(now())
+  updatedAt           DateTime? @updatedAt
+
+  careerCenter        CareerCenter @relation(fields: [careerCenterId], references: [id])
+  careerCenterId      Int
 }
+
+
 
 
 
@@ -151,13 +162,26 @@ model Chat {
 }
 
 model Message {
-  id        Int      @id @default(autoincrement())
-  createdAt DateTime @default(now())
-  title     String?
-  subject   String?
-  text      String
-  chat      Chat     @relation(fields: [chatId], references: [id])
-  chatId    Int
-  sender    User     @relation(fields: [senderId], references: [id])
-  senderId  Int
+  id          Int        @id @default(autoincrement())
+  createdAt   DateTime   @default(now())
+  title       String?
+  subject     String?
+  text        String
+  chat        Chat       @relation(fields: [chatId], references: [id])
+  chatId      Int
+  sender      User       @relation("messages_sent", fields: [senderId], references: [id])
+  senderId    Int
+  receiver    User       @relation("messages_received", fields: [receiverId], references: [id])
+  receiverId  Int
+  attachments Attachment[]
+  read        Boolean    @default(false)
 }
+
+model Attachment {
+  id        Int      @id @default(autoincrement())
+  name      String
+  url       String
+  message   Message  @relation(fields: [messageId], references: [id])
+  messageId Int
+}
+

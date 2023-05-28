@@ -6,40 +6,19 @@ import ComposeModal from "../components/messagecomponents/Compose";
 import { useAuthUser } from "react-auth-kit";
 import { useAuthHeader } from "react-auth-kit";
 import axios from '../services/axios';
+import NotificationModal from "../components/Notification";
 
 const Messages = () => {
   const [showModal, setShowModal] = useState(false);
-  const [messages, setMessages] = useState([
-    {
-      id: 1,
-      sender: "John Doe",
-      time: "10:30 AM",
-      title: "Meeting Reminder",
-      content: "Don't forget our meeting at 11:00 AM today.",
-      read: false,
-    },
-    {
-      id: 2,
-      sender: "Jane Smith",
-      time: "Yesterday",
-      title: "Vacation plans",
-      content:
-        "Hi, just wanted to let you know that I'm planning a vacation next month and I would like to know if you want to join me.",
-      read: true,
-    },
-    {
-      id: 3,
-      sender: "Mark Johnson",
-      time: "2 days ago",
-      title: "Project Update",
-      content:
-        "Hello, I just wanted to give you a quick update on the project we're working on. We're making good progress and everything is going according to plan.",
-      read: true,
-    },
-  ]);
+  
+  const [isNotificationOpen, setIsNotificationOpen] = useState(false);
+  const toggleNotification = () => {
+    setIsNotificationOpen(!isNotificationOpen);
+  };
   const authHeader = useAuthHeader();
   const [user, setUser] = useState({});
   const [isLoading, setIsLoading] = useState(true);
+  const [notifications, setNotifications] = useState([]);
 
   useEffect(() => {
     console.log("Fetching user data");
@@ -55,6 +34,13 @@ const Messages = () => {
         setUser(data);
         console.log(data);
         console.log("auth header:", authHeader());
+         // Fetch user notifications
+         const notificationsResponse = await axios.get(`/notification/${data.id}`, {
+          headers: {
+            authorization: authHeader(),
+          },
+        });
+        setNotifications(notificationsResponse.data.notifications);
       } catch (error) {
         console.log(error);
         if (error.response.status === 401 || error.response.status === 403) {
@@ -73,7 +59,7 @@ const Messages = () => {
     navLinks = [
       { label: "Dashboard", to: "/dashboard", icon: "bxs-grid-alt" },
       { label: "Messages", to: "/messages", icon: "bxs-envelope" },
-      { label: "Internships", to: "/internships", icon: "bxs-user" },
+      { label: "Internships", to: "/internships", icon: "bxs-briefcase" },
       { label: "Settings", to: "/settings", icon: "bxs-cog" },
     ];
   } else if (auth().role === "Admin") {
@@ -87,7 +73,7 @@ const Messages = () => {
     navLinks = [
       { label: "Dashboard", to: "/dashboard", icon: "bxs-grid-alt" },
       { label: "Messages", to: "/messages", icon: "bxs-envelope" },
-      { label: "Applications", to: "/applications", icon: "bxs-user" },
+      { label: "Applications", to: "/applications", icon: "bxs-edit" },
       { label: "Settings", to: "/settings", icon: "bxs-cog" },
     ];
   }
@@ -95,7 +81,7 @@ const Messages = () => {
     navLinks = [
       { label: "Dashboard", to: "/dashboard", icon: "bxs-grid-alt" },
       { label: "Messages", to: "/messages", icon: "bxs-envelope" },
-      { label: "Jobs", to: "/jobs", icon: "bxs-user" },
+      { label: "Jobs", to: "/jobs", icon: "bxs-briefcase" },
       { label: "Settings", to: "/settings", icon: "bxs-cog" },
     ];
   }
@@ -104,7 +90,17 @@ const Messages = () => {
     document.title = "InternHUB - Messages";
 
     }, []);
-
+  // Callback function to update notifications when marked as read
+  const handleNotificationRead = (notificationId) => {
+    setNotifications((prevNotifications) =>
+      prevNotifications.map((notification) => {
+        if (notification.id === notificationId) {
+          return { ...notification, read: true };
+        }
+        return notification;
+      })
+    );
+  };
 
   return (
     <div className="container">
@@ -112,12 +108,32 @@ const Messages = () => {
         links={navLinks}
         name={user.firstName + " " + user.lastName}
         role={auth().role}
+        notificationPlaceholder={
+          <div className="an notification" onClick={toggleNotification}>
+            <i className="bx bxs-bell"></i>
+            <span className="nav-item">Notifications</span>
+            {notifications.filter((notification) => !notification.read).length > 0 && (
+              <div className="unread-count">
+                {notifications.filter((notification) => !notification.read).length}
+              </div>
+            )}
+          </div>
+        }
       />
       <div className="main-content main-message">
         <MessagePageHeader setShowModal={setShowModal} />
-        <Inbox messages={messages} messageCount={messages.length} />
-        <ComposeModal showModal={showModal} setShowModal={setShowModal} />
+        <Inbox  userId={user.id}/>
+        <ComposeModal showModal={showModal} setShowModal={setShowModal}  userId={user.id} />
+        {isNotificationOpen && 
+         <NotificationModal
+         onClose={toggleNotification}
+         notifications={notifications.filter((notification) => !notification.read)}
+         onNotificationRead={handleNotificationRead}
+         userId={user.id}
+       />
+      }
       </div>
+      
     </div>
   );
 };

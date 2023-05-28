@@ -1,26 +1,29 @@
-import React, { useEffect, useState } from "react";
-const ComposeModal = ({ showModal, setShowModal }) => {
-  const [recipientType, setRecipientType] = useState("");
-  const [recipientOptions, setRecipientOptions] = useState([]);
-  const [recipientValue, setRecipientValue] = useState("");
-  const [message, setMessage] = useState("");
+import React, { useState } from "react";
+import axios from '../../services/axios';
+import { useAuthHeader } from "react-auth-kit";
+
+const ComposeModal = ({ showModal, setShowModal, userId }) => {
+  const authHeader = useAuthHeader();
+  const [recipient, setRecipient] = useState("");
+  const [subject, setSubject] = useState("");
+  const [text, setText] = useState("");
   const [attachments, setAttachments] = useState([]);
 
-  const handleRecipientTypeChange = (e) => {
-    setRecipientType(e.target.value);
+  const handleRecipientChange = (e) => {
+    setRecipient(e.target.value);
   };
 
-  const handleRecipientValueChange = (e) => {
-    setRecipientValue(e.target.value);
+  const handleSubjectChange = (e) => {
+    setSubject(e.target.value);
   };
 
-  const handleRecipientOptionSelect = (option) => {
-    setRecipientValue(option.email);
+  const handleTextChange = (e) => {
+    setText(e.target.value);
   };
 
   const handleAttachmentChange = (e) => {
     const newFiles = Array.from(e.target.files);
-    setAttachments((prevFiles) => prevFiles.concat(newFiles));
+    setAttachments((prevFiles) => [...prevFiles, ...newFiles]);
   };
 
   const handleAttachmentDelete = (filename) => {
@@ -29,14 +32,39 @@ const ComposeModal = ({ showModal, setShowModal }) => {
     );
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // code to send message
-    setRecipientOptions("");
-    setSubject("");
-    setBody("");
-    setShowModal(false); // close modal after sending message
+
+    const formData = new FormData();
+    formData.append("senderId", userId);
+    formData.append("recipientEmail", recipient);
+    formData.append("subject", subject);
+    formData.append("text", text);
+    attachments.forEach((file) => formData.append("attachments", file));
+
+    try {
+      const response = await axios.post(`/api/chats/send/${userId}`, formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+          authorization: authHeader(),
+        },
+      });
+
+      // Clear form inputs and close modal
+      setRecipient("");
+      setSubject("");
+      setText("");
+      setAttachments([]);
+      setShowModal(false);
+
+      // Handle success response if needed
+      console.log("Message sent:", response.data);
+    } catch (error) {
+      // Handle error response if needed
+      console.error("Error sending message:", error);
+    }
   };
+
 
   return (
     <>
@@ -54,48 +82,35 @@ const ComposeModal = ({ showModal, setShowModal }) => {
             </div>
             <form onSubmit={handleSubmit}>
               <div className="form-group">
-                <label htmlFor="recipient-type">To:</label>
-                <select
-                  id="recipient-type"
-                  value={recipientType}
-                  onChange={handleRecipientTypeChange}
-                >
-                  <option value="">-- Select Recipient Type --</option>
-                  <option value="admin">Admin</option>
-                  <option value="coordinator">Coordinator</option>
-                  <option value="student">Student</option>
-                </select>
-                {recipientType && (
-                  <input
-                    type="text"
-                    className="form-input"
-                    placeholder="Recipient"
-                    value={recipientValue}
-                    onChange={handleRecipientValueChange}
-                  />
-                )}
-                {recipientOptions.length > 0 && (
-                  <div className="recipient-options">
-                    {recipientOptions.map((option) => (
-                      <div
-                        key={option.email}
-                        className="recipient-option"
-                        onClick={() => handleRecipientOptionSelect(option)}
-                      >
-                        <FaUser /> {option.name} ({option.email})
-                      </div>
-                    ))}
-                  </div>
-                )}
+                <label htmlFor="recipient">To:</label>
+                <input
+                  type="text"
+                  id="recipient"
+                  className="form-input"
+                  placeholder="Recipient Email"
+                  value={recipient}
+                  onChange={handleRecipientChange}
+                />
               </div>
               <div className="form-group">
-                <label htmlFor="message">Message:</label>
+                <label htmlFor="subject">Subject:</label>
+                <input
+                  type="text"
+                  id="subject"
+                  className="form-input"
+                  placeholder="Message Subject"
+                  value={subject}
+                  onChange={handleSubjectChange}
+                />
+              </div>
+              <div className="form-group">
+                <label htmlFor="text">Message:</label>
                 <textarea
-                  id="message"
+                  id="text"
                   className="form-input"
                   placeholder="Type your message here..."
-                  value={message}
-                  onChange={(e) => setMessage(e.target.value)}
+                  value={text}
+                  onChange={handleTextChange}
                 />
               </div>
               <div className="form-group">
@@ -113,13 +128,12 @@ const ComposeModal = ({ showModal, setShowModal }) => {
                       <div key={file.name} className="attachment">
                         <div className="attachment-info">
                           <div className="attachment-thumbnail">
-                            {file.type.includes("image") && (
+                            {file.type.includes("image") ? (
                               <img
                                 src={URL.createObjectURL(file)}
                                 alt={file.name}
                               />
-                            )}
-                            {!file.type.includes("image") && (
+                            ) : (
                               <div className="file-thumbnail"></div>
                             )}
                           </div>

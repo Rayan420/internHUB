@@ -63,7 +63,7 @@ const ApplicationsPage = () => {
         links={[
           { label: "Dashboard", to: "/dashboard", icon: "bxs-grid-alt" },
           { label: "Messages", to: "/messages", icon: "bxs-envelope" },
-          { label: "Applications", to: "/applications", icon: "bxs-briefcase" },
+          { label: "Applications", to: "/applications", icon: "bxs-edit" },
           { label: "Settings", to: "/settings", icon: "bxs-cog" },
         ]}
         name={coordinator.user.firstName + " " +coordinator.user.lastName}

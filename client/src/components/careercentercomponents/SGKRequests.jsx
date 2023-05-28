@@ -111,13 +111,15 @@ const SGKRequests = ({ careerCenterId }) => {
 
   const handleDeleteRequest = async (requestId) => {
     try {
-      await axios.delete(`/careercenter/requests/${careerCenterId.id}/applications/${requestId}`, {
+      await axios.delete(`/careercenter/sgk/${careerCenterId.id}/delete/${requestId}`, {
         headers: {
           authorization: authHeader(),
         },
       });
       toast.success(`Request ${requestId} has been deleted successfully!`);
       setRequests((prevRequests) => prevRequests.filter((request) => request.id !== requestId));
+      // set that status change to trigger a re-render
+      setStatusChange({ requestId, status: "In Progress" });
     } catch (error) {
       console.error("Error deleting request:", error);
     }
@@ -149,6 +151,8 @@ const SGKRequests = ({ careerCenterId }) => {
         <td>{request.id}</td>
         <td>{request.student.user.firstName}</td>
         <td>{request.student.user.lastName}</td>
+        <td>{request.student.user.email}</td>
+
         <td>{request.applicationDate ? request.applicationDate.split("T")[0] : ""}</td>
         <td>
           <button className="button-delete" onClick={() => handleDeleteRequest(request.id)}>
@@ -158,13 +162,14 @@ const SGKRequests = ({ careerCenterId }) => {
       </tr>
     );
   };
-
+  console.log("requests",requests);
   const renderInProgressRequest = (request) => {
     return (
       <tr key={request.id}>
         <td>{request.id}</td>
         <td>{request.student.user.firstName}</td>
         <td>{request.student.user.lastName}</td>
+        <td>{request.student.user.email}</td>
         <td>{request.applicationDate ? request.applicationDate.split("T")[0] : ""}</td>
         <td>
           <button className="button-approve" onClick={() => handleSendSGK(request)}>
@@ -198,6 +203,7 @@ const SGKRequests = ({ careerCenterId }) => {
             <th>Application Number</th>
             <th>First Name</th>
             <th>Surname</th>
+            <th>Email</th>
             <th>Request Date</th>
             <th>Actions</th>
           </tr>

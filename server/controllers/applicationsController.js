@@ -249,6 +249,7 @@ const getCareerCenterApplications = async (req, res) => {
               select: {
                 firstName: true,
                 lastName: true,
+                email: true,
               }
             }
           }
@@ -265,7 +266,89 @@ const getCareerCenterApplications = async (req, res) => {
 };
 
 
+const sendForms = async (req, res) => {
+  initializeApp(config);
+  const storage = getStorage();
 
+  try {
+    const {coordinatorId } = req.body;
+    
+    const reportFile = req.files['reportFile'][0];
+    const applicationFile = req.files['applicationFile'][0];
+
+    // Generate a random unique ID for the letter request
+    const requestId = uuidv4();
+
+    // Get the current date
+    const currentDate = new Date();
+    const formattedDate = format(currentDate, 'yyyy-MM-dd');
+
+    // Set the file name using the original file name and current date
+    const originalFileName = reportFile.originalname;
+    const fileExtension = originalFileName.substring(originalFileName.lastIndexOf('.'));
+    const fileName = `${formattedDate}_${originalFileName}`;
+
+    const appOriginalFileName = applicationFile.originalname;
+    const appFileExtension = appOriginalFileName.substring(appOriginalFileName.lastIndexOf('.'));
+    const appFileName = `${formattedDate}_${appOriginalFileName}`;
+
+    // Create a reference to the storage location
+    const storageRef = ref(storage, `reportForms/${requestId}_${fileName}`);
+    const appStorageRef = ref(storage, `applicationsForms/${requestId}_${appFileName}`);
+
+    // Upload the files to Firebase Storage
+    const uploadTask = uploadBytesResumable(storageRef, reportFile.buffer);
+    const appUploadTask = uploadBytesResumable(appStorageRef, applicationFile.buffer);
+    
+
+    // Wait for the upload to complete
+    await uploadTask;
+    await appUploadTask;
+
+    // Get the download URL of the uploaded file
+    const downloadURL = await getDownloadURL(storageRef);
+    const appDownloadURL = await getDownloadURL(appStorageRef);
+
+    // Save the application to the database
+    await prisma.Coordinator.update({
+      where: { id: parseInt(coordinatorId) },
+      data: {
+        reportFormURL: downloadURL,
+        applicationFormURL: appDownloadURL,
+      },
+    });
+
+    res.status(201).json({ message: 'Internship application and report forms have been sent to students successfull',  });
+  } catch (error) {
+    console.error('Error creating application:', error);
+    res.status(500).json({ error: 'Failed to send Internship application and report forms' });
+  }
+};
+
+const getForms = async (req, res) => {
+  const { coordinatorId } = req.params;
+  try {
+    const applicationForms = await prisma.Coordinator.findUnique({
+      where: {
+        id: parseInt(coordinatorId),
+      },
+      select: {
+        applicationFormURL: true,
+        reportFormURL: true,
+      },
+    });
+    res.status(200).json({
+      message: 'Application forms retrieved successfully',
+      applicationForms: applicationForms || [],
+    });
+    console.log("applicationRequests:", applicationForms); // Check the retrieved applicationRequests
+  } catch (error) {
+    console.error('Error retrieving application forms:', error);
+    res.status(500).json({
+      message: 'An error occurred while retrieving the application requests',
+    });
+  }
+};
 
 
 const sendSGK = async (req, res) => {
@@ -581,4 +664,6 @@ module.exports = {
   respondToApplication,
   getCareerCenterApplications,
   sendSGK,
+  sendForms,
+  getForms,
 };

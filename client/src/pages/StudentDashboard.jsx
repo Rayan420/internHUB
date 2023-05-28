@@ -10,12 +10,17 @@ import axios from '../services/axios'
 import SendApplicationCard from "../components/studentcomponents/SendApplicationCard"; // import the SendApplicationCard component
 import LetterRequestTable from "../components/studentcomponents/LetterRequestTable";
 import ApplicationRequestTable from "../components/studentcomponents/ApplicationRequestTable";
-
+import NotificationModal from "../components/Notification";
+import DownloadFile from "../components/studentcomponents/DownloadFileCard";
 const StudentDashboard = () => {
   // initialize the state variables using the useState hook
   // sample data for the CustomTable component
   const auth = useAuthUser();
   const authHeader = useAuthHeader();
+  const [isNotificationOpen, setIsNotificationOpen] = useState(false);
+  const toggleNotification = () => {
+    setIsNotificationOpen(!isNotificationOpen);
+  };
   const [userInfo, setUserInfo] = useState({
     id: "",
     firstName: "",
@@ -38,33 +43,60 @@ const StudentDashboard = () => {
     email: "",
   });
   const [isLoading, setIsLoading] = useState(true);
+  const [notifications, setNotifications] = useState([]);
+
+
   useEffect(() => {
-    const fetchUserInfo = async () => {
+    const fetchData = async () => {
       try {
         const { email } = auth() || {};
-        // Simulate loading by adding a delay
-        await new Promise(resolve => setTimeout(resolve, 2000));
-        const response = await axios.get('/student/' +email, {
+  
+        // Fetch user info
+        const userInfoResponse = await axios.get('/student/' + email, {
           headers: {
             authorization: authHeader(),
           },
         });
-
-        const { user, student, coordinator } = response.data;
+  
+        const { user, student, coordinator } = userInfoResponse.data;
         setUserInfo(user);
         setStudentInfo(student);
-        setCoordinatorInfo(coordinator); // Set the coordinator information
-
-        setIsLoading(false);
+        setCoordinatorInfo(coordinator);
+  
+        // Fetch user notifications
+        const notificationsResponse = await axios.get(`/notification/${user.id}`, {
+          headers: {
+            authorization: authHeader(),
+          },
+        });
+        setNotifications(notificationsResponse.data.notifications);
+  
       } catch (error) {
         console.error('Error:', error);
       }
+      await new Promise(resolve => setTimeout(resolve, 2000));
+      setIsLoading(false);
     };
+  
+    fetchData();
+  }, [])
 
-    fetchUserInfo();
-    
-   
-  }, []);
+   // Callback function to update notifications when marked as read
+   const handleNotificationRead = (notificationId) => {
+    setNotifications((prevNotifications) =>
+      prevNotifications.map((notification) => {
+        if (notification.id === notificationId) {
+          return { ...notification, read: true };
+        }
+        return notification;
+      })
+    );
+  };
+
+
+
+  console.log(notifications )
+
   useEffect(() => {
     document.title = "InternHUB - Dashboard";
     
@@ -88,11 +120,23 @@ const StudentDashboard = () => {
         links={[
           { label: "Dashboard", to: "/dashboard", icon: "bxs-grid-alt" },
           { label: "Messages", to: "/messages", icon: "bxs-envelope" },
-          { label: "Internships", to: "/internships", icon: "bxs-user" },
+          { label: "Internships", to: "/internships", icon: "bxs-briefcase" },
           { label: "Settings", to: "/settings", icon: "bxs-cog" },
         ]}
         name={userInfo.firstName + " " + userInfo.lastName}
         role={userInfo.role}
+        notificationPlaceholder={
+          <div className="an notification" onClick={toggleNotification}>
+            <i className="bx bxs-bell"></i>
+            <span className="nav-item">Notifications</span>
+            {notifications.filter((notification) => !notification.read).length > 0 && (
+              <div className="unread-count">
+                {notifications.filter((notification) => !notification.read).length}
+              </div>
+            )}
+          </div>
+        }
+        
       />
 
       <div className="main-content main-dashboard">
@@ -106,17 +150,8 @@ const StudentDashboard = () => {
         />
 
         <div className="request-cards-row">
-          <RequestCards
-            numButtons={2}
-            buttonLabels={["Application", "Report"]}
-            content={
-              <>
-                <p>
-                  Uskuadar University <br />
-                  Internship forms
-                </p>
-              </>
-            }
+          <DownloadFile
+           coordinatorId={coordinatorInfo.id}
           />
           <SendApplicationCard
             numButtons={1}
@@ -155,7 +190,14 @@ const StudentDashboard = () => {
          </div>
 
 
-
+         {isNotificationOpen && 
+         <NotificationModal
+         onClose={toggleNotification}
+         notifications={notifications.filter((notification) => !notification.read)}
+         onNotificationRead={handleNotificationRead}
+         userId={userInfo.id}
+       />
+      }
       </div>
       <Outlet />
     </div>

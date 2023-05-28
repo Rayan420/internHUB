@@ -4,6 +4,7 @@ import { useAuthHeader, useAuthUser } from 'react-auth-kit';
 import SideNavbar from '../components/NavBar';
 import Header from '../components/Header';
 import SignatureComponent from '../components/SignatureComponent';
+import NotificationModal from "../components/Notification";
 
 const SettingsPage = () => {
   const auth = useAuthUser();
@@ -28,7 +29,11 @@ const SettingsPage = () => {
   const [coordinator, setCoordinator] = useState({});
   const [signature, setSignature] = useState('');
   const [showSuccessMessage, setShowSuccessMessage] = useState(false);
-
+  const [isNotificationOpen, setIsNotificationOpen] = useState(false);
+  const toggleNotification = () => {
+    setIsNotificationOpen(!isNotificationOpen);
+  };
+  const [notifications, setNotifications] = useState([]);
 
   let navLinks = [];
   
@@ -36,7 +41,7 @@ const SettingsPage = () => {
     navLinks = [
       { label: "Dashboard", to: "/dashboard", icon: "bxs-grid-alt" },
       { label: "Messages", to: "/messages", icon: "bxs-envelope" },
-      { label: "Internships", to: "/internships", icon: "bxs-user" },
+      { label: "Internships", to: "/internships", icon: "bxs-briefcase" },
       { label: "Settings", to: "/settings", icon: "bxs-cog" },
     ];
   } else if (auth().role === "Admin") {
@@ -50,7 +55,7 @@ const SettingsPage = () => {
     navLinks = [
       { label: "Dashboard", to: "/dashboard", icon: "bxs-grid-alt" },
       { label: "Messages", to: "/messages", icon: "bxs-envelope" },
-      { label: "Applications", to: "/applications", icon: "bxs-user" },
+      { label: "Applications", to: "/applications", icon: "bxs-edit" },
       { label: "Settings", to: "/settings", icon: "bxs-cog" },
     ];
   }
@@ -58,7 +63,7 @@ const SettingsPage = () => {
     navLinks = [
       { label: "Dashboard", to: "/dashboard", icon: "bxs-grid-alt" },
       { label: "Messages", to: "/messages", icon: "bxs-envelope" },
-      { label: "Jobs", to: "/jobs", icon: "bxs-user" },
+      { label: "Jobs", to: "/jobs", icon: "bxs-briefcase" },
       { label: "Settings", to: "/settings", icon: "bxs-cog" },
     ];
   }
@@ -74,6 +79,13 @@ const SettingsPage = () => {
           },
         });
         setUser(response.data);
+         // Fetch user notifications
+         const notificationsResponse = await axios.get(`/notification/${response.data.id}`, {
+          headers: {
+            authorization: authHeader(),
+          },
+        });
+        setNotifications(notificationsResponse.data.notifications);
         setIsLoadingUser(false);
       } catch (error) {
         console.error('Error fetching user:', error);
@@ -82,6 +94,18 @@ const SettingsPage = () => {
 
     fetchUser();
   }, []);
+
+ // Callback function to update notifications when marked as read
+ const handleNotificationRead = (notificationId) => {
+  setNotifications((prevNotifications) =>
+    prevNotifications.map((notification) => {
+      if (notification.id === notificationId) {
+        return { ...notification, read: true };
+      }
+      return notification;
+    })
+  );
+};
 
   if(auth().role == 'Coordinator')
   {
@@ -241,6 +265,17 @@ const SettingsPage = () => {
         links={navLinks}
         name={user.firstName + " " + user.lastName}
         role={auth().role}
+        notificationPlaceholder={
+          <div className="an notification" onClick={toggleNotification}>
+            <i className="bx bxs-bell"></i>
+            <span className="nav-item">Notifications</span>
+            {notifications.filter((notification) => !notification.read).length > 0 && (
+              <div className="unread-count">
+                {notifications.filter((notification) => !notification.read).length}
+              </div>
+            )}
+          </div>
+        }
       />
       <div className="main-content main-dashboard">
         {/* this is the div containing the main content of the page */}
@@ -303,7 +338,7 @@ const SettingsPage = () => {
           {editMode && (
             <div className="settings-form-group">
               <label>
-                New Password<span className="required-field">*</span>
+                Password
               </label>
               <div className="settings-password-input-container">
                 <input
@@ -375,6 +410,15 @@ const SettingsPage = () => {
           </button>
         </div>
       )}
+
+      {isNotificationOpen && 
+         <NotificationModal
+         onClose={toggleNotification}
+         notifications={notifications.filter((notification) => !notification.read)}
+         onNotificationRead={handleNotificationRead}
+         userId={user.id}
+       />
+      }
     </div>
   );
 };

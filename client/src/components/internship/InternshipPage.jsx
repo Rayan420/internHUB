@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import PropTypes from "prop-types";
+import { DateTime } from "luxon";
 
 const InternshipPage = ({ internships }) => {
   const [selectedInternshipId, setSelectedInternshipId] = useState(null);
@@ -22,7 +23,10 @@ const InternshipPage = ({ internships }) => {
     if (selectedLocation === "") {
       return true; // No filter selected, show all internships
     }
-    return internship.location === selectedLocation;
+    return (
+      internship.location === selectedLocation &&
+      DateTime.fromISO(internship.applicationDeadline) > DateTime.now()
+    );
   });
 
   const sortedInternships = filteredInternships.sort((a, b) => {
@@ -75,18 +79,22 @@ const InternshipPage = ({ internships }) => {
                   <div className="company-name">{internship.company}</div>
                   <div className="date-location">
                     <div className="date">
-                      <strong>Date:</strong> {internship.startDate} - {internship.endDate}
+                      <strong>Date:</strong> {DateTime.fromISO(internship.startDate).toFormat("dd/MM/yyyy")} - {DateTime.fromISO(internship.endDate).toFormat("dd/MM/yyyy")}
                     </div>
                     <div className="location">
                       <strong>Location:</strong> {internship.location}
                     </div>
                   </div>
-                  <div className="position-title">{internship.title}</div>
+                  <div className="position-title"><strong>Position:</strong> {internship.title}</div>
+                </div>
+                <div className="expiration-date">
+                  <strong>Application Deadline:</strong>{" "}
+                  {DateTime.fromISO(internship.applicationDeadline).toFormat("dd/MM/yyyy")}
                 </div>
               </div>
             ))}
             {sortedInternships.length === 0 && (
-              <div className="internship-empty">No internships available.</div>
+              <div className="internship-empty">No active internships available.</div>
             )}
           </div>
         </div>
@@ -110,13 +118,13 @@ const InternshipPage = ({ internships }) => {
                 <div className="detail-row">
                   <div className="detail-label">Start Date:</div>
                   <div className="detail-value">
-                    {internships.find((i) => i.id === selectedInternshipId).startDate}
+                    {DateTime.fromISO(internships.find((i) => i.id === selectedInternshipId).startDate).toFormat("dd/MM/yyyy")}
                   </div>
                 </div>
                 <div className="detail-row">
                   <div className="detail-label">End Date:</div>
                   <div className="detail-value">
-                    {internships.find((i) => i.id === selectedInternshipId).endDate}
+                    {DateTime.fromISO(internships.find((i) => i.id === selectedInternshipId).endDate).toFormat("dd/MM/yyyy")}
                   </div>
                 </div>
                 <div className="detail-row">
@@ -141,7 +149,7 @@ const InternshipPage = ({ internships }) => {
                   <div className="detail-row">
                     <div className="detail-label">Amount:</div>
                     <div className="detail-value">
-                      {internships.find((i) => i.id === selectedInternshipId).amount}
+                      {internships.find((i) => i.id === selectedInternshipId).amount +" TL/hr"}
                     </div>
                   </div>
                 )}
@@ -166,15 +174,14 @@ const InternshipPage = ({ internships }) => {
                   </div>
                 )}
                 <div className="apply-button-row">
-                  <button
-                    className="apply-button"
+                  <button className="apply-button"
                     onClick={() =>
                       handleApplyClick(
                         internships.find((i) => i.id === selectedInternshipId).applicationLink
                       )
                     }
                   >
-                    Apply
+                    Apply Now
                   </button>
                 </div>
               </div>
@@ -189,7 +196,7 @@ const InternshipPage = ({ internships }) => {
 InternshipPage.propTypes = {
   internships: PropTypes.arrayOf(
     PropTypes.shape({
-      id: PropTypes.string.isRequired,
+      id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
       company: PropTypes.string.isRequired,
       location: PropTypes.string.isRequired,
       startDate: PropTypes.string.isRequired,
@@ -200,8 +207,9 @@ InternshipPage.propTypes = {
       amount: PropTypes.number,
       contactEmail: PropTypes.string.isRequired,
       contactPhone: PropTypes.string.isRequired,
-      applicationLink: PropTypes.string.isRequired,
       department: PropTypes.string,
+      applicationDeadline: PropTypes.string.isRequired,
+      applicationLink: PropTypes.string.isRequired,
     })
   ).isRequired,
 };

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import '../../style/style.css';
+import UploadFileModal from './UploadFileModal';
 
 const UploadInternFiles = ({ numButtons, buttonLabels, content, coordinatorId}) => {
   const [modalOpen, setModalOpen] = useState(false);
@@ -21,6 +21,8 @@ const UploadInternFiles = ({ numButtons, buttonLabels, content, coordinatorId}) 
     <div className="request-card">
       <div className="request-card-content">{content}</div>
       <div className="request-card-buttons">{buttons}</div>
+      {modalOpen && <UploadFileModal onCloseModal={handleCloseModal} coordinatorId={coordinatorId}/>}
+
     </div>
   );
 };

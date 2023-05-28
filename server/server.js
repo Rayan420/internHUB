@@ -9,7 +9,6 @@ const cookieParser = require('cookie-parser');
 const verifyJWT = require('./middleware/verifyJWT');
 const credentials = require('./middleware/credentials');
 const multer = require('multer');
-
 const PORT = process.env.PORT || 3500;
 
 // custom middleware logger
@@ -74,7 +73,23 @@ app.use('/application', upload.fields([
 app.use('/applications/response', require('./routes/apis/applicationResponse'));
 app.use('/careercenter', require('./routes/apis/careercenter')); 
 app.use('/applications/count', require('./routes/apis/getApplicationCount'));
-  
+app.use('/notification', require('./routes/apis/notification')); 
+app.use('/forms/upload', upload.fields([
+  { name: 'reportFile', maxCount: 1 },
+  { name: 'applicationFile', maxCount: 1 },
+]), require('./routes/apis/upload'));
+app.use('/forms/retrieve', require('./routes/apis/upload'));
+app.use('/api/chats', require('./routes/apis/chat'));
+app.use('/api/chats/send', upload.fields([
+  { name: 'attachments', maxCount: 10 }, // Adjust the maxCount value as per your requirements
+]), require('./routes/apis/chat'));
+app.use('/api/chats/reply', upload.fields([
+  { name: 'attachments', maxCount: 10 }, // Adjust the maxCount value as per your requirements
+]), require('./routes/apis/chat'));
+
+
+
+
 
 app.get('*', (req, res) => {
     res.status(404);

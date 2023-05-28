@@ -79,3 +79,5 @@
 2023-05-21	04:48:47	88db258f-968b-4f0f-ad22-fee9cbdf3d09	Error	ENOENT: no such file or directory, stat 'C:\Users\user\Desktop\internHUB\server\views\index.html' 
 2023-05-21	04:48:47	1e6fb8df-eeb3-4dbf-9591-bc646b133e64	Error	ENOENT: no such file or directory, stat 'C:\Users\user\Desktop\internHUB\server\views\index.html' 
 2023-05-26	01:02:21	4fcb6d71-4cb4-43ef-9646-ddbe1b37153e	MulterError	Unexpected field 
+2023-05-27	05:46:15	65cbe70a-9699-4e53-bd8d-9623326480a7	MulterError	Unexpected field 
+2023-05-27	05:49:40	3afdd667-ab75-4510-bfdf-22c57b7b4b73	MulterError	Unexpected field 

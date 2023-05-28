@@ -77,7 +77,7 @@ const CareerCenterDashboard = () => {
         links={[
           { label: "Dashboard", to: "/dashboard", icon: "bxs-grid-alt" },
           { label: "Messages", to: "/messages", icon: "bxs-envelope" },
-          { label: "Jobs", to: "/internships", icon: "bxs-briefcase" },
+          { label: "Jobs", to: "/jobs", icon: "bxs-briefcase" },
           { label: "Settings", to: "/settings", icon: "bxs-cog" },
         ]}
         name={user.firstName + " " + user.lastName}

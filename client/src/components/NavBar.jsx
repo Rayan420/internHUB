@@ -6,8 +6,9 @@ import logo from "../assets/logo.png";
 import { useSignOut } from "react-auth-kit";
 import { useNavigate } from "react-router-dom";
 import axios from "../services/axios";
+import PropTypes from "prop-types";
 
-const SideNavbar = ({ name, role, links }) => {
+const SideNavbar = ({ name, role, links, notificationPlaceholder }) => {
   const signOut = useSignOut();
   const navigate = useNavigate();
   const location = useLocation(); // Get the current location
@@ -61,6 +62,10 @@ const SideNavbar = ({ name, role, links }) => {
             <span className="tooltip">{link.label}</span>
           </li>
         ))}
+          {role === "Student" && (
+             <li>
+             {notificationPlaceholder}
+          </li>)}
         <li>
           <div className="an logout" onClick={handleLogout}>
             <i className="bx bxs-log-out"></i>
@@ -72,5 +77,8 @@ const SideNavbar = ({ name, role, links }) => {
     </div>
   );
 };
-
+SideNavbar.propTypes = {
+  // ...
+  notificationPlaceholder: PropTypes.node,
+};
 export default SideNavbar;

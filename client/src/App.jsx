@@ -7,6 +7,7 @@ import Messages from "./pages/Messages";
 import Internships from "./pages/Internships";
 import SettingsPage from "./pages/Settings";
 import ApplicationsPage from "./pages/ApplicationPage";
+import Jobs from "./pages/Jobs";
 function App() {
   return (
     <Routes>
@@ -70,7 +71,17 @@ function App() {
           
         }
       />
-      
+        <Route
+        exact
+        path="/jobs"
+        element={
+          <RequireAuth loginPath="/">
+            {" "}
+            <Jobs />
+          </RequireAuth>
+          
+        }
+      />
     </Routes>
   );
 }

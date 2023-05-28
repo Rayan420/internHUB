@@ -4,6 +4,7 @@ import Header from "../components/Header";
 import InternshipPage from "../components/internship/InternshipPage";
 import { useAuthUser, useAuthHeader } from "react-auth-kit";
 import axios from "../services/axios";
+import NotificationModal from "../components/Notification";
 
 const Internships = () => {
   const [internships, setInternships] = useState([]);
@@ -31,6 +32,11 @@ const Internships = () => {
     email: "",
   });
   const [isLoading, setIsLoading] = useState(true);
+  const [isNotificationOpen, setIsNotificationOpen] = useState(false);
+  const toggleNotification = () => {
+    setIsNotificationOpen(!isNotificationOpen);
+  };
+  const [notifications, setNotifications] = useState([]);
 
   useEffect(() => {
     const fetchUserInfo = async () => {
@@ -50,8 +56,13 @@ const Internships = () => {
         setCoordinatorInfo(coordinator); // Set the coordinator information
 
         const department = student.department?.name || ""; // Access department name safely
-        setIsLoading(false);
-
+         // Fetch user notifications
+         const notificationsResponse = await axios.get(`/notification/${user.id}`, {
+          headers: {
+            authorization: authHeader(),
+          },
+        });
+        setNotifications(notificationsResponse.data.notifications);
         // Make an Axios GET request to fetch internships based on user's department
         console.log("department:", department )
         axios
@@ -69,10 +80,23 @@ const Internships = () => {
       } catch (error) {
         console.error("Error:", error);
       }
+      setIsLoading(false);
     };
 
     fetchUserInfo();
   }, []);
+
+// Callback function to update notifications when marked as read
+const handleNotificationRead = (notificationId) => {
+  setNotifications((prevNotifications) =>
+    prevNotifications.map((notification) => {
+      if (notification.id === notificationId) {
+        return { ...notification, read: true };
+      }
+      return notification;
+    })
+  );
+};
 
   useEffect(() => {
     document.title = "InternHUB - Opportunities";
@@ -95,18 +119,38 @@ const Internships = () => {
         links={[
           { label: "Dashboard", to: "/dashboard", icon: "bxs-grid-alt" },
           { label: "Messages", to: "/messages", icon: "bxs-envelope" },
-          { label: "Internships", to: "/internships", icon: "bxs-user" },
+          { label: "Internships", to: "/internships", icon: "bxs-briefcase" },
           { label: "Settings", to: "/settings", icon: "bxs-cog" },
         ]}
         name={"Ahmed Rayan"}
         role={"Student"}
         id={"200209393"}
+        notificationPlaceholder={
+          <div className="an notification" onClick={toggleNotification}>
+            <i className="bx bxs-bell"></i>
+            <span className="nav-item">Notifications</span>
+            {notifications.filter((notification) => !notification.read).length > 0 && (
+              <div className="unread-count">
+                {notifications.filter((notification) => !notification.read).length}
+              </div>
+            )}
+          </div>
+        }
       />
 
       <div className="main-content main-dashboard">
         <Header title="Internships" />
 
         <InternshipPage internships={internships} />
+
+        {isNotificationOpen && 
+         <NotificationModal
+         onClose={toggleNotification}
+         notifications={notifications.filter((notification) => !notification.read)}
+         onNotificationRead={handleNotificationRead}
+         userId={userInfo.id}
+       />
+      }
       </div>
     </div>
   );
