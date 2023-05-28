@@ -15,6 +15,10 @@ const DownloadFile = ({coordinatorId, }) => {
             authorization: authHeader(),
           },
         });
+        if(response.data.applicationForms.applicationFormURL === null){
+          toast.error("Failed to download application forms, please try again whe you coordinator has uploaded the forms");
+          return
+        }
         console.log("response from download",response)
         toast.success("Application Form Downloaded successfully");
         return window.open(response.data.applicationForms.applicationFormURL, "_blank");
@@ -33,6 +37,10 @@ const DownloadFile = ({coordinatorId, }) => {
             authorization: authHeader(),
           },
         });
+        if(response.data.applicationForms.reportFormURL === null){
+          toast.error("Failed to download report form, please try again whe you coordinator has uploaded the forms");
+          return
+        }
         console.log("response from download",response)
         toast.success("Report Form Downloaded successfully");
         return window.open(response.data.applicationForms.reportFormURL, "_blank");

@@ -72,7 +72,8 @@ const handleNewCoordinator = async (req, res) => {
       include: { 
         coordinator: true,
         chats: true,
-        messages: true,
+        messagesSent: true,
+        messagesReceived: true,
 
        },
     });

@@ -88,7 +88,7 @@ const SendAppModal = ({ onCloseModal, studentId, coordinatorId }) => {
               <input type="file" accept=".pdf,.doc,.docx" onChange={handleTranscriptChange} />
             </label>
             <button className="btn-compose btn-primary" onClick={handleSubmit}>
-              Send Letter Request
+              Send Application Form
             </button>
             {errorMessage && <p className="errmsg shake">{errorMessage}</p>}
           </div>

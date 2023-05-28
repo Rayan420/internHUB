@@ -64,7 +64,8 @@ const handleNewStudent = async (req, res) => {
         include: {
             student: true,
             chats: true,
-            messages: true,
+            messagesSent: true,
+            messagesReceived: true,
         },
     });
     

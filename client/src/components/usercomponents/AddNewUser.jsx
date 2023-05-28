@@ -26,7 +26,7 @@ const AddNewUser = () => {
     let domain = "";
     switch (userType) {
       case "Student":
-        domain = "st.uskudar.edu";
+        domain = "st.uskudar.edu.tr";
         break;
       case "Coordinator":
         domain = "uskudar.edu.tr";

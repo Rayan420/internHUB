@@ -337,6 +337,11 @@ const getForms = async (req, res) => {
         reportFormURL: true,
       },
     });
+    // if no forms found 
+    if (!applicationForms) {
+      return res.status(202).json({ message: 'No application forms found' });
+    }
+    
     res.status(200).json({
       message: 'Application forms retrieved successfully',
       applicationForms: applicationForms || [],

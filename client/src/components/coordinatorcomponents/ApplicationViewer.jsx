@@ -158,7 +158,7 @@ const ApplicationViewe = ({ coordinatorId }) => {
       <tr key={request.id}>
         <td>{request.id}</td>
         <td>{request.student.studentNumber}</td>
-        <td>{request.requestDate ? request.requestDate.split("T")[0] : ""}</td>
+        <td>{request.applicationDate ? request.applicationDate.split("T")[0] : ""}</td>
         <td className={`status-pending ${statusChange && statusChange.requestId === request.id && "status-change"}`}>
           {request.status}
         </td>
@@ -271,7 +271,7 @@ const ApplicationViewe = ({ coordinatorId }) => {
       <tr key={request.id}>
         <td>{request.id}</td>
         <td>{request.student.studentNumber}</td>
-        <td>{request.requestDate ? request.requestDate.split("T")[0] : ""}</td>
+        <td>{request.applicationDate ? request.applicationDate.split("T")[0] : ""}</td>
         <td className={`status-completed ${statusChange && statusChange.requestId === request.id && "status-change"}`}>
           {request.status}
         </td>
