@@ -223,7 +223,7 @@ const SGKRequests = ({ careerCenterId }) => {
             })
           ) : (
             <tr>
-              <td colSpan={activeTab === "Completed" ? 6 : 5}>Loading...</td>
+              <td colSpan={activeTab === "Completed" ? 6 : 5}>No SGK request</td>
             </tr>
           )}
         </tbody>
