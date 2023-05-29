@@ -18,7 +18,12 @@ const CareerCenterDashboard = () => {
   const [user, setUser] = useState({});
   const [careercenter, setCareerCenter] = useState({});
   const [isLoading, setIsLoading] = useState(true);
+  const [isNotificationOpen, setIsNotificationOpen] = useState(false);
 
+  const toggleNotification = () => {
+    setIsNotificationOpen(!isNotificationOpen);
+  };
+  const [notifications, setNotifications] = useState([]);
   useEffect(() => {
     console.log("Fetching user data");
     console.log(authHeader());
