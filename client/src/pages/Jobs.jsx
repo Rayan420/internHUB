@@ -8,6 +8,8 @@ import axios from '../services/axios'
 import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
 import CreateInternshipOpportunity from "../components/careercentercomponents/CreateInternshipOpportunity";
 import OpportunitiesComponent from "../components/careercentercomponents/OpportunitiesComponent";
+import NotificationModal from "../components/Notification";
+
 const Jobs = () => {
   // initialize the state variables using the useState hook
   // sample data for the CustomTable component
@@ -16,6 +18,13 @@ const Jobs = () => {
   const [userInfo, setUserInfo] = useState({});
   const [isLoading, setIsLoading] = useState(true);
   const [activeTabIndex, setActiveTabIndex] = useState(0);
+  const [isNotificationOpen, setIsNotificationOpen] = useState(false);
+
+  const toggleNotification = () => {
+    setIsNotificationOpen(!isNotificationOpen);
+  };
+  const [notifications, setNotifications] = useState([]);
+
   const handleTabChange = (index) => {
     setActiveTabIndex(index);
   };
@@ -33,7 +42,14 @@ const Jobs = () => {
           },
         });
 
-       
+        const {user} = response.data;
+       // Fetch user notifications
+         const notificationsResponse = await axios.get(`/notification/${user.id}`, {
+          headers: {
+            authorization: authHeader(),
+          },
+        });
+        setNotifications(notificationsResponse.data.notifications);
         console.log(response.data);
         setUserInfo(response.data);
         setIsLoading(false);
@@ -51,6 +67,17 @@ const Jobs = () => {
     
   }, []);
  
+// Callback function to update notifications when marked as read
+const handleNotificationRead = (notificationId) => {
+  setNotifications((prevNotifications) =>
+    prevNotifications.map((notification) => {
+      if (notification.id === notificationId) {
+        return { ...notification, read: true };
+      }
+      return notification;
+    })
+  );
+};
 
   if (isLoading) {
     return (
@@ -74,6 +101,17 @@ const Jobs = () => {
           ]}
         name={userInfo.user.firstName + " " + userInfo.user.lastName}
         role={auth().role}
+        notificationPlaceholder={
+          <div className="an notification" onClick={toggleNotification}>
+            <i className="bx bxs-bell"></i>
+            <span className="nav-item">Notifications</span>
+            {notifications.filter((notification) => !notification.read).length > 0 && (
+              <div className="unread-count">
+                {notifications.filter((notification) => !notification.read).length}
+              </div>
+            )}
+          </div>
+        }
       />
 
       <div className="main-content main-dashboard">
@@ -94,7 +132,14 @@ const Jobs = () => {
              
       </Tabs>
       
-
+      {isNotificationOpen && 
+         <NotificationModal
+         onClose={toggleNotification}
+         notifications={notifications.filter((notification) => !notification.read)}
+         onNotificationRead={handleNotificationRead}
+         userId={userInfo.user.id}
+       />
+      }
       </div>
       <Outlet />
     </div>

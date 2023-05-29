@@ -70,6 +70,9 @@ const SGKRequests = ({ careerCenterId }) => {
 
   const handleApproveRequest = async (requestId, firstName, lastName) => {
     try {
+      if (!isSGKAttached) {
+        return setErrorMessage("SGK is required");
+      }
       setApprovingRequest(true); // Start spinner
       const formData = new FormData();
       formData.append('sgkFile', sgkFile);

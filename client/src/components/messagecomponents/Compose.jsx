@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import axios from '../../services/axios';
 import { useAuthHeader } from "react-auth-kit";
-
+import { toast, ToastContainer } from "react-toastify";
 const ComposeModal = ({ showModal, setShowModal, userId }) => {
   const authHeader = useAuthHeader();
   const [recipient, setRecipient] = useState("");
@@ -50,13 +50,22 @@ const ComposeModal = ({ showModal, setShowModal, userId }) => {
         },
       });
 
-      // Clear form inputs and close modal
-      setRecipient("");
-      setSubject("");
-      setText("");
-      setAttachments([]);
-      setShowModal(false);
+     
+      if(response.status === 200)
+      {
+        toast.success("Message sent successfully");
+         // Clear form inputs and close modal
+          setRecipient("");
+          setSubject("");
+          setText("");
+          setAttachments([]);
+        return setShowModal(false);
 
+      }
+      else if(response.status === 202)
+      {
+        toast.error(response.data.error);
+      }
       // Handle success response if needed
       console.log("Message sent:", response.data);
     } catch (error) {
@@ -160,6 +169,8 @@ const ComposeModal = ({ showModal, setShowModal, userId }) => {
           </div>
         </div>
       )}
+                <ToastContainer />
+
     </>
   );
 };

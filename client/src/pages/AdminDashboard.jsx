@@ -7,11 +7,12 @@ import student from "../assets/student-female-svgrepo-com.svg";
 import prof from "../assets/reshot-icon-female-professor.svg";
 import center from "../assets/building-dome-svgrepo-com.svg";
 import form from "../assets/advanced-study-application-svgrepo-com.svg";
-import ApplicationSummary from "../components/admincomponents/ApplicationSummary";
+import UsersTable from "../components/usercomponents/ViewUsers";
 import axios from "../services/axios";
 import { useAuthUser } from "react-auth-kit";
 import { useAuthHeader } from "react-auth-kit";
 import { useSignOut } from "react-auth-kit";
+import NotificationModal from "../components/Notification";
 
 const AdminDashboard = () => {
   const signout = useSignOut();
@@ -23,7 +24,12 @@ const AdminDashboard = () => {
   const [numberOfStudents, setNumberOfStudents] = useState([]);
   const [numberOfCoordinators, setNumberOfCoordinators] = useState([]);
   const [numberOfApplications, setNumberOfApplications] = useState(0);
-  
+  const [isNotificationOpen, setIsNotificationOpen] = useState(false);
+
+  const toggleNotification = () => {
+    setIsNotificationOpen(!isNotificationOpen);
+  };
+  const [notifications, setNotifications] = useState([]);
   
   useEffect(() => {
     console.log("Fetching user data");
@@ -38,6 +44,13 @@ const AdminDashboard = () => {
             authorization: authHeader(),
           },
         });
+         // Fetch user notifications
+         const notificationsResponse = await axios.get(`/notification/${data.id}`, {
+          headers: {
+            authorization: authHeader(),
+          },
+        });
+        setNotifications(notificationsResponse.data.notifications);
         setUser(data);
         console.log(data);
         console.log("auth header:", authHeader());
@@ -117,6 +130,18 @@ const AdminDashboard = () => {
       );
     }
 
+    // Callback function to update notifications when marked as read
+  const handleNotificationRead = (notificationId) => {
+    setNotifications((prevNotifications) =>
+      prevNotifications.map((notification) => {
+        if (notification.id === notificationId) {
+          return { ...notification, read: true };
+        }
+        return notification;
+      })
+    );
+  };
+
   return(  
     <div className="container">
       {/* NAVEBAR */}
@@ -129,6 +154,17 @@ const AdminDashboard = () => {
         ]}
         name={user.firstName + " " + user.lastName}
         role={auth().role}
+        notificationPlaceholder={
+          <div className="an notification" onClick={toggleNotification}>
+            <i className="bx bxs-bell"></i>
+            <span className="nav-item">Notifications</span>
+            {notifications.filter((notification) => !notification.read).length > 0 && (
+              <div className="unread-count">
+                {notifications.filter((notification) => !notification.read).length}
+              </div>
+            )}
+          </div>
+        }
       />
 
       <div className="main-content main-dashboard">
@@ -173,12 +209,23 @@ const AdminDashboard = () => {
             icon={form}
             backgroundColor={"#21608A"}
             backgroundColorSecond={"#2AA4F4"}
-            applications={true}
+            applications={false}
           />
         </div>
 
         {/* paginated list of student applications summary */}
-        <ApplicationSummary data={[]} />
+        <div className='users-table-admindash' >
+        <UsersTable />
+        {isNotificationOpen && 
+         <NotificationModal
+         onClose={toggleNotification}
+         notifications={notifications.filter((notification) => !notification.read)}
+         onNotificationRead={handleNotificationRead}
+         userId={user.id}
+       />
+      }
+
+        </div>
       </div>
     </div>);
 };

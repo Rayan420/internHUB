@@ -151,6 +151,23 @@ const RequestViewer = ({ coordinatorId }) => {
 
   const handleDeleteRequest = (requestId) => {
     // Implement the logic to delete the request with the given ID
+    try {
+     const res= axios.delete(`/applications/delete/letter/${requestId}`, {
+        headers: {
+          authorization: authHeader(),
+        },
+      });
+      // Request deleted, handle any necessary updates or notifications
+      // Update the requests state to reflect the status change
+      setRequests((prevRequests) => prevRequests.filter((request) => request.id !== requestId));
+      toast.success(<span>Letter {requestId} has been <span className="bold deleted">Deleted</span> successfully!</span>);
+
+    }
+    catch (error) {
+      console.error("Error deleting letter request:", error);
+      // Handle error or show error message to the user
+    }
+    
   };
 
   const renderPendingRequest = (request) => {

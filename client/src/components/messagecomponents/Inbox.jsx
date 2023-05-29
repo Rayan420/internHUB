@@ -13,6 +13,7 @@ const Inbox = ({ userId }) => {
   const [replyText, setReplyText] = useState('');
   const [replyAttachments, setReplyAttachments] = useState([]);
   const [selectedReplyAttachments, setSelectedReplyAttachments] = useState([]);
+  const [searchQuery, setSearchQuery] = useState('');
 
   useEffect(() => {
     const fetchChats = async () => {
@@ -158,11 +159,24 @@ const Inbox = ({ userId }) => {
           <div className="inbox-header-messages">
             <div className="inbox-header-message-count">{chats.length}</div>
           </div>
+         
         </div>
+        <div className="inbox-header-search">
+    <input
+      type="text"
+      placeholder="Search"
+      value={searchQuery}
+      onChange={(e) => setSearchQuery(e.target.value)}
+    />
+  </div>
         <div className="inbox-body">
           <div className="inbox-list">
-            {chats.length > 0 ? (
-              chats.map((chat) => (
+            {chats.length > 0 ?(
+    chats
+      .filter((chat) =>
+        chat.messages[0].subject.toLowerCase().includes(searchQuery.toLowerCase())
+      )
+      .map((chat) => (
                 <div
                   className={`inbox-chat ${
                     chat === selectedChat ? 'selected' : ''
@@ -298,7 +312,15 @@ const Inbox = ({ userId }) => {
                       )}
                     </div>
                     <div className="message-recipient">
-                      <p>
+                      {message.senderId != userId ? (
+                        <>
+                          <p> 
+                            <strong>Recipient:</strong> You
+                            </p>
+                            </>
+                            
+                          ) : (
+                            <p>
                         <strong>Recipient:</strong>{' '}
                         {
                           selectedChat.users.find(
@@ -311,6 +333,8 @@ const Inbox = ({ userId }) => {
                           ).lastName
                         }
                       </p>
+                      )
+                      }
                     </div>
                   </div>
                   <div className="message-title"><strong>Subject:</strong> {message.subject}</div>

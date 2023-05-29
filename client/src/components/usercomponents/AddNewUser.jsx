@@ -196,14 +196,14 @@ const AddNewUser = () => {
       case "Student":
         return (
           <>
-            <label htmlFor="department">Department</label>
+            <label htmlFor="department">Department<span className='errmsg'>*</span></label>
             <input
               type="text"
               id="department"
               value={department}
               onChange={(e) => setDepartment(e.target.value)}
             />
-            <label htmlFor="studentNumber">Student Number</label>
+            <label htmlFor="studentNumber">Student Number<span className='errmsg'>*</span></label>
             <input
               type="text"
               id="studentNumber"
@@ -215,17 +215,17 @@ const AddNewUser = () => {
       case "Coordinator":
         return (
           <>
-            <label htmlFor="department">Department</label>
+            <label htmlFor="department">Department<span className='errmsg'>*</span></label>
             <input
               type="text"
               id="department"
               value={department}
               onChange={(e) => setDepartment(e.target.value)}
             />
-
-            {/* Add career center selection */}
-            <label htmlFor="careerCenter">Career Center</label>
-            {careerCenters.length > 0 && (
+              {/* Add career center selection */}
+              <label htmlFor="careerCenter">Career Center</label>
+              {careerCenters.length > 0 ? (
+                <>
                   <select
                     id="careerCenter"
                     value={selectedCareerCenter || ""}
@@ -239,14 +239,19 @@ const AddNewUser = () => {
                       </option>
                     ))}
                   </select>
-                )}
+                </>
+              ) : (
+                // If there are no career centers, show a message
+                <p>There are no career centers</p>
+              )}
+
 
           </>
         );
       case "Careercenter":
         return (
           <>
-            <label htmlFor="companyName">Company Name</label>
+            <label htmlFor="companyName">Company Name<span className='errmsg'>*</span></label>
             <input
               type="text"
               id="companyName"
@@ -269,7 +274,7 @@ const AddNewUser = () => {
       <h2>Create User</h2>
       <form onSubmit={handleSubmit}>
         <div className="form-group">
-          <label htmlFor="userType">User Type</label>
+          <label htmlFor="userType">User Type<span className='errmsg'>*</span></label>
           <select id="userType" value={userType} onChange={handleUserTypeChange}>
             <option value=""></option>
             <option value="Student">Student</option>
@@ -278,7 +283,7 @@ const AddNewUser = () => {
           </select>
         </div>
         <div className="form-group">
-          <label htmlFor="firstName">First Name</label>
+          <label htmlFor="firstName">First Name<span className='errmsg'>*</span></label>
           <input
             type="text"
             id="firstName"
@@ -287,7 +292,7 @@ const AddNewUser = () => {
           />
         </div>
         <div className="form-group">
-          <label htmlFor="lastName">Last Name</label>
+          <label htmlFor="lastName">Last Name<span className='errmsg'>*</span></label>
           <input
             type="text"
             id="lastName"
@@ -296,7 +301,7 @@ const AddNewUser = () => {
           />
         </div>
         <div className="form-group">
-          <label htmlFor="email">Email</label>
+          <label htmlFor="email">Email<span className='errmsg'>*</span></label>
           {userType === "Careercenter" ? (
             <input
               type="email"
@@ -314,7 +319,7 @@ const AddNewUser = () => {
           )}
         </div>
         <div className="form-group">
-          <label htmlFor="password">Password</label>
+          <label htmlFor="password">Password<span className='errmsg'>*</span></label>
           <input
             type="text"
             id="password"

@@ -71,6 +71,8 @@ app.use('/application', upload.fields([
     { name: 'applicationFile', maxCount: 1 },
   ]), require('./routes/apis/application'));
 app.use('/applications/response', require('./routes/apis/applicationResponse'));
+app.use('/applications/delete', require('./routes/apis/applicationResponse'));
+
 app.use('/careercenter', require('./routes/apis/careercenter')); 
 app.use('/applications/count', require('./routes/apis/getApplicationCount'));
 app.use('/notification', require('./routes/apis/notification')); 

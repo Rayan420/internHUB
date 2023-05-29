@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import axios from '../../services/axios';
 import { useAuthHeader } from 'react-auth-kit';
+import { ToastContainer, toast } from "react-toastify";
+
 const LetterRequestModal = ({ onCloseModal, studentId, coordinatorId }) => {
   const [transcriptFile, setTranscriptFile] = useState(null);
   const [isTranscriptAttached, setIsTranscriptAttached] = useState(false);
@@ -20,6 +22,12 @@ const LetterRequestModal = ({ onCloseModal, studentId, coordinatorId }) => {
     if (!isTranscriptAttached) {
       setErrorMessage('Transcript is required');
       return;
+    }
+
+    if(coordinatorId === null || coordinatorId === undefined){
+      setErrorMessage("Please wait for a coordinator to be assigned to you.");
+      return;
+      
     }
   
     try {
@@ -77,13 +85,14 @@ const LetterRequestModal = ({ onCloseModal, studentId, coordinatorId }) => {
               Transcript:
               <input type="file" accept=".pdf,.doc,.docx" onChange={handleTranscriptChange} />
             </label>
-            <button className="btn-compose btn-primary" onClick={handleSubmit}>
+            <button className="btn-compose btn-primary" onClick={handleSubmit}  >
               Send Letter Request
             </button>
             {errorMessage && <p className="errmsg shake">{errorMessage}</p>}
           </div>
         )}
       </div>
+      <ToastContainer />
     </div>
   );
 };

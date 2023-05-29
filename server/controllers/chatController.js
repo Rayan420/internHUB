@@ -44,6 +44,10 @@ const getChats = async (req, res) => {
 
     const senderId = parseInt(req.params.userId);
     const { recipientEmail, subject, text } = req.body;
+
+    if(!recipientEmail, !subject, !text){
+      return res.status(202).json({ error: 'Please fill all fields' });
+    }
   
     try {
         initializeApp(config);
@@ -56,7 +60,7 @@ const getChats = async (req, res) => {
       });
   
       if (!recipient) {
-        return res.status(404).json({ error: 'Recipient not found' });
+        return res.status(202).json({ error: 'Recipient not found' });
       }
   
       // Create a new chat
@@ -82,24 +86,38 @@ const getChats = async (req, res) => {
       // Upload attachments and connect them to the message
       const multerFiles = req.files.attachments; // Access the attachments array from multerFiles
       const attachments = [];
-      for (let i = 0; i < multerFiles.length; i++) {
-        const file = multerFiles[i];
-        const storageRef = ref(storage, `attachments/${file.originalname}`);
-        await uploadBytesResumable(storageRef, file.buffer);
-      
-        const downloadURL = await getDownloadURL(storageRef);
-        const attachment = await prisma.attachment.create({
-          data: {
-            name: file.originalname,
-            url: downloadURL,
-            message: { connect: { id: message.id } },
+      if(multerFiles){
+        for (let i = 0; i < multerFiles.length; i++) {
+          const file = multerFiles[i];
+          const storageRef = ref(storage, `attachments/${file.originalname}`);
+          await uploadBytesResumable(storageRef, file.buffer);
+        
+          const downloadURL = await getDownloadURL(storageRef);
+          const attachment = await prisma.attachment.create({
+            data: {
+              name: file.originalname,
+              url: downloadURL,
+              message: { connect: { id: message.id } },
+            },
+          });
+        
+          attachments.push(attachment);
+        }
+      }
+         //user senderid to get sender name from user table and send notification
+         const sender = await prisma.user.findUnique({
+          where: {
+            id: parseInt(senderId),
           },
         });
-      
-        attachments.push(attachment);
-      }
-  
-      res.json({ message, attachments });
+        // Create a notification for the coordinator
+        await prisma.notification.create({
+          data: {
+            message: `${sender.firstName} ${sender.lastName} has sent you a new message, Subject: ${subject}`,
+            user: { connect: { id: recipient.id } }
+          }
+        });
+      res.status(200).json({ message, attachments });
     } catch (error) {
       console.error('Error sending message:', error);
       res.status(500).json({ error: 'Failed to send message' });
@@ -167,10 +185,28 @@ const getChats = async (req, res) => {
           },
           subject: subject,
           text: text,
-          chat: { connect: { id: parseInt(chatId) } },
+          //connect chat and mark as unread
+          chat: { 
+            connect: 
+            { 
+              id: parseInt(chatId), 
+            } 
+          },
         },
       });
-      
+      //user senderid to get sender name from user table and send notification
+      const sender = await prisma.user.findUnique({
+        where: {
+          id: parseInt(senderId),
+        },
+      });
+      // Create a notification for the coordinator
+      await prisma.notification.create({
+        data: {
+          message: `${sender.firstName} ${sender.lastName} has replied to your message, Subject: ${subject}`,
+          user: { connect: { id: parseInt(recipientId) } }
+        }
+      });
   
       const multerFiles = req.files.attachments;
       if (multerFiles) {
@@ -187,6 +223,20 @@ const getChats = async (req, res) => {
     
         const attachments = await prisma.attachment.createMany({
           data: attachmentsData,
+        });
+
+        //user senderid to get sender name from user table and send notification
+        const sender = await prisma.user.findUnique({
+          where: {
+            id: parseInt(senderId),
+          },
+        });
+        // Create a notification for the coordinator
+        await prisma.notification.create({
+          data: {
+            message: `${sender.firstName} ${sender.lastName} has replied to your message, Subject: ${subject}`,
+            user: { connect: { id: parseInt(recipientId) } }
+          }
         });
         res.json({ message, attachments });
       }

@@ -129,11 +129,22 @@ const LoginForm = () => {
             onChange={(e) => setPwd(e.target.value)}
             required
           />
-          <FontAwesomeIcon
-            icon={showPassword ? faEye : faEyeSlash}
+          {
+            showPassword ? (
+              <FontAwesomeIcon
+            icon={faEye }
             onClick={toggleShowPassword}
             className="password-icon"
           />
+            ) : (
+              <FontAwesomeIcon
+            icon={faEyeSlash}
+            onClick={toggleShowPassword}
+            className="password-icon"
+          />
+            )
+
+          }
         </div>
         <small>
           {/*place react router here to direct to reset link*/}

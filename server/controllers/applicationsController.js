@@ -2,7 +2,7 @@ const prisma = require('../prisma');
 const { v4: uuidv4 } = require('uuid');
 const { parseISO, format } = require('date-fns');
 const { initializeApp } = require('firebase/app');
-const { getStorage, ref, uploadBytesResumable, getDownloadURL } = require('firebase/storage');
+const { getStorage, ref, uploadBytesResumable, getDownloadURL, deleteObject } = require('firebase/storage');
 const config = require('../config/firebase.config');
 const ejs = require('ejs');
 const pdf = require("html-pdf");
@@ -67,7 +67,43 @@ const createApplication = async (req, res) => {
       },
     });
 
-    res.status(201).json({ message: 'Internship Application sent successfully', application });
+    //get coordinator user id 
+    const coordinator = await prisma.Coordinator.findUnique({
+      where: {
+        id: parseInt(coordinatorId),
+      },
+      select: {
+        userId: true,
+      },
+    });
+
+    // get student name
+    const student = await prisma.Student.findUnique({
+      where: {
+        id: parseInt(studentId),
+      },
+      select: {
+        user: {
+          select: {
+            firstName: true,
+            lastName: true,
+          },
+        },
+      },
+    });
+
+    // send notification to coordinator
+    await prisma.notification.create({
+      data: {
+        message: `You have received a new internship application from ${student.user.firstName} ${student.user.lastName}.`,
+        user: { connect: { id: coordinator.userId } },
+
+      },
+    });
+
+
+
+    res.status(200).json({ message: 'Internship Application sent successfully', application });
   } catch (error) {
     console.error('Error creating application:', error);
     res.status(500).json({ error: 'Failed to create application' });
@@ -125,6 +161,42 @@ const createLetterRequest = async (req, res) => {
       },
     });
 
+   
+  //get coordinator user id 
+    const coordinator = await prisma.Coordinator.findUnique({
+      where: {
+        id: parseInt(coordinatorId),
+      },
+      select: {
+        userId: true,
+      },
+    });
+    // get student name 
+    const student = await prisma.Student.findUnique({
+      where: {
+        id: parseInt(studentId),
+      },
+      select: {
+        user: {
+          select: {
+            firstName: true,
+            lastName: true,
+          },
+        },
+      },
+    });
+
+    // send notification to coordinator
+    await prisma.notification.create({
+      data: {
+        message: `You have received a new letter request from ${student.user.firstName} ${student.user.lastName}.`,
+        user: { connect: { id: coordinator.userId } },
+
+      },
+    });
+
+
+    
     res.status(201).json({ message: 'Letter request created successfully', letterRequest });
   } catch (error) {
     console.error('Error creating letter request:', error);
@@ -400,6 +472,25 @@ const sendSGK = async (req, res) => {
       },
     });
 
+    //get student user id
+    const student = await prisma.Student.findUnique({
+      where: {
+        id: updatedForm.studentId,
+      },
+      select: {
+        userId: true,
+      },
+    });
+    // send notification to student
+    await prisma.notification.create({
+      data: {
+        message: `Your SGK document has been sent. You can download the document from your "Applications Request" table.`,
+        user: { connect: { id: student.userId } },
+
+      },
+    });
+
+
     res.status(201).json({ message: 'InternshipForm updated successfully', updatedForm });
   } catch (error) {
     console.error('Error updating InternshipForm:', error);
@@ -448,11 +539,11 @@ const respondToLetterRequest = async (req, res) => {
       console.log('Letter request rejected successfully');
       console.log(rejectionReason);
 
-      // Create a notification for the coordinator
+      // Create a notification for the student
       await prisma.notification.create({
         data: {
-          message: `Your letter request has been rejected. Reason: ${rejectionReason}`,
-          user: { connect: { id: letterReq.coordinator.userId } }
+          message: `Your letter request has been rejected.`,
+          user: { connect: { id: letterReq.student.userId } }
         }
       });
 
@@ -536,8 +627,8 @@ const respondToLetterRequest = async (req, res) => {
         // Create a notification for the coordinator
         await prisma.notification.create({
           data: {
-            message: 'Your letter request has been approved. You can download the letter from the provided link.',
-            user: { connect: { id: letterReq.coordinator.userId } }
+            message: 'Your letter request has been approved. You can download the letter from your "Letter Request" table.',
+            user: { connect: { id: letterReq.student.userId } }
           }
         });
 
@@ -592,7 +683,7 @@ const respondToApplication = async (req, res) => {
           // Create a notification for the student
           await prisma.notification.create({
             data: {
-              message: `Your application has been rejected. Reason: ${rejectionReason}`,
+              message: `Your application has been rejected.`,
               user: { connect: { id: application.student.userId } },
             },
           });
@@ -631,10 +722,11 @@ const respondToApplication = async (req, res) => {
             // Create a notification for the student
             await prisma.notification.create({
               data: {
-                message: `Your application has been approved. You can check the status of your application in the "My Applications" page.`,
+                message: `Your application has been approved, waiting for SGK. You can check the status of your application in the "Applications Request" table.`,
                 user: { connect: { id: application.student.userId } },
               },
             });
+          
             return res.status(200).json({ message: `Application ${applicationAnswer}` });
           }
     }
@@ -657,6 +749,89 @@ const getApplicationCount = async (req, res) => {
 
 };
 
+const deleteApplication = async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    initializeApp(config);
+    const storage = getStorage();
+    // Get the application data from the database
+    const application = await prisma.InternshipForm.findUnique({
+      where: {
+        id: id,
+      },
+      select: {
+        transcriptFileURL: true,
+        applicationFileURL: true,
+        sgkFileURL: true,
+      },
+    });
+    // Delete the files from Firebase Storage
+    const transcriptFileRef = ref(storage, application.transcriptFileURL);
+    const applicationFileRef = ref(storage, application.applicationFileURL);
+
+    await deleteObject(transcriptFileRef);
+    await deleteObject(applicationFileRef);
+    if(application.sgkFileURL){
+      const sgkFileRef = ref(storage, application.sgkFileURL);
+      await deleteObject(sgkFileRef);
+    }
+
+    // Delete the application from the database
+    await prisma.InternshipForm.delete({
+      where: {
+        id: id,
+      },
+    });
+
+    res.status(200).json({ message: 'Application deleted successfully' });
+  } catch (error) {
+    console.error('Error deleting application:', error);
+    res.status(500).json({ message: 'An error occurred while deleting the application' });
+  }
+};
+
+const deleteLetter = async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    initializeApp(config);
+    const storage = getStorage();
+    // Get the application data from the database
+    const letterReq = await prisma.LetterRequest.findUnique({
+      where: {
+        id: id,
+      },
+      select: {
+        transcriptFileURL: true,
+        Letter: true,
+      },
+    });
+    // Delete the files from Firebase Storage
+    const transcriptFileRef = ref(storage, letterReq.transcriptFileURL);
+
+    await deleteObject(transcriptFileRef);
+    if(letterReq.letter){
+      const letterRef = ref(storage, letterReq.Letter);
+      await deleteObject(letterRef);
+    }
+
+    // Delete the application from the database
+    await prisma.LetterRequest.delete({
+      where: {
+        id: id,
+      },
+    });
+
+    res.status(200).json({ message: 'Application deleted successfully' });
+  } catch (error) {
+    console.error('Error deleting application:', error);
+    res.status(500).json({ message: 'An error occurred while deleting the application' });
+  }
+};
+
+
+
 module.exports = {
   createLetterRequest,
   getStudentLetterRequests,
@@ -671,4 +846,6 @@ module.exports = {
   sendSGK,
   sendForms,
   getForms,
+  deleteApplication,
+  deleteLetter
 };

@@ -102,6 +102,16 @@ const Messages = () => {
     );
   };
 
+  if (isLoading) {
+    return (
+      <div className="loading-spinner">
+      <h3>Loading Student Dashboard <span className="ellipsis"></span></h3>
+        <div className="progress-bar">
+          <div className="progress"></div>
+        </div>
+      </div>
+    );
+  }
   return (
     <div className="container">
       <SideNavbar

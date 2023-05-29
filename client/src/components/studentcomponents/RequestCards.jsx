@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import '../../style/style.css';
 import LetterRequestModal from "./LetterRequestModal";
-
+import { ToastContainer, toast } from "react-toastify";
 const RequestCards = ({ numButtons, buttonLabels, content, studentId, coordinatorId }) => {
   const [modalOpen, setModalOpen] = useState(false);
 
@@ -25,6 +25,7 @@ const RequestCards = ({ numButtons, buttonLabels, content, studentId, coordinato
       <div className="request-card-content">{content}</div>
       <div className="request-card-buttons">{buttons}</div>
       {modalOpen && <LetterRequestModal onCloseModal={handleCloseModal} studentId={studentId} coordinatorId={coordinatorId} />}
+      <ToastContainer />
     </div>
   );
 };

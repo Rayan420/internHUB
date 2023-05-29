@@ -8,15 +8,21 @@ import axios from "../services/axios";
 import AddNewUser from "../components/usercomponents/AddNewUser";
 import CreateDepartment from "../components/usercomponents/CreateDepartment";
 import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
-import UsersTable from "../components/usercomponents/ViewUsers";
+import NotificationModal from "../components/Notification";
 
 const Users = () => {
 
   const auth = useAuthUser();
   const authHeader = useAuthHeader();
   const [user, setUser] = useState({});
-  const [isLoading, setIsLoading] = useState(true);
   const [activeTabIndex, setActiveTabIndex] = useState(0);
+  const [isNotificationOpen, setIsNotificationOpen] = useState(false);
+
+  const toggleNotification = () => {
+    setIsNotificationOpen(!isNotificationOpen);
+  };
+  const [notifications, setNotifications] = useState([]);
+
   const handleTabChange = (index) => {
     setActiveTabIndex(index);
   };
@@ -27,12 +33,18 @@ const Users = () => {
     const fetchUserData = async () => {
       try {
         const { email } = auth() || {};
-        await new Promise(resolve => setTimeout(resolve, 2000));
         const { data } = await axios.get("/users/" + email, {
           headers: {
             authorization: authHeader(),
           },
         });
+        // Fetch user notifications
+         const notificationsResponse = await axios.get(`/notification/${data.id}`, {
+          headers: {
+            authorization: authHeader(),
+          },
+        });
+        setNotifications(notificationsResponse.data.notifications);
         setUser(data);
         console.log(data);
         console.log("auth header:", authHeader());
@@ -41,9 +53,7 @@ const Users = () => {
         if (error.response === 401 || error.response === 403) {
           signout();
         }
-      } finally {
-        setIsLoading(false);
-      }
+      } 
     };
     fetchUserData();
   }, []);
@@ -53,16 +63,18 @@ const Users = () => {
 
         }, []);
 
-        if (isLoading) {
-          return (
-            <div className="loading-spinner">
-            <h3>Getting users <span className="ellipsis"></span></h3>
-              <div className="progress-bar">
-                <div className="progress"></div>
-              </div>
-            </div>
-          );
+          // Callback function to update notifications when marked as read
+  const handleNotificationRead = (notificationId) => {
+    setNotifications((prevNotifications) =>
+      prevNotifications.map((notification) => {
+        if (notification.id === notificationId) {
+          return { ...notification, read: true };
         }
+        return notification;
+      })
+    );
+  };
+
     return (
         <div className="container">
       {/* NAVEBAR */}
@@ -72,7 +84,22 @@ const Users = () => {
           { label: 'Messages', to: '/messages', icon: 'bxs-envelope' },
           { label: 'Users', to: '/users', icon: 'bxs-user' }, 
           { label: 'Settings', to: '/settings', icon: 'bxs-cog' }  
-          ]} name={user.firstName + ' ' + user.lastName} role={auth().role}/>
+          ]} 
+          name={user.firstName + ' ' + user.lastName}
+           role={auth().role}
+           notificationPlaceholder={
+            <div className="an notification" onClick={toggleNotification}>
+              <i className="bx bxs-bell"></i>
+              <span className="nav-item">Notifications</span>
+              {notifications.filter((notification) => !notification.read).length > 0 && (
+                <div className="unread-count">
+                  {notifications.filter((notification) => !notification.read).length}
+                </div>
+              )}
+            </div>
+          }
+           
+           />
           {/* this is the div containing the main content of the page */}      
           <div className='main-content main-dashboard'>
         
@@ -80,13 +107,10 @@ const Users = () => {
         <Header title="Users" />
         <Tabs selectedIndex={activeTabIndex} onSelect={handleTabChange}>
               <TabList className="tabslist user-page-tabslist">
-                <Tab className="tab" selectedClassName="tab--selected">View Users</Tab>
                 <Tab className="tab" selectedClassName="tab--selected">Create Users</Tab>
                 <Tab className="tab" selectedClassName="tab--selected">Create Department</Tab>
               </TabList>
-              <TabPanel>
-                <UsersTable />
-              </TabPanel>
+              
               <TabPanel>
                 <AddNewUser />
               </TabPanel>
@@ -95,6 +119,14 @@ const Users = () => {
               </TabPanel>
              
       </Tabs>
+      {isNotificationOpen && 
+         <NotificationModal
+         onClose={toggleNotification}
+         notifications={notifications.filter((notification) => !notification.read)}
+         onNotificationRead={handleNotificationRead}
+         userId={user.id}
+       />
+      }
    
       </div>
       <Outlet />

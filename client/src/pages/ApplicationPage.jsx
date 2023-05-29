@@ -6,12 +6,19 @@ import { useAuthUser } from "react-auth-kit";
 import { useAuthHeader } from "react-auth-kit";
 import axios from "../services/axios";
 import ApplicationViewer from "../components/coordinatorcomponents/ApplicationViewer";
+import NotificationModal from "../components/Notification";
 
 const ApplicationsPage = () => {
   const auth = useAuthUser();
   const authHeader = useAuthHeader();
   const [coordinator, setCoordinator] = useState({});
   const [isLoading, setIsLoading] = useState(true);
+  const [isNotificationOpen, setIsNotificationOpen] = useState(false);
+
+  const toggleNotification = () => {
+    setIsNotificationOpen(!isNotificationOpen);
+  };
+  const [notifications, setNotifications] = useState([]);
 
   useEffect(() => {
     console.log("Fetching coordinator data");
@@ -25,6 +32,13 @@ const ApplicationsPage = () => {
           },
         });
         setCoordinator(data);
+          // Fetch user notifications
+          const notificationsResponse = await axios.get(`/notification/${data.user.id}`, {
+            headers: {
+              authorization: authHeader(),
+            },
+          });
+          setNotifications(notificationsResponse.data.notifications);
         console.log(data);
       } catch (error) {
         console.log(error);
@@ -43,6 +57,19 @@ const ApplicationsPage = () => {
     document.title = "InternHUB - Applications";
   }, []);
 
+   // Callback function to update notifications when marked as read
+   const handleNotificationRead = (notificationId) => {
+    setNotifications((prevNotifications) =>
+      prevNotifications.map((notification) => {
+        if (notification.id === notificationId) {
+          return { ...notification, read: true };
+        }
+        return notification;
+      })
+    );
+  };
+
+  console.log("coordinator", coordinator);
   if (isLoading) {
     return (
       <div className="loading-spinner">
@@ -68,12 +95,31 @@ const ApplicationsPage = () => {
         ]}
         name={coordinator.user.firstName + " " +coordinator.user.lastName}
         role={auth().role}
+        notificationPlaceholder={
+          <div className="an notification" onClick={toggleNotification}>
+            <i className="bx bxs-bell"></i>
+            <span className="nav-item">Notifications</span>
+            {notifications.filter((notification) => !notification.read).length > 0 && (
+              <div className="unread-count">
+                {notifications.filter((notification) => !notification.read).length}
+              </div>
+            )}
+          </div>
+        }
       />
 
       <div className="main-content main-dashboard">
         {/* this is the div containing the main content of the page */}
         <ApplicationViewer coordinatorId={coordinatorId} />
 
+        {isNotificationOpen && 
+         <NotificationModal
+         onClose={toggleNotification}
+         notifications={notifications.filter((notification) => !notification.read)}
+         onNotificationRead={handleNotificationRead}
+         userId={coordinator.user.id}
+       />
+      }
       </div>
 
       <Outlet />

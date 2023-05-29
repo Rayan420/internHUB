@@ -4,12 +4,6 @@ const Header = ({ setShowModal }) => {
   return (
     <header className="header">
       <div className="header-container">
-        <div className="header-search">
-          <span className="header-search-icon">
-            <BiSearch />
-          </span>
-          <input type="text" className="search-input" placeholder="Search" />
-        </div>
         <div
           className="header-compose"
           style={{ cursor: "pointer" }}

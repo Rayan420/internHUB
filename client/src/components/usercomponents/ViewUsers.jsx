@@ -16,8 +16,8 @@ const UserTable = () => {
   const [usersPerPage] = useState(10);
   const [activeTab, setActiveTab] = useState("all");
   const [selectedUser, setSelectedUser] = useState(null);
- 
-
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
   console.log(authHeader());
   useEffect(() => {
     const fetchUsers = async () => {
@@ -30,7 +30,7 @@ const UserTable = () => {
         });
         console.log("users:", response.data);
         const { users } = response.data;
-       
+
         setUsers(users);
         setIsLoading(false);
       } catch (error) {
@@ -50,33 +50,129 @@ const UserTable = () => {
     setCurrentPage(page);
   };
 
-  
-
   const handleInputChange = (event) => {
     const { name, value } = event.target;
     setSelectedUser((prevUser) => {
-      if (selectedUser.role === "Coordinator" && name === "careerCenter") {
-        return {
-          ...prevUser,
-          coordinator: {
-            ...prevUser.coordinator,
+      let updatedUser = { ...prevUser };
+      
+      // Handle fields based on the user's role
+      if (prevUser.role === "Coordinator") {
+        if (name === "department") {
+          updatedUser = {
+            ...updatedUser,
+            coordinator: {
+              ...updatedUser.coordinator,
+              department: {
+                ...updatedUser.coordinator.department,
+                name: value,
+              },
+            },
+          };
+        } else if (name === "careerCenter") {
+          const selectedCareerCenter = users.find(
+            (user) => user.id === parseInt(value)
+          );
+  
+          updatedUser = {
+            ...updatedUser,
+            coordinator: {
+              ...updatedUser.coordinator,
+              careerCenter: {
+                id: selectedCareerCenter.careerCenter.id,
+                companyName: selectedCareerCenter.careerCenter.companyName,
+              },
+            },
+          };
+        }
+      } else if (prevUser.role === "Student") {
+        if (name === "department") {
+          updatedUser = {
+            ...updatedUser,
+            student: {
+              ...updatedUser.student,
+              department: {
+                ...updatedUser.student.department,
+                name: value,
+              },
+            },
+          };
+        } else if (name === "studentNumber") {
+          updatedUser = {
+            ...updatedUser,
+            student: {
+              ...updatedUser.student,
+              studentNumber: value,
+            },
+          };
+        }
+      } else if (prevUser.role === "CareerCenter") {
+        if (name === "companyName") {
+          updatedUser = {
+            ...updatedUser,
             careerCenter: {
-              ...prevUser.coordinator.careerCenter,
+              ...updatedUser.careerCenter,
               companyName: value,
             },
-          },
-        };
-      } else {
-        return {
-          ...prevUser,
-          [name]: value,
-        };
+          };
+        }
+        // Add other fields specific to Career Center here if needed
       }
+      
+      // Update common fields
+      updatedUser = {
+        ...updatedUser,
+        [name]: value,
+      };
+      
+      return updatedUser;
     });
   };
   
+  
+  
+  
+  const handleEditUser = (user) => {
+    setSelectedUser(user);
+    setIsModalOpen(true);
+  };
+
+  const closeModal = () => {
+    setIsModalOpen(false);
+  };
+
+  const saveChanges = async () => {
+    setIsSaving(true);
+    try {
+      console.log("selectedUser info:", selectedUser);
+      const response = await axios.put(`/users/selecteduser/update`, selectedUser, {
+        headers: {
+          authorization: authHeader(),
+        },
+      });
+      console.log("Response:", response.data);
+      
+      
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+      setIsSaving(false);
+      if(response.status === 200){
+        toast.success(`User ${selectedUser.firstName + " " +selectedUser.lastName} updated successfully`);
+      }
+      if(response.status === 202){
+        toast.error(`Failed to update User ${selectedUser.firstName + " " +selectedUser.lastName}, ${response.data.message}`);
+      }
+      closeModal();
+    } catch (error) {
+      console.error("Error updating user:", error);
+      if(response.status === 400){
+        toast.error(`User ${selectedUser.firstName + " " +selectedUser.lastName} could not be updated`);
+      }
+    }
+    
+  };
+  
+
   console.log("selectedUser:", selectedUser);
- 
+
   // Filter users based on user type and search term
   const filteredUsers = users.filter((user) => {
     if (activeTab === "all") {
@@ -173,19 +269,28 @@ const UserTable = () => {
                 <>
                   <td>{user.student.department.name}</td>
                   <td>{user.student.studentNumber}</td>
-                  
                 </>
               )}
               {activeTab === "coordinator" && (
                 <>
-                <td>{user.coordinator.department.name}</td>
-                <td>{user.coordinator.careerCenter ? user.coordinator.careerCenter.companyName || "N/A" : "N/A"}</td>
+                  <td>{user.coordinator.department.name}</td>
+                  <td>
+                    {user.coordinator.careerCenter
+                      ? user.coordinator.careerCenter.companyName || "N/A"
+                      : "N/A"}
+                  </td>
                 </>
               )}
               {activeTab === "careerCenter" && (
                 <td>{user.careerCenter.companyName}</td>
               )}
               <td>
+                <button
+                  className="edit-button"
+                  onClick={() => handleEditUser(user)}
+                >
+                  Edit
+                </button>
                 <button className="delete-button">Delete</button>
               </td>
             </tr>
@@ -203,11 +308,133 @@ const UserTable = () => {
         color="secondary"
       />
 
-      <ToastContainer />
+
+      {/* Edit User Modal */}
+                    <Modal className="coordinator-rejection-modal"
+                isOpen={isModalOpen}
+                onRequestClose={closeModal}
+                contentLabel="Edit User Modal"
+              >
+                <h2>Edit User</h2>
+                {selectedUser && (
+                  <div>
+                    {/* Display user fields based on role */}
+                    {selectedUser.role === "Coordinator" && (
+                      <div>
+                        <label>Department:</label>
+                        <input
+                          type="text"
+                          name="department"
+                          value={selectedUser.coordinator.department.name}
+                          onChange={handleInputChange}
+                        />
+                        {/* add a select tag for career centers to change coordinator career center information */}
+                        <select
+                                name="careerCenter"
+                                value={
+                                  selectedUser &&
+                                  selectedUser.coordinator &&
+                                  selectedUser.coordinator.careerCenter &&
+                                  selectedUser.coordinator.careerCenter.id
+                                    ? selectedUser.coordinator.careerCenter.id
+                                    : ""
+                                }
+                                onChange={handleInputChange}
+                              >
+                                <option value="">{selectedUser.coordinator.careerCenter? selectedUser.coordinator.careerCenter.companyName: ""}</option>
+                                {users.map((user) => {
+                                  if (user.role === "Careercenter") {
+                                    return (
+                                      <option key={user.id} value={user.id}>
+                                        {user.careerCenter && user.careerCenter.companyName}
+                                      </option>
+                                    );
+                                  }
+                                  return null;
+                                })}
+                              </select>
+                      </div>
+                    )}
+                    {selectedUser.role === "Student" && (
+                      <div>
+                        <label>Department:</label>
+                        <input
+                          type="text"
+                          name="department"
+                          value={selectedUser.student.department.name}
+                          onChange={handleInputChange}
+                        />
+                        <label>Student Number:</label>
+                        <input
+                          type="text"
+                          name="studentNumber"
+                          value={selectedUser.student.studentNumber}
+                          onChange={handleInputChange}
+                        />
+                      </div>
+                    )}
+                    {selectedUser.role === "CareerCenter" && (
+                      <div>
+                        <label>Company Name:</label>
+                        <input
+                          type="text"
+                          name="companyName"
+                          value={selectedUser.careerCenter.companyName}
+                          onChange={handleInputChange}
+                        />
+                        {/* Add other fields specific to Career Center */}
+                      </div>
+                    )}
+                    {/* Common fields */}
+                    <label>Email:</label>
+                    <input
+                      type="text"
+                      name="email"
+                      value={selectedUser.email}
+                      onChange={handleInputChange}
+                    />
+                    <label>First Name:</label>
+                    <input
+                      type="text"
+                      name="firstName"
+                      value={selectedUser.firstName}
+                      onChange={handleInputChange}
+                    />
+                    <label>Last Name:</label>
+                    <input
+                      type="text"
+                      name="lastName"
+                      value={selectedUser.lastName}
+                      onChange={handleInputChange}
+                    />
+                    {/* Save and cancel buttons */}
+                    {
+                      isSaving?  <CircularProgress size={20} /> : (
+                        <>
+                            <div className="modal-buttons">
+                          <button className="coordinator-rejection-modal-btn-confirm" onClick={saveChanges}>
+                            Save
+                          </button>
+                          <button className="coordinator-rejection-modal-btn" onClick={closeModal}>
+                            Cancel
+                          </button>
+                        </div>
+                        </>
+                      )
+                    }
+                    
+                  </div>
+                )}
+              </Modal>
+
       {/* Loading spinner */}
       {isLoading && <CircularProgress className="loading-spinner" />}
+      <ToastContainer />
+
     </div>
   );
 };
 
 export default UserTable;
+
+

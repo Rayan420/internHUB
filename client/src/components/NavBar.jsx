@@ -62,10 +62,10 @@ const SideNavbar = ({ name, role, links, notificationPlaceholder }) => {
             <span className="tooltip">{link.label}</span>
           </li>
         ))}
-          {role === "Student" && (
-             <li>
+             <li className="an ">
              {notificationPlaceholder}
-          </li>)}
+             <span className="tooltip">Notifications</span>
+          </li>
         <li>
           <div className="an logout" onClick={handleLogout}>
             <i className="bx bxs-log-out"></i>

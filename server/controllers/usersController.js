@@ -5,6 +5,11 @@ const bycrypt = require('bcrypt');
 const getAllUsers = async (req, res) => {
   try {
     const users = await prisma.User.findMany({
+      where: {
+        role: {
+          not: 'Admin'
+        }
+      },
       select: {
         id: true,
         email: true,
@@ -34,7 +39,7 @@ const getAllUsers = async (req, res) => {
             careerCenter: {
               select: {
                 companyName: true,
-                id: true
+                id: true,
               }
             }
           }
@@ -42,11 +47,14 @@ const getAllUsers = async (req, res) => {
         careerCenter: {
           select: {
             companyName: true,
+            id: true,
           }
         }
       }
     });
 
+    // remove the admin user from the list
+    
     res.json({ users });
   } catch (error) {
     console.error(error);
@@ -63,7 +71,7 @@ const getUserByEmail = async (req, res) => {
     }
   });
   if (!user) {
-    return res.status(204).json({ 'message': `User email ${req.params.email} not found` });
+    return res.status(204).json({ message: `User email ${req.params.email} not found` });
   }
   delete user.password; // Exclude the password field
   delete user.role; // Exclude the role field
@@ -142,6 +150,177 @@ const getNumberOfUsers = async (req, res) => {
 };
 
 
+const saveChanges = async (req, res) => {
+  const selectedUser = req.body;
+  console.log('Selected User:', selectedUser);
+
+  try {
+    let updatedUser;
+
+    if (selectedUser.role === 'Coordinator') {
+      // Update coordinator's email and name
+      updatedUser = await prisma.user.update({
+        where: { id: selectedUser.id },
+        data: {
+          email: selectedUser.email,
+          firstName: selectedUser.firstName,
+          lastName: selectedUser.lastName,
+        },
+      });
+
+      const { department, careerCenter } = selectedUser.coordinator;
+
+      // Check if the coordinator exists in the database
+      const existingCoordinator = await prisma.coordinator.findUnique({
+        where: { userId: selectedUser.id },
+      });
+
+      if (existingCoordinator) {
+        // Check if the department exists in the database
+        const existingDepartment = await prisma.department.findUnique({
+          where: { name: department.name },
+        });
+
+        if (existingDepartment) {
+          updatedUser = await prisma.coordinator.update({
+            where: { id: existingCoordinator.id },
+            data: {
+              department: { connect: { id: existingDepartment.id } },
+              careerCenter: { connect: { id: careerCenter.id } },
+            },
+          });
+        } else {
+          // Handle the case where the department doesn't exist
+          return res.status(202).json({ message: 'Department not found' });
+        }
+      } else {
+        // Handle the case where the coordinator doesn't exist
+        return res.status(202).json({ ermessageor: 'Coordinator not found' });
+      }
+    } else if (selectedUser.role === 'Student') {
+      // Check if the email already exists for another user
+      const existingEmail = await prisma.user.findFirst({
+        where: {
+          email: selectedUser.email,
+          NOT: {
+            id: selectedUser.id,
+          },
+        },
+      });
+
+      if (existingEmail) {
+        return res.status(202).json({ message: 'Email already exists' });
+      }
+
+      // Update student's email and name
+      updatedUser = await prisma.user.update({
+        where: { id: selectedUser.id },
+        data: {
+          email: selectedUser.email,
+          firstName: selectedUser.firstName,
+          lastName: selectedUser.lastName,
+        },
+      });
+
+      const { department, studentNumber } = selectedUser.student;
+
+      // Check if the student exists in the database
+      const existingStudent = await prisma.student.findUnique({
+        where: { userId: selectedUser.id },
+      });
+
+      if (existingStudent) {
+        const existingDepartment = await prisma.department.findUnique({
+          where: { name: department.name },
+        });
+
+        if (existingDepartment) {
+          // Check if the department has a coordinator
+          const departmentCoordinator = await prisma.coordinator.findFirst({
+            where: { department: { id: existingDepartment.id } },
+          });
+
+          if (departmentCoordinator) {
+            updatedUser = await prisma.student.update({
+              where: { id: existingStudent.id },
+              data: {
+                department: { connect: { id: existingDepartment.id } },
+                studentNumber: { set: studentNumber },
+              },
+            });
+          } else {
+            // Handle the case where the department has no coordinator
+            return res.status(202).json({ message: 'The department has no coordinator' });
+          }
+        } else {
+          // Handle the case where the department doesn't exist
+          return res.status(202).json({ message: 'Department not found' });
+        }
+      } else {
+        // Handle the case where the student doesn't exist
+        return res.status(202).json({ message: 'Student not found' });
+      }
+    } else if (selectedUser.role === 'Careercenter') {
+      // Check if the email already exists for another user
+      const existingEmail = await prisma.user.findFirst({
+        where: {
+          email: selectedUser.email,
+          NOT: {
+            id: selectedUser.id,
+          },
+        },
+      });
+
+      if (existingEmail) {
+        return res.status(202).json({ message: 'Email already exists' });
+      }
+
+      // Update career center's email and name
+      updatedUser = await prisma.user.update({
+        where: { id: selectedUser.id },
+        data: {
+          email: selectedUser.email,
+          firstName: selectedUser.firstName,
+          lastName: selectedUser.lastName,
+        },
+      });
+
+      const { companyName } = selectedUser.careerCenter;
+
+      // Check if the career center exists in the database
+      const existingCareerCenter = await prisma.careerCenter.findUnique({
+        where: { userId: selectedUser.id },
+      });
+
+      if (existingCareerCenter) {
+        updatedUser = await prisma.careerCenter.update({
+          where: { id: existingCareerCenter.id },
+          data: {
+            companyName: { set: companyName },
+            // Add other fields specific to Career Center
+          },
+        });
+      } else {
+        // Handle the case where the career center doesn't exist
+        return res.status(202).json({ message: 'Career Center not found' });
+      }
+    } else {
+      return res.status(202).json({ message: 'Invalid user role' });
+    }
+
+    return res.status(200).json({ message: 'Changes saved successfully', user: updatedUser });
+  } catch (error) {
+    console.error('Error saving changes:', error);
+    return res.status(500).json({ error: 'An error occurred while saving changes' });
+  }
+};
+
+
+
+
+
+
+
 
 
 module.exports = {
@@ -149,4 +328,10 @@ module.exports = {
   getUserByEmail,
   updateUserInformation, 
   getNumberOfUsers,
+  saveChanges
 };
+
+
+
+
+

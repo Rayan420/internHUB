@@ -63,7 +63,7 @@ const CreateDepartment = () => {
         <h3 className=" successmsg">{successMsg}</h3>
         <div className="create-department-field">
           <label className="create-department-label" htmlFor="name">
-            Name:
+            Name: <span className='errmsg'>*</span>
           </label>
           <input
             className="create-department-input"
@@ -75,7 +75,7 @@ const CreateDepartment = () => {
         </div>
         <div className="create-department-field">
           <label className="create-department-label" htmlFor="code">
-            Code:
+            Code: <span className='errmsg'>*</span>
           </label>
           <input
             className="create-department-input"

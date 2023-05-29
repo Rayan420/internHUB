@@ -8,6 +8,8 @@ import { useAuthUser } from "react-auth-kit";
 import { useAuthHeader } from "react-auth-kit";
 import axios from "../services/axios";
 import SGKRequests from "../components/careercentercomponents/SGKRequests";
+import NotificationModal from "../components/Notification";
+
 const CareerCenterDashboard = () => {
   // initialize the state variables using the useState hook
   // sample data for the CustomTable component
@@ -16,6 +18,12 @@ const CareerCenterDashboard = () => {
   const [user, setUser] = useState({});
   const [careercenter, setCareerCenter] = useState({});
   const [isLoading, setIsLoading] = useState(true);
+  const [isNotificationOpen, setIsNotificationOpen] = useState(false);
+
+  const toggleNotification = () => {
+    setIsNotificationOpen(!isNotificationOpen);
+  };
+  const [notifications, setNotifications] = useState([]);
 
   useEffect(() => {
     console.log("Fetching user data");
@@ -32,13 +40,18 @@ const CareerCenterDashboard = () => {
           },
         });
         setUser(data);
-        console.log(data);
-        console.log("auth header:", authHeader());
+         // Fetch user notifications
+         const notificationsResponse = await axios.get(`/notification/${data.id}`, {
+          headers: {
+            authorization: authHeader(),
+          },
+        });
+        setNotifications(notificationsResponse.data.notifications);
+        console.log("data",data);
+   
       } catch (error) {
         console.log(error);
-        if (error.response.status === 400 || error.response.status === 500) {
-          signout();
-        }
+        
       } finally {
         const { email } = auth() || {};
         const { data } = await axios.get("/careercenter/" + email, {
@@ -70,6 +83,19 @@ const CareerCenterDashboard = () => {
       </div>
     );
   }
+
+
+  // Callback function to update notifications when marked as read
+  const handleNotificationRead = (notificationId) => {
+    setNotifications((prevNotifications) =>
+      prevNotifications.map((notification) => {
+        if (notification.id === notificationId) {
+          return { ...notification, read: true };
+        }
+        return notification;
+      })
+    );
+  };
   return (
     <div className="container">
       {/* NAVEBAR */}
@@ -82,6 +108,17 @@ const CareerCenterDashboard = () => {
         ]}
         name={user.firstName + " " + user.lastName}
         role={auth().role}
+        notificationPlaceholder={
+          <div className="an notification" onClick={toggleNotification}>
+            <i className="bx bxs-bell"></i>
+            <span className="nav-item">Notifications</span>
+            {notifications.filter((notification) => !notification.read).length > 0 && (
+              <div className="unread-count">
+                {notifications.filter((notification) => !notification.read).length}
+              </div>
+            )}
+          </div>
+        }
       />
 
       <div className="main-content main-dashboard">
@@ -96,6 +133,14 @@ const CareerCenterDashboard = () => {
 
         {/* SGK Requests */}
         <SGKRequests careerCenterId={careercenter.careerCenter} />
+        {isNotificationOpen && 
+         <NotificationModal
+         onClose={toggleNotification}
+         notifications={notifications.filter((notification) => !notification.read)}
+         onNotificationRead={handleNotificationRead}
+         userId={careercenter.user.id}
+       />
+      }
       </div>
       <Outlet />
     </div>

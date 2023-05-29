@@ -37,8 +37,7 @@ const InfoCard = ({ title, value, icon, backgroundColor, backgroundColorSecond, 
         </div>
       </div>
       {applications ? null: (<>
-        <div className="more-info" onClick={(e) => setNavv(true)} style={{ 'backgroundColor': backgroundColor1, 'cursor': 'pointer' }}>
-        <p>More info</p>
+        <div className="more-info"  style={{ 'backgroundColor': backgroundColor1 }}>
       </div>
       </>)}
      
