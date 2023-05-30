@@ -22,6 +22,11 @@ const handleLogin = async (req, res) => {
         return res.status(401).json({error: 'User not found'});
     }
     //console.log(foundUser.password, password);
+    //check if user is deleted
+    if(foundUser.isDeleted){
+        return res.status(401).json({error: 'User is deleted'});
+    }
+    
     // decrypt and compare password
     const isMatch = await bycrypt.compare(password, foundUser.password);
     if(isMatch){

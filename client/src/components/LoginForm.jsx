@@ -119,7 +119,7 @@ const LoginForm = () => {
           />
         </div>
 
-        <div className={`user-box password ${borderClass}`}>
+        <div className={`user-box  ${borderClass}`}>
           <label>Password</label>
           <input
             type={showPassword ? "text" : "password"}

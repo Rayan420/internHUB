@@ -17,6 +17,7 @@ const getAllUsers = async (req, res) => {
         lastName: true,
         phoneNum: true,
         role: true,
+        isDeleted: true,
         student: {
           select: {
             department: true,
@@ -316,6 +317,35 @@ const saveChanges = async (req, res) => {
 };
 
 
+const deleteUser = async (req, res) => {
+  const { id } = req.params;
+  try {
+    // check if user exists
+    const user = await prisma.user.findUnique({
+      where: { id: parseInt(id) },
+    });
+    if (!user) {
+      return res.status(202).json({ message: 'User not found' });
+    }
+    // if user exist make isdeleted true
+    const updatedUser = await prisma.user.update({
+      where: { id: parseInt(id) },
+      data: {
+        isDeleted: true,
+      },
+    });
+    // add delted user id to isDelted table
+    const deletedUser = await prisma.IsDeletedUser.create({
+      data: {
+        userId: updatedUser.id,
+      },
+    });
+    return res.status(200).json({ message: 'User deleted successfully', user: deletedUser });
+  } catch (error) {
+    console.error('Error deleting user:', error);
+    return res.status(500).json({ error: 'An error occurred while deleting user' });
+  }
+};
 
 
 
@@ -328,7 +358,8 @@ module.exports = {
   getUserByEmail,
   updateUserInformation, 
   getNumberOfUsers,
-  saveChanges
+  saveChanges,
+  deleteUser
 };
 
 

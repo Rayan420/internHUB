@@ -9,6 +9,8 @@ router.route('/:email').get(usersController.getUserByEmail)
 
 router.route('/:id').put(usersController.updateUserInformation);   
 router.route('/number').delete(usersController.getNumberOfUsers);
+router.route('/delete/user/:id').delete(usersController.deleteUser);
+
 router.route('/selecteduser/update').put(usersController.saveChanges);
 
 

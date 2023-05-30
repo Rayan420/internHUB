@@ -30,8 +30,9 @@ const UserTable = () => {
         });
         console.log("users:", response.data);
         const { users } = response.data;
-
-        setUsers(users);
+        // CHECK IF USER ISDELETED AND FILTER THEM OUT
+        const filteredUsers = users.filter((user) => user.isDeleted === false);
+        setUsers(filteredUsers);
         setIsLoading(false);
       } catch (error) {
         setIsLoading(false);
@@ -135,6 +136,38 @@ const UserTable = () => {
     setSelectedUser(user);
     setIsModalOpen(true);
   };
+
+const handleDeleteUser = async (user) => {
+  setIsSaving(true);
+  try {
+    const response = await axios.delete(`/users/delete/user/${user.id}`, {
+      headers: {
+        authorization: authHeader(),
+      },
+    });
+    console.log("Response:", response.data);
+    await new Promise((resolve) => setTimeout(resolve, 1000));
+    if(response.status === 200){
+      setIsSaving(false);
+      toast.success(`User ${user.firstName + " " +user.lastName} deleted successfully`);
+      //update the users state
+      const updatedUsers = users.filter((u) => u.id !== user.id);
+      setUsers(updatedUsers);
+    }
+    if(response.status === 202){
+      toast.error(`Failed to delete User ${user.firstName + " " +user.lastName}, ${response.data.message}`);
+    }
+  } catch (error) {
+    console.error("Error deleting user:", error);
+    if(response.status === 400){
+      toast.error(`User ${user.firstName + " " +user.lastName} could not be deleted`);
+    }
+  }
+
+}
+
+
+
 
   const closeModal = () => {
     setIsModalOpen(false);
@@ -291,7 +324,14 @@ const UserTable = () => {
                 >
                   Edit
                 </button>
-                <button className="delete-button">Delete</button>
+                {
+                  //set circular progress when saving for the button of the selected user
+                   isSaving?  <CircularProgress size={20} /> : (
+                    <>       
+                      <button className="delete-button" onClick={()=>handleDeleteUser(user)}>Delete</button>
+                    </>
+                    )
+                }
               </td>
             </tr>
           ))}
@@ -325,7 +365,7 @@ const UserTable = () => {
                         <input
                           type="text"
                           name="department"
-                          value={selectedUser.coordinator.department.name}
+                          value={selectedUser.coordinator.department? selectedUser.coordinator.department.name: ""}
                           onChange={handleInputChange}
                         />
                         {/* add a select tag for career centers to change coordinator career center information */}

@@ -75,19 +75,11 @@ const AdminDashboard = () => {
           },
         });
         const { users } = response.data;
-        const filteredCareerCenter = users.filter(
-          (user) => user.role === "Careercenter"
-        );
 
-        const filteredStudents = users.filter(
-          (user) => user.role === "Student"
-        );
-
-        const filteredCoordinators = users.filter(
-          (user) => user.role === "Coordinator"
-        );
-
-        
+        // check if users have been deleted and filter out deleted users
+        const filteredCareerCenter = users.filter((user) => user.role === "Careercenter" && user.isDeleted === false);
+        const filteredStudents = users.filter((user) => user.role === "Student" && user.isDeleted === false);
+        const filteredCoordinators = users.filter((user) => user.role === "Coordinator" && user.isDeleted === false);
 
         console.log("Number of users:", filteredCareerCenter);
         setNumberOfCareerCenters(filteredCareerCenter);

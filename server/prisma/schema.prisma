@@ -24,7 +24,18 @@ model User {
   messagesSent  Message[]     @relation("messages_sent")
   messagesReceived Message[]  @relation("messages_received")
   notifications Notification[]
+  isDeleted Boolean @default(false)
 }
+
+//model to store the deleted users 
+model IsDeletedUser {
+  id            Int           @id @unique @default(autoincrement())
+  userId        Int
+  deletedAt     DateTime      @default(now())
+}
+
+
+
 model Notification {
   id      Int     @id @default(autoincrement())
   createdAt DateTime @default(now())
