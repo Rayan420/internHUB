@@ -19,7 +19,7 @@ in vscode terminal
 cd server
 npm install
 
-in .env file make sure the database url point to your serve. the followin url should work fine
+in .env file make sure the database url point to your server. the followin url should work fine
 Copy code
 DATABASE_URL="mysql://root:@localhost:3306/internhub"
 
