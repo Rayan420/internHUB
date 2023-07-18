@@ -25,7 +25,7 @@ DATABASE_URL="mysql://root:@localhost:3306/internhub"
 
 
 
-got to phpmyAdmin and make sure you create a database called internhub
+make sure you create a database called internhub
 after creating the database you can create the tables from prisma models using the following command:
 npx prisma migrate dev
 then run:
