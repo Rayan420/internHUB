@@ -6,8 +6,7 @@ Requirements
 Before you can setup the backend, make sure you have the following requirements installed:
 
 Node.js (version 14 or higher)
-MySQL database (if you have wamp go run it and go to php my admin)
-Prisma CLI (can be installed globally with npm install -g prisma)
+MySQL database, Prisma CLI
 
 
 Installation
